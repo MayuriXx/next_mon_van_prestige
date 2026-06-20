@@ -1,0 +1,16 @@
+.card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.p-sm { padding: var(--spacing-md); }
+.p-md { padding: var(--spacing-lg); }
+.p-lg { padding: var(--spacing-xl); }
+
+.hover:hover {
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-gold), var(--shadow-card);
+}
