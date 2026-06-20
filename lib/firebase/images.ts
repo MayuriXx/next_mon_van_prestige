@@ -1,5 +1,6 @@
 import { db } from '@/lib/firebase/config';
 import { collection, query, getDocs, doc, getDoc } from 'firebase/firestore';
+import { imagesData } from '@/lib/data/images';
 
 export interface ImageData {
   url: string;
@@ -14,44 +15,60 @@ export interface VehicleImage extends ImageData {
 // Récupérer l'image hero
 export async function getHeroImage(): Promise<ImageData | null> {
   try {
-    // Collection flat: images/hero
+    // Essayer Firestore d'abord
     const docRef = doc(db, 'images', 'hero');
     const docSnap = await getDoc(docRef);
-    return docSnap.exists() ? (docSnap.data() as ImageData) : null;
+    if (docSnap.exists()) {
+      return docSnap.data() as ImageData;
+    }
   } catch (error) {
-    console.error('Error fetching hero image:', error);
-    return null;
+    console.log('Firestore unavailable for hero image, using local data');
   }
+  
+  // Fallback: données locales
+  return imagesData.hero;
 }
 
 // Récupérer les images des véhicules
 export async function getVehicleImages(): Promise<VehicleImage[]> {
   try {
-    // Collection flat: vehicle_images
+    // Essayer Firestore d'abord
     const vehiclesRef = collection(db, 'vehicle_images');
     const q = query(vehiclesRef);
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs
-      .map((doc) => ({
-        name: doc.id,
-        ...doc.data(),
-      } as VehicleImage))
-      .sort((a, b) => (a.position || 0) - (b.position || 0));
+    
+    if (querySnapshot.docs.length > 0) {
+      return querySnapshot.docs
+        .map((doc) => ({
+          name: doc.id,
+          ...doc.data(),
+        } as VehicleImage))
+        .sort((a, b) => (a.position || 0) - (b.position || 0));
+    }
   } catch (error) {
-    console.error('Error fetching vehicle images:', error);
-    return [];
+    console.log('Firestore unavailable for vehicle images, using local data');
   }
+  
+  // Fallback: données locales
+  return Object.entries(imagesData.vehicles).map(([id, data]) => ({
+    name: id,
+    ...data,
+  }));
 }
 
 // Récupérer les images des sections
 export async function getSectionImages(section: string): Promise<ImageData | null> {
   try {
-    // Collection flat: section_images/sectionId
+    // Essayer Firestore d'abord
     const docRef = doc(db, 'section_images', section);
     const docSnap = await getDoc(docRef);
-    return docSnap.exists() ? (docSnap.data() as ImageData) : null;
+    if (docSnap.exists()) {
+      return docSnap.data() as ImageData;
+    }
   } catch (error) {
-    console.error(`Error fetching ${section} image:`, error);
-    return null;
+    console.log(`Firestore unavailable for ${section} image, using local data`);
   }
+  
+  // Fallback: données locales
+  return imagesData.sections[section] || null;
 }

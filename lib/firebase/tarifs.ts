@@ -1,5 +1,6 @@
 import { db } from '@/lib/firebase/config';
 import { collection, getDocs, query } from 'firebase/firestore';
+import { tarifsData } from '@/lib/data/tarifs';
 
 export interface PricingData {
   business?: number | string;
@@ -16,27 +17,29 @@ export interface TransfertTarif extends PricingData {
 // Récupérer tous les tarifs
 export async function getAllTarifs(): Promise<TransfertTarif[]> {
   try {
-    const tarifs: TransfertTarif[] = [];
-
-    // Collection flat: tarifs
+    // Essayer Firestore d'abord
     const tarifsRef = collection(db, 'tarifs');
     const tarifsQuery = query(tarifsRef);
     const tarifsSnap = await getDocs(tarifsQuery);
     
-    tarifsSnap.docs.forEach((doc) => {
-      tarifs.push({
-        id: doc.id,
-        name: doc.data().name || doc.id,
-        category: doc.data().category || 'aeroport',
-        ...doc.data(),
-      } as TransfertTarif);
-    });
-
-    return tarifs;
+    if (tarifsSnap.docs.length > 0) {
+      const tarifs: TransfertTarif[] = [];
+      tarifsSnap.docs.forEach((doc) => {
+        tarifs.push({
+          id: doc.id,
+          name: doc.data().name || doc.id,
+          category: doc.data().category || 'aeroport',
+          ...doc.data(),
+        } as TransfertTarif);
+      });
+      return tarifs;
+    }
   } catch (error) {
-    console.error('Error fetching tarifs:', error);
-    return [];
+    console.log('Firestore unavailable for tarifs, using local data');
   }
+  
+  // Fallback: données locales
+  return tarifsData;
 }
 
 // Récupérer tarifs par catégorie
