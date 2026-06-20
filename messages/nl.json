@@ -1,0 +1,44 @@
+{
+  "nav": {
+    "services": "Diensten",
+    "vehicles": "Voertuigen",
+    "about": "Over ons",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "book": "Boeken",
+    "servicesDropdown": {
+      "airport": "Luchthavenoverdracht",
+      "simple": "Stadsoverdracht",
+      "disposal": "Chauffeur ter beschikking",
+      "events": "Speciale evenementen",
+      "leisure": "Uitstapjes & Vrije tijd",
+      "professional": "Zakelijke reizen"
+    }
+  },
+  "footer": {
+    "tagline": "Uw vertrouwde privéchauffeur in Valenciennes en de omgeving.",
+    "links": "Snelle links",
+    "legal": "Juridische informatie",
+    "cgv": "Algemene voorwaarden",
+    "privacy": "Privacybeleid",
+    "contact": "Contact",
+    "phone": "Telefoon",
+    "email": "E-mail",
+    "address": "Adres",
+    "copyright": "© {year} MS Prestige Driver. Alle rechten voorbehouden.",
+    "services": "Diensten"
+  },
+  "cta": {
+    "book": "Nu boeken",
+    "quote": "Offerte aanvragen",
+    "contact": "Neem contact op",
+    "discover": "Ontdekken",
+    "learnMore": "Meer weten"
+  },
+  "common": {
+    "loading": "Laden...",
+    "error": "Er is een fout opgetreden",
+    "back": "Terug",
+    "close": "Sluiten"
+  }
+}

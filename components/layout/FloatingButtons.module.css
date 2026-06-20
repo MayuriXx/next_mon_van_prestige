@@ -1,0 +1,52 @@
+.wrapper {
+  position: fixed;
+  right: 20px;
+  bottom: 100px;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  text-decoration: none;
+}
+
+.btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.phone {
+  background-color: #1a73e8;
+}
+
+.whatsapp {
+  background-color: #25D366;
+}
+
+.email {
+  background-color: var(--color-gold);
+  color: #0a0a0a;
+}
+
+@media (max-width: 480px) {
+  .wrapper {
+    right: 12px;
+    bottom: 80px;
+  }
+
+  .btn {
+    width: 44px;
+    height: 44px;
+  }
+}
