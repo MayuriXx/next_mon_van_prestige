@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Lato } from 'next/font/google';
+import { Playfair_Display, Lato, Montserrat } from 'next/font/google';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { getMessages } from 'next-intl/server';
@@ -16,6 +16,13 @@ const playfair = Playfair_Display({
   variable: '--font-playfair',
   subsets: ['latin'],
   weight: ['400', '600', '700', '800'],
+  display: 'swap',
+});
+
+const montserrat = Montserrat({
+  variable: '--font-montserrat',
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
   display: 'swap',
 });
 
@@ -52,7 +59,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${playfair.variable} ${lato.variable}`}>
+    <html lang={locale} className={`${playfair.variable} ${lato.variable} ${montserrat.variable}`}>
       <body>
         <NextIntlClientProvider messages={messages}>
           <SplashScreen />
