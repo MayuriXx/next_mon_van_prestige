@@ -1,4 +1,4 @@
-import { db } from '@/lib/firebase/config';
+import { db } from '@/lib/firebase/client';
 import { collection, getDocs, query } from 'firebase/firestore';
 import { tarifsData } from '@/lib/data/tarifs';
 
