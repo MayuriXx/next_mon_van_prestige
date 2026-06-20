@@ -1,0 +1,44 @@
+{
+  "nav": {
+    "services": "Services",
+    "vehicles": "Vehicles",
+    "about": "About",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "book": "Book",
+    "servicesDropdown": {
+      "airport": "Airport Transfer",
+      "simple": "City Transfer",
+      "disposal": "Chauffeur at Disposal",
+      "events": "Special Events",
+      "leisure": "Getaways & Leisure",
+      "professional": "Business Travel"
+    }
+  },
+  "footer": {
+    "tagline": "Your trusted private chauffeur in Valenciennes and across the region.",
+    "links": "Quick links",
+    "legal": "Legal notice",
+    "cgv": "Terms & Conditions",
+    "privacy": "Privacy policy",
+    "contact": "Contact",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "copyright": "© {year} MS Prestige Driver. All rights reserved.",
+    "services": "Services"
+  },
+  "cta": {
+    "book": "Book now",
+    "quote": "Request a quote",
+    "contact": "Contact us",
+    "discover": "Discover",
+    "learnMore": "Learn more"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "back": "Back",
+    "close": "Close"
+  }
+}
