@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import { Playfair_Display, Lato } from 'next/font/google';
 import './globals.css';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import FloatingButtons from '@/components/layout/FloatingButtons';
 
 const playfair = Playfair_Display({
   variable: '--font-playfair',
@@ -29,7 +32,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`${playfair.variable} ${lato.variable}`}>
-      <body>{children}</body>
+      <body>
+        <Navbar />
+        <main style={{ paddingTop: '72px' }}>{children}</main>
+        <Footer />
+        <FloatingButtons />
+      </body>
     </html>
   );
 }
