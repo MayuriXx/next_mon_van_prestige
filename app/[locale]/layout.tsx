@@ -7,6 +7,7 @@ import { routing } from '@/i18n/routing';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import FloatingButtons from '@/components/layout/FloatingButtons';
+import SplashScreen from '@/components/layout/SplashScreen';
 import '../globals.css';
 
 const playfair = Playfair_Display({
@@ -52,6 +53,7 @@ export default async function LocaleLayout({
     <html lang={locale} className={`${playfair.variable} ${lato.variable}`}>
       <body>
         <NextIntlClientProvider messages={messages}>
+          <SplashScreen />
           <Navbar />
           <main style={{ paddingTop: '72px' }}>{children}</main>
           <Footer />
