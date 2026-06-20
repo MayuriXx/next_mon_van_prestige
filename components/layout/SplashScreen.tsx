@@ -16,14 +16,11 @@ export default function SplashScreen() {
 
     setVisible(true);
 
-    const hideTimer = setTimeout(() => {
-      setHiding(true);
-    }, 1800);
-
+    const hideTimer = setTimeout(() => setHiding(true), 2000);
     const removeTimer = setTimeout(() => {
       setVisible(false);
       sessionStorage.setItem(SPLASH_KEY, '1');
-    }, 2400);
+    }, 2700);
 
     return () => {
       clearTimeout(hideTimer);
@@ -39,8 +36,8 @@ export default function SplashScreen() {
         <Image
           src="/images/ms_prestige_driver_logo.jpg"
           alt="MS Prestige Driver"
-          width={180}
-          height={180}
+          width={280}
+          height={280}
           priority
           className={styles.logo}
         />
