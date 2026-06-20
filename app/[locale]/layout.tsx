@@ -10,6 +10,8 @@ import FloatingButtons from '@/components/layout/FloatingButtons';
 import SplashScreen from '@/components/layout/SplashScreen';
 import '../globals.css';
 
+export const dynamic = 'force-static';
+
 const playfair = Playfair_Display({
   variable: '--font-playfair',
   subsets: ['latin'],
