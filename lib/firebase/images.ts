@@ -14,6 +14,7 @@ export interface VehicleImage extends ImageData {
 // Récupérer l'image hero
 export async function getHeroImage(): Promise<ImageData | null> {
   try {
+    // Collection flat: images/hero
     const docRef = doc(db, 'images', 'hero');
     const docSnap = await getDoc(docRef);
     return docSnap.exists() ? (docSnap.data() as ImageData) : null;
@@ -26,7 +27,8 @@ export async function getHeroImage(): Promise<ImageData | null> {
 // Récupérer les images des véhicules
 export async function getVehicleImages(): Promise<VehicleImage[]> {
   try {
-    const vehiclesRef = collection(db, 'images', 'vehicles', 'all');
+    // Collection flat: vehicle_images
+    const vehiclesRef = collection(db, 'vehicle_images');
     const q = query(vehiclesRef);
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs
@@ -44,7 +46,8 @@ export async function getVehicleImages(): Promise<VehicleImage[]> {
 // Récupérer les images des sections
 export async function getSectionImages(section: string): Promise<ImageData | null> {
   try {
-    const docRef = doc(db, 'images', 'sections', section);
+    // Collection flat: section_images/sectionId
+    const docRef = doc(db, 'section_images', section);
     const docSnap = await getDoc(docRef);
     return docSnap.exists() ? (docSnap.data() as ImageData) : null;
   } catch (error) {

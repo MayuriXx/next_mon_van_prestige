@@ -43,11 +43,9 @@ export default function Hero() {
           <p className={styles.subtitle}>{t('subtitle')}</p>
           
           <div className={styles.ctas}>
-            <Link href="/reservation" passHref legacyBehavior>
-              <a className={styles.ctaPrimary}>
-                {t('cta_reserve')}
-              </a>
-            </Link>
+            <Button href="/reservation" variant="gold" size="lg">
+              {t('cta_reserve')}
+            </Button>
           </div>
         </div>
       </div>

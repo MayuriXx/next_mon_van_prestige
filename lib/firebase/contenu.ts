@@ -27,7 +27,8 @@ export interface SectionContent {
 // Récupérer tous les services
 export async function getServices(): Promise<ServiceContent[]> {
   try {
-    const servicesRef = collection(db, 'contenu', 'services', 'list');
+    // Collection flat: services (pas de sous-collection)
+    const servicesRef = collection(db, 'services');
     const q = query(servicesRef);
     const querySnapshot = await getDocs(q);
     
@@ -36,7 +37,7 @@ export async function getServices(): Promise<ServiceContent[]> {
         id: doc.id,
         ...doc.data(),
       } as ServiceContent))
-      .sort((a, b) => a.position - b.position);
+      .sort((a, b) => (a.position || 0) - (b.position || 0));
   } catch (error) {
     console.error('Error fetching services:', error);
     return [];
@@ -46,7 +47,8 @@ export async function getServices(): Promise<ServiceContent[]> {
 // Récupérer tous les véhicules
 export async function getVehicles(): Promise<VehicleContent[]> {
   try {
-    const vehiclesRef = collection(db, 'contenu', 'vehicles', 'list');
+    // Collection flat: vehicles
+    const vehiclesRef = collection(db, 'vehicles');
     const q = query(vehiclesRef);
     const querySnapshot = await getDocs(q);
     
@@ -55,7 +57,7 @@ export async function getVehicles(): Promise<VehicleContent[]> {
         id: doc.id,
         ...doc.data(),
       } as VehicleContent))
-      .sort((a, b) => a.position - b.position);
+      .sort((a, b) => (a.position || 0) - (b.position || 0));
   } catch (error) {
     console.error('Error fetching vehicles:', error);
     return [];
@@ -65,7 +67,8 @@ export async function getVehicles(): Promise<VehicleContent[]> {
 // Récupérer contenu d'une section
 export async function getSectionContent(sectionId: string): Promise<SectionContent | null> {
   try {
-    const docRef = doc(db, 'contenu', 'sections', sectionId);
+    // Collection flat: sections/sectionId
+    const docRef = doc(db, 'sections', sectionId);
     const docSnap = await getDoc(docRef);
     return docSnap.exists() ? (docSnap.data() as SectionContent) : null;
   } catch (error) {
