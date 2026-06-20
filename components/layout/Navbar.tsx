@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import styles from './Navbar.module.css';
 
@@ -37,7 +38,6 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMenuOpen(false);
     setDropdownOpen(false);
@@ -65,16 +65,18 @@ export default function Navbar() {
       <div className={`container ${styles.inner}`}>
         {/* Logo */}
         <Link href="/" className={styles.logo}>
-          <span className={styles.logoMvp}>MVP</span>
-          <span className={styles.logoText}>
-            MON VAN PRESTIGE
-            <span className={styles.logoTagline}>VTC de Luxe • Valenciennes</span>
-          </span>
+          <Image
+            src="/images/ms_prestige_driver_logo.jpg"
+            alt="MS Prestige Driver"
+            width={52}
+            height={52}
+            priority
+            className={styles.logoImg}
+          />
         </Link>
 
         {/* Desktop Nav */}
         <nav className={styles.nav} aria-label="Navigation principale">
-          {/* Services avec dropdown */}
           <div
             className={styles.navItemDropdown}
             onMouseEnter={handleDropdownEnter}
@@ -114,7 +116,6 @@ export default function Navbar() {
           <Link href="/faq" className={`${styles.navLink} ${pathname === '/faq' ? styles.active : ''}`}>FAQ</Link>
           <button className={styles.navLink} onClick={() => scrollToSection('contact')}>Contact</button>
 
-          {/* Langue */}
           <div className={styles.langSelector}>
             {LANGUAGES.map((l) => (
               <button

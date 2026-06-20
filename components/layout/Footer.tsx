@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './Footer.module.css';
 
 const SERVICES_LINKS = [
@@ -27,10 +28,15 @@ export default function Footer() {
       <div className={`container ${styles.inner}`}>
         {/* Colonne 1 — Marque */}
         <div className={styles.brand}>
-          <div className={styles.logo}>
-            <span className={styles.logoMvp}>MVP</span>
-            <span className={styles.logoName}>MON VAN PRESTIGE</span>
-          </div>
+          <Link href="/" className={styles.logoWrap}>
+            <Image
+              src="/images/ms_prestige_driver_logo.jpg"
+              alt="MS Prestige Driver"
+              width={72}
+              height={72}
+              className={styles.logoImg}
+            />
+          </Link>
           <p className={styles.tagline}>
             <em>L&apos;excellence au service de votre mobilité</em>
           </p>
