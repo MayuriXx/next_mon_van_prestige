@@ -34,7 +34,7 @@ export default function SplashScreen() {
     <div className={`${styles.splash} ${hiding ? styles.hide : ''}`}>
       <div className={styles.logoWrap}>
         <Image
-          src="/images/ms_prestige_driver_logo.jpg"
+          src="/images/ms_prestige_driver_logo_splash.png"
           alt="MS Prestige Driver"
           width={280}
           height={280}
