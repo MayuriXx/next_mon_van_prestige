@@ -1,8 +1,34 @@
+import Hero from '@/components/sections/Hero';
+import Services from '@/components/sections/Services';
+import Vehicles from '@/components/sections/Vehicles';
+import Tarifs from '@/components/sections/Tarifs';
+import ServiceSection from '@/components/sections/ServiceSection';
+import About from '@/components/sections/About';
+
+const SECTIONS = [
+  { id: 'transfert-aeroport', slug: 'transfert-aeroport' },
+  { id: 'transfert-simple', slug: 'transfert-simple' },
+  { id: 'mise-a-disposition', slug: 'mise-a-disposition' },
+  { id: 'evenements-speciaux', slug: 'evenements-speciaux' },
+  { id: 'escapades-loisirs', slug: 'escapades-loisirs' },
+  { id: 'deplacements-professionnels', slug: 'deplacements-professionnels' },
+];
+
 export default function Home() {
   return (
-    <main>
-      <h1>MS Prestige Driver</h1>
-      <p>Page d&apos;accueil — à implémenter (issue #8)</p>
-    </main>
+    <>
+      <Hero />
+      <Services />
+      <Vehicles />
+      <Tarifs />
+      {SECTIONS.map((section) => (
+        <ServiceSection
+          key={section.id}
+          sectionId={section.id}
+          slug={section.slug}
+        />
+      ))}
+      <About />
+    </>
   );
 }
