@@ -1,17 +1,68 @@
+/* ============================================================
+   MS PRESTIGE DRIVER — Design Tokens
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Lato:wght@300;400;700&display=swap');
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* --- Couleurs --- */
+  --color-bg:          #0a0a0a;
+  --color-bg-alt:      #111111;
+  --color-card:        #1a1a1a;
+  --color-card-alt:    #222222;
+  --color-gold:        #C9A84C;
+  --color-gold-light:  #dfc070;
+  --color-gold-dark:   #a8853a;
+  --color-white:       #FFFFFF;
+  --color-text:        #ededed;
+  --color-text-muted:  rgba(255, 255, 255, 0.6);
+  --color-border:      rgba(201, 168, 76, 0.2);
+  --color-border-card: rgba(255, 255, 255, 0.07);
+
+  /* --- Typographie --- */
+  --font-title:  'Playfair Display', Georgia, serif;
+  --font-body:   'Lato', Arial, sans-serif;
+
+  /* --- Espacements --- */
+  --spacing-xs:   4px;
+  --spacing-sm:   8px;
+  --spacing-md:   16px;
+  --spacing-lg:   24px;
+  --spacing-xl:   40px;
+  --spacing-2xl:  64px;
+  --spacing-3xl:  96px;
+
+  /* --- Rayons --- */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-pill: 999px;
+
+  /* --- Transitions --- */
+  --transition-fast:   150ms ease;
+  --transition-base:   250ms ease;
+  --transition-slow:   400ms ease;
+
+  /* --- Shadows --- */
+  --shadow-gold: 0 0 20px rgba(201, 168, 76, 0.25);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 html {
   height: 100%;
+  scroll-behavior: smooth;
 }
 
 html,
@@ -24,17 +75,13 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
 }
 
 a {
@@ -42,8 +89,46 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ============================================================
+   Typographie utilitaires
+   ============================================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-title);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-white);
+}
+
+p {
+  color: var(--color-text-muted);
+  line-height: 1.8;
+}
+
+/* ============================================================
+   Utilitaires globaux
+   ============================================================ */
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.section {
+  padding: var(--spacing-3xl) 0;
+}
+
+.gold-separator {
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: var(--color-gold);
+  margin: var(--spacing-md) auto;
 }
