@@ -41,6 +41,8 @@ export default function SplashScreen() {
           priority
           className={styles.logo}
         />
+        <p className={styles.name}>MS Prestige Driver</p>
+        <p className={styles.tagline}>Excellence et raffinement depuis 2022</p>
       </div>
     </div>
   );
