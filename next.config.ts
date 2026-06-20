@@ -4,8 +4,10 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 
 const nextConfig: NextConfig = {
-  // Images externes autorisées (Firebase Storage)
+  output: 'export',
+  trailingSlash: true,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -13,7 +15,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Headers de sécurité
   async headers() {
     return [
       {
