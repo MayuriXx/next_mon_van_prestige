@@ -1,0 +1,62 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+  white-space: nowrap;
+  text-decoration: none;
+  border: 2px solid transparent;
+}
+
+/* Sizes */
+.sm  { padding: 8px 20px;  font-size: 12px; }
+.md  { padding: 12px 28px; font-size: 13px; }
+.lg  { padding: 16px 36px; font-size: 14px; }
+
+/* Gold */
+.gold {
+  background-color: var(--color-gold);
+  color: #0a0a0a;
+  border-color: var(--color-gold);
+}
+.gold:hover {
+  background-color: var(--color-gold-light);
+  border-color: var(--color-gold-light);
+  box-shadow: var(--shadow-gold);
+}
+.gold:active {
+  background-color: var(--color-gold-dark);
+  border-color: var(--color-gold-dark);
+}
+
+/* Outline */
+.outline {
+  background-color: transparent;
+  color: var(--color-gold);
+  border-color: var(--color-gold);
+}
+.outline:hover {
+  background-color: rgba(201, 168, 76, 0.08);
+  box-shadow: var(--shadow-gold);
+}
+
+/* Ghost */
+.ghost {
+  background-color: transparent;
+  color: var(--color-text);
+  border-color: transparent;
+}
+.ghost:hover {
+  color: var(--color-gold);
+}
