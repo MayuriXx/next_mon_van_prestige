@@ -1,0 +1,45 @@
+.switcher {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.flag {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  opacity: 0.5;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flag:hover {
+  opacity: 0.85;
+  transform: scale(1.15);
+}
+
+.flag.active {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Séparateur visuel entre drapeaux */
+.flag + .flag {
+  position: relative;
+}
+
+.flag + .flag::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background: var(--color-border);
+}
