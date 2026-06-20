@@ -1,0 +1,50 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import styles from './SplashScreen.module.css';
+
+const SPLASH_KEY = 'mvp_splash_shown';
+
+export default function SplashScreen() {
+  const [visible, setVisible] = useState(false);
+  const [hiding, setHiding] = useState(false);
+
+  useEffect(() => {
+    if (typeof sessionStorage === 'undefined') return;
+    if (sessionStorage.getItem(SPLASH_KEY)) return;
+
+    setVisible(true);
+
+    const hideTimer = setTimeout(() => {
+      setHiding(true);
+    }, 1800);
+
+    const removeTimer = setTimeout(() => {
+      setVisible(false);
+      sessionStorage.setItem(SPLASH_KEY, '1');
+    }, 2400);
+
+    return () => {
+      clearTimeout(hideTimer);
+      clearTimeout(removeTimer);
+    };
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <div className={`${styles.splash} ${hiding ? styles.hide : ''}`}>
+      <div className={styles.logoWrap}>
+        <Image
+          src="/images/logo.png"
+          alt="MS Prestige Driver"
+          width={220}
+          height={120}
+          priority
+          className={styles.logo}
+        />
+      </div>
+    </div>
+  );
+}
