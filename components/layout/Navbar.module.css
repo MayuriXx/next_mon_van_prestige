@@ -26,42 +26,21 @@
 .logo {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  text-decoration: none;
   flex-shrink: 0;
+  text-decoration: none;
 }
 
-.logoMvp {
-  font-family: var(--font-title);
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--color-gold);
-  letter-spacing: 0.05em;
+.logoImg {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 50%;
+  transition: filter var(--transition-base), transform var(--transition-base);
 }
 
-.logoText {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-}
-
-.logoText > span:first-child {
-  font-family: var(--font-title);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-white);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.logoTagline {
-  font-family: var(--font-body);
-  font-size: 10px;
-  font-weight: 300;
-  color: var(--color-gold);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-style: italic;
+.logo:hover .logoImg {
+  filter: drop-shadow(0 0 10px rgba(201, 168, 76, 0.5));
+  transform: scale(1.04);
 }
 
 /* ── Desktop nav ── */
@@ -308,8 +287,4 @@
   .nav { display: none; }
   .burger { display: flex; }
   .mobileMenu { display: flex; }
-}
-
-@media (max-width: 480px) {
-  .logoTagline { display: none; }
 }
