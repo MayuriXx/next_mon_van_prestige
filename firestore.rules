@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Collections publiques en lecture seule
+    match /tarifs/{doc} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+    }
+
+    match /faq/{doc} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+    }
+
+    match /vehicules/{doc} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+    }
+
+    match /contenus/{doc} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+    }
+
+    // Réservations : création publique, lecture/modif admin uniquement
+    match /reservations/{doc} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null && isAdmin();
+    }
+
+    // Tout le reste : admin uniquement
+    match /{document=**} {
+      allow read, write: if request.auth != null && isAdmin();
+    }
+
+    function isAdmin() {
+      return request.auth.token.email == 'martho.evan@gmail.com';
+    }
+  }
+}
