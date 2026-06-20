@@ -1,0 +1,139 @@
+.section {
+  background-color: var(--color-bg-alt);
+  padding: var(--spacing-3xl) 0;
+}
+
+.title {
+  font-family: var(--font-title);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--color-gold);
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+  text-align: center;
+}
+
+.card:hover {
+  border-color: rgba(201, 168, 76, 0.4);
+  background-color: var(--color-card-alt);
+}
+
+.name {
+  font-family: var(--font-title);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-white);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.pricing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.label {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.price {
+  font-family: var(--font-title);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-gold);
+}
+
+.cta {
+  margin-top: auto;
+  padding: 10px 20px;
+  background-color: var(--color-gold);
+  color: var(--color-bg);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.cta:hover {
+  background-color: var(--color-gold-light);
+  box-shadow: var(--shadow-gold);
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .title {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+
+  .title {
+    font-size: 24px;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  .name {
+    font-size: 14px;
+  }
+
+  .price {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  .title {
+    font-size: 20px;
+  }
+}

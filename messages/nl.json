@@ -40,5 +40,12 @@
     "error": "Er is een fout opgetreden",
     "back": "Terug",
     "close": "Sluiten"
+  },
+  "sections": {
+    "hero": {
+      "title": "Luchthaven Transfer",
+      "subtitle": "Reis met gemak naar uw bestemmingen",
+      "cta_reserve": "Nu Boeken"
+    }
   }
 }

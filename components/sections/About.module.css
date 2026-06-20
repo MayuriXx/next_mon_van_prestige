@@ -1,0 +1,115 @@
+.section {
+  background-color: var(--color-bg);
+  padding: var(--spacing-3xl) 0;
+  border-top: 1px solid var(--color-border-card);
+  border-bottom: 1px solid var(--color-border-card);
+}
+
+.title {
+  font-family: var(--font-title);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--color-gold);
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.content {
+  max-width: 800px;
+  margin: 0 auto var(--spacing-3xl);
+  text-align: center;
+}
+
+.description {
+  font-size: 16px;
+  color: var(--color-text-muted);
+  line-height: 1.8;
+  margin: 0;
+}
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.valueCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  transition: all var(--transition-base);
+}
+
+.valueCard:hover {
+  border-color: rgba(201, 168, 76, 0.4);
+  background-color: var(--color-card-alt);
+}
+
+.icon {
+  font-size: 48px;
+  display: block;
+}
+
+.valueName {
+  font-family: var(--font-title);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-white);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.valueDesc {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.6;
+}
+
+@media (max-width: 1024px) {
+  .valuesGrid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .valueCard {
+    padding: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .title {
+    font-size: 24px;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .valuesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+
+  .valueName {
+    font-size: 18px;
+  }
+
+  .valueDesc {
+    font-size: 13px;
+  }
+}

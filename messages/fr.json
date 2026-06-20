@@ -40,5 +40,12 @@
     "error": "Une erreur est survenue",
     "back": "Retour",
     "close": "Fermer"
+  },
+  "sections": {
+    "hero": {
+      "title": "Transfert aéroport",
+      "subtitle": "Voyage en toute sérénité vers vos destinations",
+      "cta_reserve": "Réserver maintenant"
+    }
   }
 }

@@ -40,5 +40,12 @@
     "error": "An error occurred",
     "back": "Back",
     "close": "Close"
+  },
+  "sections": {
+    "hero": {
+      "title": "Airport Transfer",
+      "subtitle": "Travel with peace of mind to your destinations",
+      "cta_reserve": "Book Now"
+    }
   }
 }
