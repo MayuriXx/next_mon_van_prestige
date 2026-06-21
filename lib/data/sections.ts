@@ -21,7 +21,7 @@ export const sectionsData: Record<string, any> = {
   },
   'escapades-loisirs': {
     title: 'Escapades Loisirs',
-    description: "Parcs d'attractions, sorties familiales, Disneyland Paris, Astérix... Profitez d'un transport confortable pour toute la famille. Nous vous découvrons et ramenons chez vous après des journées inoubliables.",
+    description: "Parcs d'attractions, sorties familiales, Disneyland Paris... Profitez d'un transport confortable pour toute la famille. Nous vous déposons et venons vous chercher pour des journées inoubliables.",
     imagePosition: 'left',
   },
   'deplacements-professionnels': {
