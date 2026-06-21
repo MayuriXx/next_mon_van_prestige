@@ -12,5 +12,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return children;
+  // Le layout [locale] fournit ses propres <html> et <body>.
+  // Ce wrapper est obligatoire pour Next.js App Router mais ne doit pas
+  // dupliquer les balises : on retourne directement les enfants.
+  return (
+    <html>
+      <body>{children}</body>
+    </html>
+  );
 }
