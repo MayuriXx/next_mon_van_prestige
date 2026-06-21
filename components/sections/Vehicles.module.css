@@ -2,17 +2,16 @@
   position: relative;
   padding: var(--spacing-3xl) 0;
   background-color: var(--color-bg);
-  background-image: url('/images/vehicles/bg-cars.jpg');
+  background-image: url('/images/fond-vehicules.jpg');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
 }
 
 .section::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.82);
+  background: rgba(0, 0, 0, 0.80);
 }
 
 .section > * {
