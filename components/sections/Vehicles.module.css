@@ -1,22 +1,10 @@
 .section {
   position: relative;
   padding: var(--spacing-3xl) 0;
-  background-color: var(--color-bg);
-  background-image: url('/images/fond-vehicules.jpg');
-  background-size: cover;
-  background-position: center;
 }
 
 .section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.80);
-}
-
-.section > * {
-  position: relative;
-  z-index: 1;
+  display: none;
 }
 
 /* Header avec séparateurs */

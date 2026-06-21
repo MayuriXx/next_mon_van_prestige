@@ -1,7 +1,6 @@
 import Hero from '@/components/sections/Hero';
 import Features from '@/components/sections/Features';
-import Vehicles from '@/components/sections/Vehicles';
-import Tarifs from '@/components/sections/Tarifs';
+import VehiculesTarifsWrapper from '@/components/sections/VehiculesTarifsWrapper';
 import ServiceSection from '@/components/sections/ServiceSection';
 import About from '@/components/sections/About';
 
@@ -19,8 +18,7 @@ export default function Home() {
     <>
       <Hero />
       <Features />
-      <Vehicles />
-      <Tarifs />
+      <VehiculesTarifsWrapper />
       {SECTIONS.map((section) => (
         <ServiceSection
           key={section.id}

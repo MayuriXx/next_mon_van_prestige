@@ -1,16 +1,10 @@
 .section {
   position: relative;
   padding: var(--spacing-3xl) 0 calc(var(--spacing-3xl) + 20px);
-  background-image: url('/images/fond-vehicules.jpg');
-  background-size: cover;
-  background-position: center bottom;
 }
 
 .section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.82);
+  display: none;
 }
 
 .section > * {
