@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Link } from '@/i18n/navigation';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import { getSectionContent, type SectionContent } from '@/lib/firebase/contenu';
 import { getSectionImages, type ImageData } from '@/lib/firebase/images';
 import styles from './ServiceSection.module.css';
 
-const SERVICE_LINKS: Record<string, string> = {
+const SERVICE_HREFS: Record<string, string> = {
   'transfert-aeroport':          '/services/transfert-aeroport',
   'transfert-simple':            '/services/transfert-simple',
   'mise-a-disposition':          '/services/mise-a-disposition',
@@ -22,6 +24,8 @@ interface ServiceSectionProps {
 }
 
 export default function ServiceSection({ sectionId, slug }: ServiceSectionProps) {
+  const pathname = usePathname();
+  const locale = getLocaleFromPath(pathname);
   const [content, setContent] = useState<SectionContent | null>(null);
   const [image, setImage] = useState<ImageData | null>(null);
 
@@ -40,25 +44,19 @@ export default function ServiceSection({ sectionId, slug }: ServiceSectionProps)
   if (!content) return null;
 
   const imageLeft = content.imagePosition === 'left';
-  const serviceHref = SERVICE_LINKS[sectionId] || '/reservation';
+  const href = localePath(SERVICE_HREFS[sectionId] ?? '/reservation', locale);
 
   return (
     <div className={`${styles.section} ${imageLeft ? styles.imageLeft : styles.imageRight}`}>
       <div className={styles.imageWrapper}>
         {image && (
-          <Image
-            src={image.url}
-            alt={image.alt || content.title}
-            fill
-            className={styles.image}
-          />
+          <Image src={image.url} alt={image.alt || content.title} fill className={styles.image} />
         )}
       </div>
-
       <div className={styles.textWrapper}>
         <h2 className={styles.title}>{content.title}</h2>
         <p className={styles.description}>{content.description}</p>
-        <Link href={serviceHref as any} className={styles.cta}>
+        <Link href={href} className={styles.cta}>
           En savoir plus →
         </Link>
       </div>
