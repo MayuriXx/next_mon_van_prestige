@@ -1,18 +1,17 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
+import { Link, useRouter, usePathname } from '@/i18n/navigation';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
 import styles from './Navbar.module.css';
 
 const SERVICES = [
-  { label: 'Transfert Aéroport', href: '/services/transfert-aeroport' },
-  { label: 'Transfert Simple',   href: '/services/transfert-simple' },
-  { label: 'Mise à Disposition', href: '/services/mise-a-disposition' },
-  { label: 'Événements Spéciaux', href: '/services/evenements-speciaux' },
-  { label: 'Escapades & Loisirs', href: '/services/escapades-loisirs' },
-  { label: 'Déplacements Professionnels', href: '/services/deplacements-professionnels' },
+  { label: 'Transfert Aéroport',          href: '/services/transfert-aeroport' },
+  { label: 'Transfert Simple',             href: '/services/transfert-simple' },
+  { label: 'Mise à Disposition',           href: '/services/mise-a-disposition' },
+  { label: 'Événements Spéciaux',          href: '/services/evenements-speciaux' },
+  { label: 'Escapades & Loisirs',          href: '/services/escapades-loisirs' },
+  { label: 'Déplacements Professionnels',  href: '/services/deplacements-professionnels' },
 ];
 
 const LANGUAGES = [
@@ -23,6 +22,7 @@ const LANGUAGES = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [lang, setLang] = useState('fr');
@@ -30,6 +30,7 @@ export default function Navbar() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // pathname from next-intl est sans préfixe locale (ex: '/', '/services/...')
   const isHome = pathname === '/';
 
   useEffect(() => {
@@ -47,8 +48,13 @@ export default function Navbar() {
     if (isHome) {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     } else {
-      window.location.href = `/#${id}`;
+      router.push(`/#${id}`);
     }
+  }
+
+  function handleLangChange(code: string) {
+    setLang(code);
+    router.replace(pathname, { locale: code });
   }
 
   function handleDropdownEnter() {
@@ -121,7 +127,7 @@ export default function Navbar() {
               <button
                 key={l.code}
                 className={`${styles.langBtn} ${lang === l.code ? styles.langActive : ''}`}
-                onClick={() => setLang(l.code)}
+                onClick={() => handleLangChange(l.code)}
                 aria-label={`Langue : ${l.label}`}
               >
                 <span>{l.flag}</span>
@@ -162,7 +168,7 @@ export default function Navbar() {
               <button
                 key={l.code}
                 className={`${styles.langBtn} ${lang === l.code ? styles.langActive : ''}`}
-                onClick={() => setLang(l.code)}
+                onClick={() => handleLangChange(l.code)}
               >
                 {l.flag} {l.label}
               </button>
