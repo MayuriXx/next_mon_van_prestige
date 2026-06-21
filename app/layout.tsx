@@ -12,12 +12,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Le layout [locale] fournit ses propres <html> et <body>.
-  // Ce wrapper est obligatoire pour Next.js App Router mais ne doit pas
-  // dupliquer les balises : on retourne directement les enfants.
+  // suppressHydrationWarning est nécessaire car le layout [locale]
+  // définit lang={locale} côté client, ce qui diffère du rendu serveur.
   return (
-    <html>
-      <body>{children}</body>
+    <html suppressHydrationWarning>
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }
