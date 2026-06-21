@@ -1,0 +1,221 @@
+.section {
+  position: relative;
+  padding: var(--spacing-3xl) 0;
+}
+
+.section::before {
+  display: none;
+}
+
+/* Header avec séparateurs */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-3xl);
+  justify-content: center;
+}
+
+.separator {
+  flex: 1;
+  max-width: 120px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-gold));
+}
+
+.header .separator:last-child {
+  background: linear-gradient(to left, transparent, var(--color-gold));
+}
+
+.title {
+  font-family: var(--font-title);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  color: var(--color-gold);
+  letter-spacing: 0.08em;
+  text-align: center;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Grille — centrée avec 2 cartes */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 380px));
+  gap: var(--spacing-xl);
+  justify-content: center;
+}
+
+/* Carte */
+.card {
+  position: relative;
+  background-color: #111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(201, 168, 76, 0.4);
+}
+
+.cardPopular {
+  border-color: var(--color-gold);
+}
+
+/* Badge POPULAIRE */
+.popularBadge {
+  position: absolute;
+  top: 20px;
+  right: -28px;
+  background: var(--color-gold);
+  color: #000;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 5px 36px;
+  transform: rotate(45deg);
+  z-index: 2;
+}
+
+/* Image */
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  background-color: #1a1a1a;
+  overflow: hidden;
+}
+
+.image {
+  object-fit: cover;
+  object-position: center center;
+  transform: scale(1.15);
+}
+
+/* Contenu */
+.content {
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  flex-grow: 1;
+}
+
+.vehicleName {
+  font-family: var(--font-title);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-gold);
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+/* Liste modèles */
+.models {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.model {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  padding-left: 16px;
+  position: relative;
+}
+
+.model::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-gold);
+}
+
+/* Badges */
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.badge {
+  padding: 4px 14px;
+  border: 1px solid var(--color-gold);
+  border-radius: 20px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-gold);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+/* Prix */
+.price {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 4px 0 0;
+}
+
+.price strong {
+  color: var(--color-gold);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+/* CTA */
+.cta {
+  display: block;
+  text-align: center;
+  margin-top: auto;
+  padding: 13px;
+  background-color: var(--color-gold);
+  color: #000;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.cta:hover {
+  background-color: #d4b55a;
+  box-shadow: 0 6px 24px rgba(201, 168, 76, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+
+  .header {
+    gap: var(--spacing-md);
+  }
+
+  .separator {
+    max-width: 60px;
+  }
+}

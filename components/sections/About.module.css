@@ -1,0 +1,165 @@
+.section {
+  position: relative;
+  padding: var(--spacing-3xl) 0;
+  background-image: url('/images/fond-vehicules.jpg');
+  background-size: cover;
+  background-position: center top;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 0;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  justify-content: center;
+}
+
+.separator {
+  flex: 1;
+  max-width: 100px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-gold));
+}
+
+.header .separator:last-child {
+  background: linear-gradient(to left, transparent, var(--color-gold));
+}
+
+.title {
+  font-family: var(--font-title);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  color: var(--color-gold);
+  letter-spacing: 0.08em;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Carte QUI SUIS-JE */
+.whoCard {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: var(--spacing-2xl) var(--spacing-3xl);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  max-width: 780px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.whoTitle {
+  font-family: var(--font-title);
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 800;
+  color: var(--color-gold);
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+.whoText {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.80);
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* 3 cartes */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  text-align: center;
+  transition: border-color 0.3s ease;
+}
+
+.card:hover {
+  border-color: rgba(201, 168, 76, 0.3);
+}
+
+.cardTitle {
+  font-family: var(--font-title);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-gold);
+  margin: 0;
+  letter-spacing: 0.06em;
+}
+
+.cardSeparator {
+  width: 40px;
+  height: 2px;
+  background: var(--color-gold);
+  border-radius: 2px;
+}
+
+.cardText {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .cardsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+  }
+
+  .whoCard {
+    padding: var(--spacing-xl);
+  }
+}
+
+@media (max-width: 768px) {
+  .cardsGrid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .whoCard {
+    padding: var(--spacing-lg);
+  }
+
+  .whoText {
+    font-size: 14px;
+  }
+
+  .separator {
+    max-width: 60px;
+  }
+}
