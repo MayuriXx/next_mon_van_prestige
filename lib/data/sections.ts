@@ -16,7 +16,7 @@ export const sectionsData: Record<string, any> = {
   },
   'evenements-speciaux': {
     title: 'Événements spéciaux',
-    description: "Mariages, soirées, anniversaires... Nous prenons en charge vos événements spéciaux avec élégance et professionnalisme pour des moments inoubliables.",
+    description: "Mariages, soirées, anniversaires... Nous prenons en charge tous vos événements spéciaux avec élégance et professionnalisme pour des moments inoubliables.",
     imagePosition: 'right',
   },
   'escapades-loisirs': {
