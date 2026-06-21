@@ -2,8 +2,6 @@
    MS PRESTIGE DRIVER — Design Tokens
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Lato:wght@300;400;700&display=swap');
-
 :root {
   /* --- Couleurs --- */
   --color-bg:          #0a0a0a;
@@ -18,10 +16,6 @@
   --color-text-muted:  rgba(255, 255, 255, 0.6);
   --color-border:      rgba(201, 168, 76, 0.2);
   --color-border-card: rgba(255, 255, 255, 0.07);
-
-  /* --- Typographie --- */
-  --font-title:  'Playfair Display', Georgia, serif;
-  --font-body:   'Lato', Arial, sans-serif;
 
   /* --- Espacements --- */
   --spacing-xs:   4px;

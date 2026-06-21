@@ -1,0 +1,32 @@
+/* ============================================================
+   MS PRESTIGE DRIVER — Self-Hosted Fonts via Fontsource
+   ============================================================ */
+
+/* Playfair Display - weights 400, 600, 700, 800 */
+@import '@fontsource/playfair-display/400.css';
+@import '@fontsource/playfair-display/600.css';
+@import '@fontsource/playfair-display/700.css';
+@import '@fontsource/playfair-display/800.css';
+
+/* Lato - weights 300, 400, 700 */
+@import '@fontsource/lato/300.css';
+@import '@fontsource/lato/400.css';
+@import '@fontsource/lato/700.css';
+
+/* Montserrat - weights 400, 600, 700 */
+@import '@fontsource/montserrat/400.css';
+@import '@fontsource/montserrat/600.css';
+@import '@fontsource/montserrat/700.css';
+
+/* ============================================================
+   Font Family Variables
+   ============================================================ */
+
+:root {
+  --font-playfair: 'Playfair Display', Georgia, serif;
+  --font-lato: 'Lato', Arial, sans-serif;
+  --font-montserrat: 'Montserrat', Arial, sans-serif;
+  /* Aliases for backwards compatibility */
+  --font-title: var(--font-playfair);
+  --font-body: var(--font-lato);
+}

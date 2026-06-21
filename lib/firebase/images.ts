@@ -70,5 +70,5 @@ export async function getSectionImages(section: string): Promise<ImageData | nul
   }
   
   // Fallback: données locales
-  return imagesData.sections[section] || null;
+  return (imagesData.sections as Record<string, ImageData | undefined>)[section] || null;
 }
