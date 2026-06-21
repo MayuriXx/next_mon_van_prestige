@@ -1,31 +1,30 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import styles from './TransfertAeroportPage.module.css';
 
 interface Airport {
   id: string;
   destination: string;
-  label: string;
   businessMin: number;
   icon: string;
 }
 
 const AIRPORTS: Airport[] = [
-  { id: 'cdg',       destination: 'Aéroport Charles de Gaulle', label: 'CDG',       businessMin: 260, icon: '✈' },
-  { id: 'orly',      destination: 'Aéroport d\'Orly',           label: 'ORLY',      businessMin: 320, icon: '✈' },
-  { id: 'zaventem',  destination: 'Aéroport Brussels Zaventem', label: 'ZAVENTEM',  businessMin: 160, icon: '✈' },
-  { id: 'charleroi', destination: 'Aéroport de Charleroi',      label: 'CHARLEROI', businessMin: 125, icon: '✈' },
-  { id: 'lesquin',   destination: 'Aéroport de Lesquin',        label: 'LESQUIN',   businessMin: 80,  icon: '✈' },
-  { id: 'gares',     destination: 'Gare de Lille',              label: 'GARE',      businessMin: 80,  icon: '🚉' },
+  { id: 'cdg',       destination: 'Aéroport Charles de Gaulle', businessMin: 260, icon: '✈' },
+  { id: 'orly',      destination: "Aéroport d'Orly",            businessMin: 320, icon: '✈' },
+  { id: 'zaventem',  destination: 'Aéroport Brussels Zaventem', businessMin: 160, icon: '✈' },
+  { id: 'charleroi', destination: 'Aéroport de Charleroi',      businessMin: 125, icon: '✈' },
+  { id: 'lesquin',   destination: 'Aéroport de Lesquin',        businessMin: 80,  icon: '✈' },
+  { id: 'gares',     destination: 'Gare de Lille',              businessMin: 80,  icon: '🚉' },
 ];
 
 const ADVANTAGES = [
   {
     id: 'custom',
     title: 'Service sur-mesure',
-    description: 'Vos envies, votre trajet. Profitez d\'une expérience de transport inégalée conçue selon vos préférences.',
+    description: "Vos envies, votre trajet. Profitez d'une expérience de transport inégalée conçue selon vos préférences.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
@@ -35,7 +34,7 @@ const ADVANTAGES = [
   {
     id: 'punctuality',
     title: 'Ponctualité garantie',
-    description: 'Nos chauffeurs arrivent toujours à l\'avance pour vous assurer une tranquillité d\'esprit totale et un départ serein.',
+    description: "Nos chauffeurs arrivent toujours à l'avance pour vous assurer une tranquillité d'esprit totale et un départ serein.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
@@ -45,7 +44,7 @@ const ADVANTAGES = [
   {
     id: 'support',
     title: 'Assistance 24/7',
-    description: 'Votre tranquillité d\'esprit est notre engagement. Notre équipe est à votre service 24h/24.',
+    description: "Votre tranquillité d'esprit est notre engagement. Notre équipe est à votre service 24h/24.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
