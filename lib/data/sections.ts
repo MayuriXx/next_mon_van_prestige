@@ -6,7 +6,7 @@ export const sectionsData: Record<string, any> = {
   },
   'transfert-simple': {
     title: 'Transfert simple',
-    description: "Profitez d'une balade simple et confortable pour vos déplacements quotidiens, avec des chauffeurs professionnels à votre disposition pour vous emmener où vous le souhaitez.",
+    description: "Profitez d'un trajet fluide et confortable pour vos déplacements quotidiens, avec des chauffeurs professionnels à votre disposition pour vous emmener où vous le souhaitez, en toute sérénité.",
     imagePosition: 'right',
   },
   'mise-a-disposition': {
