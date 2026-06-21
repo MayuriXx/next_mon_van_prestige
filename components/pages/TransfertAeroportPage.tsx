@@ -1,59 +1,43 @@
 'use client';
 
 import Image from 'next/image';
-import { Link } from '@/i18n/navigation';
+import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { usePathname } from 'next/navigation';
+import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import styles from './TransfertAeroportPage.module.css';
 
-interface Airport {
-  id: string;
-  destination: string;
-  businessMin: number;
-  icon: string;
-}
-
-const AIRPORTS: Airport[] = [
-  { id: 'cdg',       destination: 'Aéroport Charles de Gaulle', businessMin: 260, icon: '✈' },
-  { id: 'orly',      destination: "Aéroport d'Orly",            businessMin: 320, icon: '✈' },
-  { id: 'zaventem',  destination: 'Aéroport Brussels Zaventem', businessMin: 160, icon: '✈' },
-  { id: 'charleroi', destination: 'Aéroport de Charleroi',      businessMin: 125, icon: '✈' },
-  { id: 'lesquin',   destination: 'Aéroport de Lesquin',        businessMin: 80,  icon: '✈' },
-  { id: 'gares',     destination: 'Gare de Lille',              businessMin: 80,  icon: '🚉' },
+const AIRPORTS = [
+  { id: 'cdg',       destination_fr: 'Aéroport Charles de Gaulle', destination_en: 'Charles de Gaulle Airport', destination_nl: 'Luchthaven Charles de Gaulle', businessMin: 260, icon: '✈' },
+  { id: 'orly',      destination_fr: "Aéroport d'Orly",            destination_en: 'Orly Airport',              destination_nl: 'Luchthaven Orly',              businessMin: 320, icon: '✈' },
+  { id: 'zaventem',  destination_fr: 'Aéroport Brussels Zaventem', destination_en: 'Brussels Zaventem Airport', destination_nl: 'Luchthaven Brussel Zaventem',  businessMin: 160, icon: '✈' },
+  { id: 'charleroi', destination_fr: 'Aéroport de Charleroi',      destination_en: 'Charleroi Airport',         destination_nl: 'Luchthaven Charleroi',         businessMin: 125, icon: '✈' },
+  { id: 'lesquin',   destination_fr: 'Aéroport de Lesquin',        destination_en: 'Lesquin Airport',           destination_nl: 'Luchthaven Lesquin',           businessMin: 80,  icon: '✈' },
+  { id: 'gares',     destination_fr: 'Gare de Lille',              destination_en: 'Lille Train Station',       destination_nl: 'Station Rijsel',               businessMin: 80,  icon: '🚉' },
 ];
 
-const ADVANTAGES = [
-  {
-    id: 'custom',
-    title: 'Service sur-mesure',
-    description: "Vos envies, votre trajet. Profitez d'une expérience de transport inégalée conçue selon vos préférences.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-      </svg>
-    ),
-  },
-  {
-    id: 'punctuality',
-    title: 'Ponctualité garantie',
-    description: "Nos chauffeurs arrivent toujours à l'avance pour vous assurer une tranquillité d'esprit totale et un départ serein.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
-      </svg>
-    ),
-  },
-  {
-    id: 'support',
-    title: 'Assistance 24/7',
-    description: "Votre tranquillité d'esprit est notre engagement. Notre équipe est à votre service 24h/24.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
-      </svg>
-    ),
-  },
+const ADV_KEYS = [
+  { id: 'custom',      titleKey: 'adv_custom_title',      descKey: 'adv_custom_desc',
+    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> },
+  { id: 'punctuality', titleKey: 'adv_punctuality_title', descKey: 'adv_punctuality_desc',
+    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
+  { id: 'support',     titleKey: 'adv_support_title',     descKey: 'adv_support_desc',
+    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
 ];
+
+type Locale = 'fr' | 'en' | 'nl';
 
 export default function TransfertAeroportPage() {
+  const t = useTranslations('transfertAeroport');
+  const pathname = usePathname();
+  const locale = getLocaleFromPath(pathname) as Locale;
+
+  function getDestination(a: typeof AIRPORTS[0]): string {
+    if (locale === 'en') return a.destination_en;
+    if (locale === 'nl') return a.destination_nl;
+    return a.destination_fr;
+  }
+
   return (
     <>
       {/* ── Hero ── */}
@@ -69,33 +53,27 @@ export default function TransfertAeroportPage() {
         </div>
         <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
-          <p className={styles.heroTag}>AÉROPORTS &amp; GARES</p>
-          <h1 className={styles.heroTitle}>
-            Liaisons privées vers tous les<br />
-            aéroports et gares
-          </h1>
-          <p className={styles.heroSubtitle}>
-            Profitez d&apos;un transfert sans stress vers ou depuis les aéroports
-            (CDG, Orly, Lille, Bruxelles) et gares. Tarifs fixes et transparents.
-          </p>
+          <p className={styles.heroTag}>{t('tag')}</p>
+          <h1 className={styles.heroTitle}>{t('title')}</h1>
+          <p className={styles.heroSubtitle}>{t('subtitle')}</p>
           <div className={styles.badges}>
             <span className={styles.badge}>
               <svg className={styles.badgeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
               </svg>
-              Sécurité
+              {t('badge_security')}
             </span>
             <span className={styles.badge}>
               <svg className={styles.badgeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
               </svg>
-              Ponctualité
+              {t('badge_punctuality')}
             </span>
             <span className={styles.badge}>
               <svg className={styles.badgeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="20 6 9 17 4 12" />
+                <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Meilleur tarif garanti
+              {t('badge_price')}
             </span>
           </div>
         </div>
@@ -104,18 +82,18 @@ export default function TransfertAeroportPage() {
       {/* ── Forfaits ── */}
       <section className={styles.forfaits}>
         <div className="container">
-          <h2 className={styles.sectionTitle}>Nos Forfaits Aéroports</h2>
+          <h2 className={styles.sectionTitle}>{t('section_title')}</h2>
           <div className={styles.sectionSeparator} />
 
           <div className={styles.forfaitsLayout}>
             {/* Avantages */}
             <div className={styles.advantages}>
-              {ADVANTAGES.map((adv) => (
+              {ADV_KEYS.map((adv) => (
                 <div key={adv.id} className={styles.advantageItem}>
                   <div className={styles.advantageIconWrap}>{adv.icon}</div>
                   <div>
-                    <h3 className={styles.advantageTitle}>{adv.title}</h3>
-                    <p className={styles.advantageDesc}>{adv.description}</p>
+                    <h3 className={styles.advantageTitle}>{t(adv.titleKey as any)}</h3>
+                    <p className={styles.advantageDesc}>{t(adv.descKey as any)}</p>
                   </div>
                 </div>
               ))}
@@ -125,13 +103,13 @@ export default function TransfertAeroportPage() {
             <div className={styles.airportsGrid}>
               {AIRPORTS.map((airport) => (
                 <div key={airport.id} className={styles.airportCard}>
-                  <p className={styles.cardFrom}>Valenciennes</p>
+                  <p className={styles.cardFrom}>{t('from')}</p>
                   <span className={styles.cardArrow}>↓</span>
-                  <p className={styles.cardDest}>{airport.destination}</p>
+                  <p className={styles.cardDest}>{getDestination(airport)}</p>
                   <span className={styles.cardIcon}>{airport.icon}</span>
-                  <p className={styles.cardFromLabel}>À PARTIR DE</p>
+                  <p className={styles.cardFromLabel}>{t('from_label')}</p>
                   <p className={styles.cardPrice}>{airport.businessMin}<span className={styles.cardCurrency}>€</span></p>
-                  <Link href="/reservation" className={styles.cardBtn}>Réserver</Link>
+                  <Link href={localePath('/reservation', locale)} className={styles.cardBtn}>{t('book_btn')}</Link>
                 </div>
               ))}
             </div>
