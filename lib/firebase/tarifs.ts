@@ -39,7 +39,7 @@ export async function getAllTarifs(): Promise<TransfertTarif[]> {
   }
   
   // Fallback: données locales
-  return tarifsData;
+  return tarifsData as TransfertTarif[];
 }
 
 // Récupérer tarifs par catégorie

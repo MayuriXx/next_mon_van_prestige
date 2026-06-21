@@ -159,7 +159,7 @@ export default function TransfertAeropurtPage() {
       {/* Avantages Section */}
       <section className={styles.advantages}>
         <div className="container">
-          <SectionTitle>Pourquoi Nous Choisir</SectionTitle>
+          <SectionTitle title="Pourquoi Nous Choisir" />
 
           <div className={styles.advantagesGrid}>
             {ADVANTAGES.map((adv) => (

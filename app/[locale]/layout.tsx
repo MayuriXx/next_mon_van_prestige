@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Lato, Montserrat } from 'next/font/google';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { getMessages } from 'next-intl/server';
@@ -8,30 +7,10 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import FloatingButtons from '@/components/layout/FloatingButtons';
 import SplashScreen from '@/components/layout/SplashScreen';
+import './fonts.css';
 import '../globals.css';
 
 export const dynamic = 'force-static';
-
-const playfair = Playfair_Display({
-  variable: '--font-playfair',
-  subsets: ['latin'],
-  weight: ['400', '600', '700', '800'],
-  display: 'swap',
-});
-
-const montserrat = Montserrat({
-  variable: '--font-montserrat',
-  subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  display: 'swap',
-});
-
-const lato = Lato({
-  variable: '--font-lato',
-  subsets: ['latin'],
-  weight: ['300', '400', '700'],
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   title: 'MS Prestige Driver — VTC de luxe à Valenciennes',
@@ -59,7 +38,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${playfair.variable} ${lato.variable} ${montserrat.variable}`}>
+    <html lang={locale}>
       <body>
         <NextIntlClientProvider messages={messages}>
           <SplashScreen />
