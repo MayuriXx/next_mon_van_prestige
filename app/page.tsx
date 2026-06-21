@@ -1,13 +1,17 @@
-import { redirect } from 'next/navigation';
+'use client';
 
-export const dynamic = 'force-static';
-
-// Nécessaire avec output: export pour générer /index.html
-export function generateStaticParams() {
-  return [{}];
-}
+import { useEffect } from 'react';
 
 export default function RootPage() {
-  // Sur le serveur (statique), on redirige vers /fr
-  redirect('/fr');
+  useEffect(() => {
+    // Détecte la langue du navigateur, redirige vers le bon locale
+    const lang = navigator.language.startsWith('nl')
+      ? 'nl'
+      : navigator.language.startsWith('en')
+      ? 'en'
+      : 'fr';
+    window.location.replace('/' + lang);
+  }, []);
+
+  return null;
 }
