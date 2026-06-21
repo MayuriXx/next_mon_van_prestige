@@ -1,6 +1,5 @@
 import Hero from '@/components/sections/Hero';
 import Features from '@/components/sections/Features';
-import Services from '@/components/sections/Services';
 import Vehicles from '@/components/sections/Vehicles';
 import Tarifs from '@/components/sections/Tarifs';
 import ServiceSection from '@/components/sections/ServiceSection';
@@ -20,7 +19,6 @@ export default function Home() {
     <>
       <Hero />
       <Features />
-      <Services />
       <Vehicles />
       <Tarifs />
       {SECTIONS.map((section) => (
