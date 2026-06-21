@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { getSectionContent, type SectionContent } from '@/lib/firebase/contenu';
 import { getSectionImages, type ImageData } from '@/lib/firebase/images';
 import styles from './ServiceSection.module.css';
 
-// Map sectionId → page de service
 const SERVICE_LINKS: Record<string, string> = {
   'transfert-aeroport':          '/services/transfert-aeroport',
   'transfert-simple':            '/services/transfert-simple',
@@ -59,7 +58,7 @@ export default function ServiceSection({ sectionId, slug }: ServiceSectionProps)
       <div className={styles.textWrapper}>
         <h2 className={styles.title}>{content.title}</h2>
         <p className={styles.description}>{content.description}</p>
-        <Link href={serviceHref} className={styles.cta}>
+        <Link href={serviceHref as any} className={styles.cta}>
           En savoir plus →
         </Link>
       </div>
