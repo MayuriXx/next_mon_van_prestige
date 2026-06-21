@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import SectionTitle from '@/components/ui/SectionTitle';
-import styles from './TransfertAeropurtPage.module.css';
+import styles from './TransfertAeroportPage.module.css';
 
 // Types
 interface Airport {

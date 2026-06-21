@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import TransfertAeropurtPage from '@/components/pages/TransfertAeropurtPage';
+import TransfertAeroportPage from '@/components/pages/TransfertAeroportPage';
 
 export const metadata: Metadata = {
   title: 'Transfert Aéroport — MS Prestige Driver',
@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 export const dynamic = 'force-static';
 
 export default function Page() {
-  return <TransfertAeropurtPage />;
+  return <TransfertAeroportPage />;
 }
