@@ -10,7 +10,6 @@ const SECTIONS = [
   { id: 'mise-a-disposition', slug: 'mise-a-disposition' },
   { id: 'evenements-speciaux', slug: 'evenements-speciaux' },
   { id: 'escapades-loisirs', slug: 'escapades-loisirs' },
-  { id: 'deplacements-professionnels', slug: 'deplacements-professionnels' },
 ];
 
 export default function Home() {
