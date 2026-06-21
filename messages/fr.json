@@ -41,11 +41,22 @@
     "back": "Retour",
     "close": "Fermer"
   },
-  "sections": {
-    "hero": {
-      "title": "Transfert aéroport",
-      "subtitle": "Voyage en toute sérénité vers vos destinations",
-      "cta_reserve": "Réserver maintenant"
-    }
+  "transfertAeroport": {
+    "tag": "AÉROPORTS & GARES",
+    "title": "Liaisons privées vers tous les aéroports et gares",
+    "subtitle": "Profitez d'un transfert sans stress vers ou depuis les aéroports (CDG, Orly, Lille, Bruxelles) et gares. Tarifs fixes et transparents.",
+    "badge_security": "Sécurité",
+    "badge_punctuality": "Ponctualité",
+    "badge_price": "Meilleur tarif garanti",
+    "section_title": "Nos Forfaits Aéroports",
+    "from": "Valenciennes",
+    "from_label": "À PARTIR DE",
+    "book_btn": "Réserver",
+    "adv_custom_title": "Service sur-mesure",
+    "adv_custom_desc": "Vos envies, votre trajet. Profitez d'une expérience de transport inégalée conçue selon vos préférences.",
+    "adv_punctuality_title": "Ponctualité garantie",
+    "adv_punctuality_desc": "Nos chauffeurs arrivent toujours à l'avance pour vous assurer une tranquillité d'esprit totale et un départ serein.",
+    "adv_support_title": "Assistance 24/7",
+    "adv_support_desc": "Votre tranquillité d'esprit est notre engagement. Notre équipe est à votre service 24h/24."
   }
 }
