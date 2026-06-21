@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import styles from './Navbar.module.css';
 
 const SERVICES = [
@@ -21,35 +22,19 @@ const LANGUAGES = [
   { code: 'nl', label: 'NL', flag: '🇳🇱' },
 ];
 
-const LOCALES = ['fr', 'en', 'nl'];
-
-function getLocaleFromPath(pathname: string): string {
-  const seg = pathname.split('/')[1];
-  return LOCALES.includes(seg) ? seg : 'fr';
-}
-
-function localePath(href: string, locale: string): string {
-  // fr n'a pas de préfixe (localePrefix: 'as-needed')
-  if (locale === 'fr') return href;
-  return `/${locale}${href}`;
-}
-
 export default function Navbar() {
   const pathname = usePathname(); // ex: /fr/services/transfert-aeroport
   const locale = getLocaleFromPath(pathname);
-
-  // Chemin sans préfixe locale pour comparaisons
-  const pathWithoutLocale = locale !== 'fr'
-    ? pathname.replace(`/${locale}`, '') || '/'
-    : pathname;
-
-  const isHome = pathWithoutLocale === '/';
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Chemin sans préfixe locale pour comparaisons actives
+  const pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/';
+  const isHome = pathWithoutLocale === '/';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -71,8 +56,7 @@ export default function Navbar() {
   }
 
   function handleLangChange(code: string) {
-    const newPath = localePath(pathWithoutLocale, code);
-    window.location.href = newPath;
+    window.location.href = localePath(pathWithoutLocale, code);
   }
 
   function handleDropdownEnter() {
