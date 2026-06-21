@@ -1,46 +1,107 @@
 .section {
-  background-color: var(--color-bg);
+  position: relative;
   padding: var(--spacing-3xl) 0;
+  background-color: var(--color-bg);
+  background-image: url('/images/vehicles/bg-cars.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
-.sectionTitle {
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+}
+
+.section > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Header avec séparateurs */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-3xl);
+  justify-content: center;
+}
+
+.separator {
+  flex: 1;
+  max-width: 120px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-gold));
+}
+
+.header .separator:last-child {
+  background: linear-gradient(to left, transparent, var(--color-gold));
+}
+
+.title {
   font-family: var(--font-title);
-  font-size: 32px;
+  font-size: clamp(28px, 4vw, 40px);
   font-weight: 800;
   color: var(--color-gold);
+  letter-spacing: 0.08em;
   text-align: center;
-  margin-bottom: var(--spacing-2xl);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  margin: 0;
+  white-space: nowrap;
 }
 
+/* Grille — centrée avec 2 cartes */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--spacing-lg);
+  grid-template-columns: repeat(2, minmax(0, 380px));
+  gap: var(--spacing-xl);
+  justify-content: center;
 }
 
+/* Carte */
 .card {
+  position: relative;
+  background-color: #111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  background-color: var(--color-card);
-  border: 1px solid var(--color-border-card);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  transition: all var(--transition-base);
+  transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
 .card:hover {
-  border-color: rgba(201, 168, 76, 0.4);
   transform: translateY(-4px);
+  border-color: rgba(201, 168, 76, 0.4);
 }
 
+.cardPopular {
+  border-color: var(--color-gold);
+}
+
+/* Badge POPULAIRE */
+.popularBadge {
+  position: absolute;
+  top: 20px;
+  right: -28px;
+  background: var(--color-gold);
+  color: #000;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 5px 36px;
+  transform: rotate(45deg);
+  z-index: 2;
+}
+
+/* Image */
 .imageWrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 1;
-  overflow: hidden;
-  background-color: var(--color-bg-alt);
+  aspect-ratio: 4 / 3;
+  background-color: #1a1a1a;
 }
 
 .image {
@@ -48,107 +109,124 @@
   object-position: center;
 }
 
-.imagePlaceholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  color: var(--color-text-muted);
-  font-size: 14px;
-}
-
+/* Contenu */
 .content {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-xl);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
   flex-grow: 1;
 }
 
-.name {
+.vehicleName {
   font-family: var(--font-title);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-white);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-gold);
   margin: 0;
-  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.description {
+/* Liste modèles */
+.models {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.model {
+  font-family: var(--font-body);
   font-size: 14px;
-  color: var(--color-text-muted);
-  margin: 0;
-  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  padding-left: 16px;
+  position: relative;
 }
 
-.features {
+.model::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-gold);
+}
+
+/* Badges */
+.badges {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-sm);
-  margin: var(--spacing-sm) 0;
+  gap: 8px;
+  margin-top: 4px;
 }
 
-.feature {
-  display: inline-block;
-  padding: 4px 12px;
-  background-color: rgba(201, 168, 76, 0.12);
+.badge {
+  padding: 4px 14px;
+  border: 1px solid var(--color-gold);
+  border-radius: 20px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
   color: var(--color-gold);
-  border: 1px solid rgba(201, 168, 76, 0.3);
-  border-radius: var(--radius-pill);
-  font-size: 11px;
+  background: rgba(201, 168, 76, 0.08);
+}
+
+/* Prix */
+.price {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 4px 0 0;
+}
+
+.price strong {
+  color: var(--color-gold);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+/* CTA */
+.cta {
+  display: block;
+  text-align: center;
+  margin-top: auto;
+  padding: 13px;
+  background-color: var(--color-gold);
+  color: #000;
+  font-family: var(--font-body);
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.cta {
-  margin-top: auto;
-  padding: 12px 24px;
-  background-color: var(--color-gold);
-  color: var(--color-bg);
-  border: none;
-  border-radius: var(--radius-sm);
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all var(--transition-base);
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 .cta:hover {
-  background-color: var(--color-gold-light);
-  box-shadow: var(--shadow-gold);
+  background-color: #d4b55a;
+  box-shadow: 0 6px 24px rgba(201, 168, 76, 0.4);
 }
 
-@media (max-width: 1024px) {
+/* Responsive */
+@media (max-width: 900px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .sectionTitle {
-    font-size: 28px;
+    gap: var(--spacing-lg);
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .grid {
     grid-template-columns: 1fr;
+    max-width: 380px;
+    margin: 0 auto;
   }
 
-  .sectionTitle {
-    font-size: 24px;
-    margin-bottom: var(--spacing-lg);
+  .header {
+    gap: var(--spacing-md);
   }
 
-  .content {
-    padding: var(--spacing-md);
-  }
-
-  .name {
-    font-size: 18px;
+  .separator {
+    max-width: 60px;
   }
 }
