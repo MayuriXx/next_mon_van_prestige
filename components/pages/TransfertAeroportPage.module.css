@@ -18,7 +18,7 @@
 .pageBgOverlay {
   position: absolute;
   inset: 0;
-  background: rgba(10, 10, 10, 0.65);
+  background: rgba(10, 10, 10, 0.60);
 }
 
 /* ── Hero ── */
@@ -30,6 +30,19 @@
   align-items: center;
   justify-content: center;
   z-index: 1;
+}
+
+/* Dégradé noir progressif en bas du hero → transition vers section forfaits */
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 220px;
+  background: linear-gradient(to bottom, transparent 0%, #0a0a0a 100%);
+  z-index: 2;
+  pointer-events: none;
 }
 
 .heroContent {
@@ -98,6 +111,7 @@
   position: relative;
   z-index: 1;
   padding: var(--spacing-3xl) 0 calc(var(--spacing-3xl) * 1.5);
+  background-color: #0a0a0a;
 }
 
 .sectionTitle {
