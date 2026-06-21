@@ -11,7 +11,7 @@ export const sectionsData: Record<string, any> = {
   },
   'mise-a-disposition': {
     title: 'Mise à disposition',
-    description: "Disposez d'un chauffeur pour plusieurs heures, une demi-journée ou une journée complète. Profitez et voyagez confortablement, l'accueil et le confort d'un véhicule avec chauffeur selon vos besoins.",
+    description: "Besoin d'un chauffeur pour quelques heures, une demi-journée ou une journée complète ? Nous mettons à votre disposition un véhicule avec chauffeur selon vos besoins.",
     imagePosition: 'left',
   },
   'evenements-speciaux': {
