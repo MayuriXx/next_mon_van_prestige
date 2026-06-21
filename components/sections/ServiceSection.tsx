@@ -7,6 +7,16 @@ import { getSectionContent, type SectionContent } from '@/lib/firebase/contenu';
 import { getSectionImages, type ImageData } from '@/lib/firebase/images';
 import styles from './ServiceSection.module.css';
 
+// Map sectionId → page de service
+const SERVICE_LINKS: Record<string, string> = {
+  'transfert-aeroport':          '/services/transfert-aeroport',
+  'transfert-simple':            '/services/transfert-simple',
+  'mise-a-disposition':          '/services/mise-a-disposition',
+  'evenements-speciaux':         '/services/evenements-speciaux',
+  'escapades-loisirs':           '/services/escapades-loisirs',
+  'deplacements-professionnels': '/services/deplacements-professionnels',
+};
+
 interface ServiceSectionProps {
   sectionId: string;
   slug: string;
@@ -31,6 +41,7 @@ export default function ServiceSection({ sectionId, slug }: ServiceSectionProps)
   if (!content) return null;
 
   const imageLeft = content.imagePosition === 'left';
+  const serviceHref = SERVICE_LINKS[sectionId] || '/reservation';
 
   return (
     <div className={`${styles.section} ${imageLeft ? styles.imageLeft : styles.imageRight}`}>
@@ -48,8 +59,8 @@ export default function ServiceSection({ sectionId, slug }: ServiceSectionProps)
       <div className={styles.textWrapper}>
         <h2 className={styles.title}>{content.title}</h2>
         <p className={styles.description}>{content.description}</p>
-        <Link href={`/reservation`} className={styles.cta}>
-          Réserver →
+        <Link href={serviceHref} className={styles.cta}>
+          En savoir plus →
         </Link>
       </div>
     </div>
