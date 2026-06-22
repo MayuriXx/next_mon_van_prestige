@@ -207,7 +207,7 @@ export default function TransfertAeropurtPage() {
                     </div>
                   </div>
 
-                  <Link href="/reservation" className={styles.tarifCta}>
+                  <Link href={localePath('/reservation', locale)} className={styles.tarifCta}>
                     Réserver →
                   </Link>
                 </div>
