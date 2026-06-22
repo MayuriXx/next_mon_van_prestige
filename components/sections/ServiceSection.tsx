@@ -3,8 +3,10 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { getSectionContent, type SectionContent } from '@/lib/firebase/contenu';
 import { getSectionImages, type ImageData } from '@/lib/firebase/images';
+import { localePath, getLocaleFromPath } from '@/lib/utils/locale';
 import styles from './ServiceSection.module.css';
 
 interface ServiceSectionProps {
@@ -13,6 +15,8 @@ interface ServiceSectionProps {
 }
 
 export default function ServiceSection({ sectionId, slug }: ServiceSectionProps) {
+  const pathname = usePathname();
+  const locale = getLocaleFromPath(pathname);
   const [content, setContent] = useState<SectionContent | null>(null);
   const [image, setImage] = useState<ImageData | null>(null);
 
@@ -48,9 +52,14 @@ export default function ServiceSection({ sectionId, slug }: ServiceSectionProps)
       <div className={styles.textWrapper}>
         <h2 className={styles.title}>{content.title}</h2>
         <p className={styles.description}>{content.description}</p>
-        <Link href={`/reservation`} className={styles.cta}>
-          Réserver →
-        </Link>
+        <div className={styles.ctaGroup}>
+          <Link href={localePath(`/services/${slug}`, locale)} className={styles.ctaLearn}>
+            En savoir plus →
+          </Link>
+          <Link href={localePath('/reservation', locale)} className={styles.cta}>
+            Réserver
+          </Link>
+        </div>
       </div>
     </div>
   );
