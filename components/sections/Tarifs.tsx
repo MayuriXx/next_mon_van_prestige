@@ -1,6 +1,9 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
+
 import Link from 'next/link';
+import { localePath, getLocaleFromPath } from '@/lib/utils/locale';
 import styles from './Tarifs.module.css';
 
 const TARIFS = [
@@ -55,6 +58,8 @@ const TARIFS = [
 ];
 
 export default function Tarifs() {
+  const pathname = usePathname();
+  const locale = getLocaleFromPath(pathname);
   return (
     <section className={styles.section}>
       <div className="container">
@@ -88,7 +93,7 @@ export default function Tarifs() {
                 <span className={styles.price}>{tarif.price}€</span>
               </div>
 
-              <Link href="/reservation" className={styles.cta}>
+              <Link href={localePath('/reservation', locale)} className={styles.cta}>
                 Réserver
               </Link>
             </div>
