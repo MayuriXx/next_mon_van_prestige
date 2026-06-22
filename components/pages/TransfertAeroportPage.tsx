@@ -1,139 +1,132 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
-import SectionTitle from '@/components/ui/SectionTitle';
-import { localePath, getLocaleFromPath } from '@/lib/utils/locale';
+import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import styles from './TransfertAeroportPage.module.css';
 
-interface Airport {
-  id: string;
-  name: string;
-  destination: string;
-  businessMin: number;
-  vanMin: number;
-  icon: string;
-}
-
-const AIRPORTS: Airport[] = [
-  { id: 'cdg',      name: 'CDG',       destination: 'Paris Charles de Gaulle', businessMin: 300, vanMin: 390, icon: '✈' },
-  { id: 'orly',     name: 'ORLY',      destination: 'Paris Orly',              businessMin: 360, vanMin: 420, icon: '✈' },
-  { id: 'zaventem', name: 'ZAVENTEM',  destination: 'Bruxelles Zaventem',      businessMin: 190, vanMin: 235, icon: '✈' },
-  { id: 'charleroi',name: 'CHARLEROI', destination: 'Charleroi',               businessMin: 145, vanMin: 180, icon: '✈' },
-  { id: 'lesquin',  name: 'LESQUIN',   destination: 'Lille Lesquin',           businessMin: 90,  vanMin: 130, icon: '✈' },
-  { id: 'gares',    name: 'GARES',     destination: 'Lille Gares',             businessMin: 90,  vanMin: 140, icon: '🚉' },
+const AIRPORTS = [
+  { id: 'cdg',       destination_fr: 'Aéroport Charles de Gaulle', destination_en: 'Charles de Gaulle Airport', destination_nl: 'Luchthaven Charles de Gaulle', businessMin: 260, icon: '✈' },
+  { id: 'orly',      destination_fr: "Aéroport d'Orly",            destination_en: 'Orly Airport',              destination_nl: 'Luchthaven Orly',              businessMin: 320, icon: '✈' },
+  { id: 'zaventem',  destination_fr: 'Aéroport Brussels Zaventem', destination_en: 'Brussels Zaventem Airport', destination_nl: 'Luchthaven Brussel Zaventem',  businessMin: 160, icon: '✈' },
+  { id: 'charleroi', destination_fr: 'Aéroport de Charleroi',      destination_en: 'Charleroi Airport',         destination_nl: 'Luchthaven Charleroi',         businessMin: 125, icon: '✈' },
+  { id: 'lesquin',   destination_fr: 'Aéroport de Lesquin',        destination_en: 'Lesquin Airport',           destination_nl: 'Luchthaven Lesquin',           businessMin: 80,  icon: '✈' },
+  { id: 'gares',     destination_fr: 'Gare de Lille',              destination_en: 'Lille Train Station',       destination_nl: 'Station Rijsel',               businessMin: 80,  icon: '🚉' },
 ];
 
-const ADVANTAGES = [
-  { id: 'custom',      title: 'Service Sur-Mesure',      description: 'Adaptez votre transfert à vos besoins spécifiques : horaires flexibles, arrêts supplémentaires, assistance VIP.', icon: '🎯' },
-  { id: 'punctuality', title: 'Ponctualité Garantie',    description: 'Suivi en temps réel de votre vol. Nous vous attendons dès votre arrivée, peu importe les retards.',               icon: '⏰' },
-  { id: 'support',     title: 'Assistance 24/7',          description: 'Équipe dédiée disponible jour et nuit pour répondre à vos questions et résoudre tout problème.',                 icon: '📱' },
+const ICON_EDIT = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+  </svg>
+);
+const ICON_CLOCK = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+  </svg>
+);
+const ICON_USER = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+  </svg>
+);
+
+const ADV_KEYS = [
+  { id: 'custom',      titleKey: 'adv_custom_title',      descKey: 'adv_custom_desc',      icon: ICON_EDIT  },
+  { id: 'punctuality', titleKey: 'adv_punctuality_title', descKey: 'adv_punctuality_desc', icon: ICON_CLOCK },
+  { id: 'support',     titleKey: 'adv_support_title',     descKey: 'adv_support_desc',     icon: ICON_USER  },
 ];
+
+type Locale = 'fr' | 'en' | 'nl';
 
 export default function TransfertAeroportPage() {
+  const t = useTranslations('transfertAeroport');
   const pathname = usePathname();
-  const locale = getLocaleFromPath(pathname);
-  const [airports, setAirports] = useState<Airport[]>(AIRPORTS);
-  const [loading, setLoading] = useState(true);
+  const locale = getLocaleFromPath(pathname) as Locale;
 
-  useEffect(() => {
-    async function loadTarifs() {
-      try {
-        setAirports(AIRPORTS);
-      } catch (error) {
-        console.error('Erreur chargement tarifs:', error);
-        setAirports(AIRPORTS);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadTarifs();
-  }, []);
+  function getDestination(a: typeof AIRPORTS[0]): string {
+    if (locale === 'en') return a.destination_en;
+    if (locale === 'nl') return a.destination_nl;
+    return a.destination_fr;
+  }
 
   return (
     <>
-      {/* Hero Section */}
+      {/* ── Hero : image + overlay + gradient bas ── */}
       <section className={styles.hero}>
         <div className={styles.heroImageWrapper}>
           <Image
             src="/images/sections/transfert-aeroport.jpg"
-            alt="Transfert Aéroport"
+            alt="Transfert Aéroport MS Prestige Driver"
             fill
             className={styles.heroImage}
             priority
           />
         </div>
         <div className={styles.heroOverlay} />
+        <div className={styles.heroGradient} />
+
         <div className={styles.heroContent}>
-          <div className="container">
-            <h1 className={styles.heroTitle}>Transfert Aéroport</h1>
-            <p className={styles.heroSubtitle}>
-              Service de transfert premium vers les plus grands aéroports d'Europe
-            </p>
-            <div className={styles.badges}>
-              <div className={styles.badge}><span className={styles.badgeIcon}>🔒</span><span className={styles.badgeText}>Sécurité</span></div>
-              <div className={styles.badge}><span className={styles.badgeIcon}>⏱️</span><span className={styles.badgeText}>Ponctualité</span></div>
-              <div className={styles.badge}><span className={styles.badgeIcon}>💰</span><span className={styles.badgeText}>Meilleur Tarif</span></div>
-            </div>
+          <p className={styles.heroTag}>{t('tag')}</p>
+          <h1 className={styles.heroTitle}>{t('title')}</h1>
+          <p className={styles.heroSubtitle}>{t('subtitle')}</p>
+          <div className={styles.badges}>
+            <span className={styles.badge}>
+              <svg className={styles.badgeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              {t('badge_security')}
+            </span>
+            <span className={styles.badge}>
+              <svg className={styles.badgeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+              {t('badge_punctuality')}
+            </span>
+            <span className={styles.badge}>
+              <svg className={styles.badgeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              {t('badge_price')}
+            </span>
           </div>
         </div>
       </section>
 
-      {/* Avantages Section */}
-      <section className={styles.advantages}>
+      {/* ── Section Forfaits — fond noir opaque ── */}
+      <section className={styles.forfaits}>
         <div className="container">
-          <SectionTitle title="Pourquoi Nous Choisir" />
-          <div className={styles.advantagesGrid}>
-            {ADVANTAGES.map((adv) => (
-              <div key={adv.id} className={styles.advantageCard}>
-                <div className={styles.advantageIcon}>{adv.icon}</div>
-                <h3 className={styles.advantageTitle}>{adv.title}</h3>
-                <p className={styles.advantageDescription}>{adv.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+          <h2 className={styles.sectionTitle}>{t('section_title')}</h2>
+          <div className={styles.sectionSeparator} />
 
-      {/* Forfaits Section */}
-      <section className={styles.tarifs}>
-        <div className="container">
-          <div className={styles.tarifHeader}>
-            <div className={styles.separator} />
-            <h2 className={styles.tarifTitle}>NOS FORFAITS</h2>
-            <div className={styles.separator} />
-          </div>
-          {loading ? (
-            <div className={styles.loading}>Chargement des tarifs...</div>
-          ) : (
-            <div className={styles.tarifGrid}>
-              {airports.map((airport) => (
-                <div key={airport.id} className={styles.tarifCard}>
-                  <div className={styles.tarifIcon}>{airport.icon}</div>
-                  <div className={styles.tarifRoute}>
-                    <span className={styles.routeFrom}>Valenciennes</span>
-                    <span className={styles.routeArrow}>→</span>
-                    <span className={styles.routeTo}>{airport.destination}</span>
+          <div className={styles.forfaitsLayout}>
+            <div className={styles.advantages}>
+              {ADV_KEYS.map((adv) => (
+                <div key={adv.id} className={styles.advantageCard}>
+                  <div className={styles.advantageIconWrap}>{adv.icon}</div>
+                  <div>
+                    <h3 className={styles.advantageTitle}>{t(adv.titleKey as any)}</h3>
+                    <p className={styles.advantageDesc}>{t(adv.descKey as any)}</p>
                   </div>
-                  <div className={styles.tarifPricing}>
-                    <div className={styles.priceType}>
-                      <span className={styles.typeLabel}>Business</span>
-                      <span className={styles.typePrice}>À partir de {airport.businessMin}€</span>
-                    </div>
-                    <div className={styles.priceType}>
-                      <span className={styles.typeLabel}>Van</span>
-                      <span className={styles.typePrice}>À partir de {airport.vanMin}€</span>
-                    </div>
-                  </div>
-                  <Link href={localePath('/reservation', locale)} className={styles.tarifCta}>
-                    Réserver →
-                  </Link>
                 </div>
               ))}
             </div>
-          )}
+
+            <div className={styles.airportsGrid}>
+              {AIRPORTS.map((airport) => (
+                <div key={airport.id} className={styles.airportCard}>
+                  <p className={styles.cardFrom}>{t('from')}</p>
+                  <span className={styles.cardArrow}>↓</span>
+                  <p className={styles.cardDest}>{getDestination(airport)}</p>
+                  <span className={styles.cardIcon}>{airport.icon}</span>
+                  <p className={styles.cardFromLabel}>{t('from_label')}</p>
+                  <p className={styles.cardPrice}>{airport.businessMin}<span className={styles.cardCurrency}>€</span></p>
+                  <Link href={localePath('/reservation', locale)} className={styles.cardBtn}>{t('book_btn')}</Link>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </>
