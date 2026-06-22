@@ -1,10 +1,7 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
-
 import Image from 'next/image';
 import Link from 'next/link';
-import { localePath, getLocaleFromPath } from '@/lib/utils/locale';
 import styles from './Vehicles.module.css';
 
 const VEHICLES = [
@@ -29,8 +26,6 @@ const VEHICLES = [
 ];
 
 export default function Vehicles() {
-  const pathname = usePathname();
-  const locale = getLocaleFromPath(pathname);
   return (
     <section className={styles.section} id="vehicules">
       <div className="container">
@@ -78,7 +73,7 @@ export default function Vehicles() {
                   À partir de <strong>{vehicle.price}€</strong>
                 </p>
 
-                <Link href={localePath('/reservation', locale)} className={styles.cta}>
+                <Link href="/reservation" className={styles.cta}>
                   Réserver
                 </Link>
               </div>
