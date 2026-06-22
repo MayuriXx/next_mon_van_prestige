@@ -163,6 +163,7 @@ export default function TransfertSimplePage() {
   const [error, setError]         = useState('');
   const [result, setResult]       = useState<{ distanceKm: number; durationMin: number; businessPrice: number; vanPrice: number } | null>(null);
   const [routeCoords, setRouteCoords] = useState<[number, number][]>([]);
+  const mapColRef = useRef<HTMLDivElement>(null);
 
   // Reset resolved point when user edits manually
   function handleDepartureChange(val: string) {
@@ -207,6 +208,9 @@ export default function TransfertSimplePage() {
         businessPrice: calcPrice(km, PRICE_PER_KM_BUSINESS, MIN_BUSINESS),
         vanPrice: calcPrice(km, PRICE_PER_KM_VAN, MIN_VAN),
       });
+      setTimeout(() => {
+        mapColRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     } catch {
       setError(t('error_generic'));
     } finally {
@@ -314,7 +318,7 @@ export default function TransfertSimplePage() {
             </div>
 
             {/* Carte + stats */}
-            <div className={styles.mapCol}>
+            <div className={styles.mapCol} ref={mapColRef}>
               <div className={styles.mapWrapper}>
                 <LeafletMap from={fromPoint} to={toPoint} routeCoords={routeCoords} />
               </div>
