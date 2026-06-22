@@ -77,29 +77,6 @@
 }
 
 /* Responsive */
-
-/* ── CTA group ─────────────────────────────────────────────── */
-.ctaGroup {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-  align-items: center;
-  margin-top: var(--spacing-sm);
-}
-
-.ctaLearn {
-  font-family: var(--font-montserrat);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-gold);
-  text-decoration: none;
-  letter-spacing: 0.04em;
-  transition: opacity 0.2s;
-}
-.ctaLearn:hover {
-  opacity: 0.75;
-}
-
 @media (max-width: 900px) {
   .section {
     grid-template-columns: 1fr;
