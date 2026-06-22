@@ -1,0 +1,429 @@
+/* ═══════════════════════════════════════════════
+   TransfertSimplePage.module.css
+   ═══════════════════════════════════════════════ */
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.heroImageWrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.heroImage {
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1;
+}
+
+.heroGradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent, #0a0a0a);
+  z-index: 2;
+}
+
+.heroInner {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 160px 2rem 5rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 3rem;
+  align-items: center;
+}
+
+/* Texte gauche */
+.heroText {}
+
+.heroTag {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: 1rem;
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 1.25rem;
+}
+
+.heroSubtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.75;
+  max-width: 480px;
+  margin-bottom: 1.75rem;
+}
+
+.heroBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.badgeIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-gold);
+}
+
+/* Formulaire flottant droite */
+.heroForm {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.heroFormTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #111;
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.formInput,
+.formSelect {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  color: #333;
+  background: #fff;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.formInput:focus,
+.formSelect:focus {
+  border-color: var(--color-gold);
+}
+
+.formInput::placeholder {
+  color: #999;
+}
+
+.formSelect {
+  appearance: none;
+  cursor: pointer;
+}
+
+.formBtn {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--color-gold);
+  color: #000;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.04em;
+  transition: background 0.2s, transform 0.15s;
+  margin-top: 0.25rem;
+}
+
+.formBtn:hover { background: #d4a84b; transform: translateY(-1px); }
+.formBtn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.errorMsg {
+  font-size: 0.8rem;
+  color: #e53e3e;
+  text-align: center;
+}
+
+/* ── Section Excellence ── */
+.excellenceSection {
+  background: #0a0a0a;
+  padding: 5rem 0 5rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.sectionSeparator {
+  width: 56px;
+  height: 2px;
+  background: var(--color-gold);
+  margin: 0 auto 3rem;
+}
+
+.excellenceLayout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* ── Avantages ── */
+.advantages {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.advantageCard {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.25rem;
+  background: var(--color-card);
+  border: 1px solid var(--color-border-card);
+  border-radius: 12px;
+  transition: border-color 0.25s;
+}
+
+.advantageCard:hover { border-color: rgba(201, 168, 76, 0.4); }
+
+.advantageIconWrap {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  background: rgba(201, 168, 76, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-gold);
+}
+
+.advantageIconWrap svg { width: 20px; height: 20px; }
+
+.advantageTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.3rem;
+}
+
+.advantageDesc {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  line-height: 1.65;
+}
+
+/* ── Carte ── */
+.mapCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mapWrapper {
+  width: 100%;
+  height: 340px;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border-card);
+  border-bottom: none;
+}
+
+/* Stats barre sous la carte */
+.mapStats {
+  display: flex;
+  align-items: center;
+  background: var(--color-card);
+  border: 1px solid var(--color-border-card);
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  padding: 1rem 1.5rem;
+  gap: 1.5rem;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex: 1;
+}
+
+.statIcon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-gold);
+  flex-shrink: 0;
+}
+
+.statLabel {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.statValue {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.statDivider {
+  width: 1px;
+  height: 36px;
+  background: var(--color-border-card);
+}
+
+/* Prix après calcul */
+.priceRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.priceCard {
+  background: var(--color-card);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.priceLabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: 0.3rem;
+}
+
+.priceValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.priceSub {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  margin-top: 0.15rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .heroInner {
+    grid-template-columns: 1fr;
+    padding: 140px 1.5rem 4rem;
+  }
+  .excellenceLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroInner { padding: 120px 1.25rem 3rem; }
+  .formRow { grid-template-columns: 1fr; }
+  .priceRow { grid-template-columns: 1fr; }
+  .mapStats { flex-direction: column; gap: 0.75rem; align-items: flex-start; }
+  .statDivider { width: 100%; height: 1px; }
+}
+
+/* ── Autocomplete ── */
+.autocompleteWrap {
+  position: relative;
+  width: 100%;
+}
+
+.suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.suggestionItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: #333;
+  line-height: 1.4;
+  transition: background 0.15s;
+}
+
+.suggestionItem:hover {
+  background: #f5f0e8;
+}
+
+.suggestionIcon {
+  width: 14px;
+  height: 14px;
+  color: var(--color-gold);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
