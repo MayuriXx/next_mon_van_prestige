@@ -176,52 +176,6 @@ export default function MiseADispositionPage() {
           </div>
         </div>
       </section>
-
-      {/* ── Section tarifs MAD ── */}
-      <section className={styles.tarifs}>
-        <div className="container">
-          <h2 className={styles.sectionTitle}>{t('tarifs_title')}</h2>
-          <div className={styles.sectionSeparator} />
-
-          <div className={styles.tarifsGrid}>
-            {/* Business */}
-            <div className={styles.tarifCard}>
-              <div className={styles.tarifBadge}>{t('tarif_business_label')}</div>
-              <div className={styles.tarifPrice}>
-                <span className={styles.tarifAmount}>55</span>
-                <span className={styles.tarifUnit}>€<span className={styles.tarifPer}>/{t('hour_abbr')}</span></span>
-              </div>
-              <p className={styles.tarifNote}>{t('tarif_business_note')}</p>
-              <ul className={styles.tarifFeatures}>
-                <li>{t('tarif_feature_driver')}</li>
-                <li>{t('tarif_feature_km')}</li>
-                <li>{t('tarif_feature_wait')}</li>
-                <li>{t('tarif_feature_extension')}</li>
-              </ul>
-              <Link href={localePath('/reservation', locale)} className={styles.tarifBtn}>{t('form_cta')}</Link>
-            </div>
-
-            {/* Van */}
-            <div className={`${styles.tarifCard} ${styles.tarifCardFeatured}`}>
-              <div className={styles.tarifBadge}>{t('tarif_van_label')}</div>
-              <div className={styles.tarifPrice}>
-                <span className={styles.tarifAmount}>90</span>
-                <span className={styles.tarifUnit}>€<span className={styles.tarifPer}>/{t('hour_abbr')}</span></span>
-              </div>
-              <p className={styles.tarifNote}>{t('tarif_van_note')}</p>
-              <ul className={styles.tarifFeatures}>
-                <li>{t('tarif_feature_driver')}</li>
-                <li>{t('tarif_feature_km')}</li>
-                <li>{t('tarif_feature_wait')}</li>
-                <li>{t('tarif_feature_extension')}</li>
-              </ul>
-              <Link href={localePath('/reservation', locale)} className={styles.tarifBtn}>{t('form_cta')}</Link>
-            </div>
-          </div>
-
-          <p className={styles.tarifsSubnote}>{t('tarifs_minnote')}</p>
-        </div>
-      </section>
     </>
   );
 }
