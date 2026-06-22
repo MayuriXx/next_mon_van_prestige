@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import styles from './Hero.module.css';
 
 const SLIDES = [
@@ -12,6 +14,7 @@ const SLIDES = [
     title: 'CHAUFFEUR PRIVÉ',
     tagline: 'VALENCIENNES ET SES ALENTOURS',
     subtitle: 'Excellence et raffinement depuis 2022',
+    href: '/reservation',
   },
   {
     id: 'transfert-aeroport',
@@ -19,6 +22,7 @@ const SLIDES = [
     title: 'TRANSFERT AÉROPORT',
     tagline: 'DISPONIBLE 24/7',
     subtitle: 'Paris CDG • Bruxelles • Lille',
+    href: '/services/transfert-aeroport',
   },
   {
     id: 'deplacements-pro',
@@ -26,6 +30,7 @@ const SLIDES = [
     title: 'DÉPLACEMENTS PROFESSIONNELS',
     tagline: 'SERVICE PREMIUM',
     subtitle: 'Ponctualité et discrétion garanties',
+    href: '/services/deplacements-professionnels',
   },
   {
     id: 'evenements-speciaux',
@@ -33,10 +38,13 @@ const SLIDES = [
     title: 'ÉVÉNEMENTS SPÉCIAUX',
     tagline: 'MOMENTS INOUBLIABLES',
     subtitle: 'Mariages • Soirées • Cérémonies',
+    href: '/services/evenements-speciaux',
   },
 ];
 
 export default function Hero() {
+  const pathname = usePathname();
+  const locale = getLocaleFromPath(pathname);
   const [current, setCurrent] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -49,7 +57,6 @@ export default function Hero() {
     }, 300);
   }, [isTransitioning]);
 
-  // Auto-play toutes les 5 secondes
   useEffect(() => {
     const timer = setInterval(() => {
       goTo((current + 1) % SLIDES.length);
@@ -61,39 +68,25 @@ export default function Hero() {
 
   return (
     <section className={styles.hero}>
-      {/* Images background */}
       {SLIDES.map((s, i) => (
-        <div
-          key={s.id}
-          className={`${styles.bgImage} ${i === current ? styles.bgActive : ''}`}
-        >
-          <Image
-            src={s.image}
-            alt={s.title}
-            fill
-            priority={i === 0}
-            quality={85}
-            className={styles.image}
-          />
+        <div key={s.id} className={`${styles.bgImage} ${i === current ? styles.bgActive : ''}`}>
+          <Image src={s.image} alt={s.title} fill priority={i === 0} quality={85} className={styles.image} />
         </div>
       ))}
 
-      {/* Overlay sombre */}
       <div className={styles.overlay} />
 
-      {/* Contenu */}
       <div className={`${styles.content} ${isTransitioning ? styles.fadeOut : styles.fadeIn}`}>
         <div className={styles.inner}>
           <h1 className={styles.title}>{slide.title}</h1>
           <p className={styles.tagline}>{slide.tagline}</p>
           <p className={styles.subtitle}>{slide.subtitle}</p>
-          <Link href="/reservation" className={styles.cta}>
+          <Link href={localePath(slide.href, locale)} className={styles.cta}>
             Réserver maintenant
           </Link>
         </div>
       </div>
 
-      {/* Dots navigation */}
       <div className={styles.dots}>
         {SLIDES.map((_, i) => (
           <button

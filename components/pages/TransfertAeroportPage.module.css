@@ -1,10 +1,8 @@
-/* ========================================
-   Hero Section
-   ======================================== */
-
+/* ══ Hero — image dans le hero uniquement ══ */
 .hero {
   position: relative;
   height: calc(100vh - 72px);
+  min-height: 520px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,350 +14,256 @@
   inset: 0;
   z-index: 0;
 }
-
 .heroImage {
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
 }
 
+/* Overlay sombre sur l'image */
 .heroOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(10, 10, 10, 0.8) 0%,
-    rgba(10, 10, 10, 0.6) 50%,
-    rgba(10, 10, 10, 0.8) 100%
-  );
+  background: rgba(10, 10, 10, 0.55);
   z-index: 1;
+}
+
+/* Dégradé noir progressif en bas — fondu vers la section forfaits */
+.heroGradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent 0%, #0a0a0a 100%);
+  z-index: 2;
+  pointer-events: none;
 }
 
 .heroContent {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   text-align: center;
-  color: var(--color-white);
+  padding: 0 var(--spacing-xl);
+  max-width: 720px;
+}
+
+.heroTag {
+  font-family: var(--font-montserrat);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: var(--color-gold);
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-md);
 }
 
 .heroTitle {
   font-family: var(--font-title);
-  font-size: clamp(40px, 8vw, 72px);
+  font-size: clamp(30px, 5vw, 60px);
   font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: var(--spacing-md);
+  line-height: 1.1;
   color: var(--color-white);
+  margin-bottom: var(--spacing-lg);
 }
 
 .heroSubtitle {
   font-family: var(--font-body);
-  font-size: clamp(16px, 3vw, 20px);
-  color: var(--color-text-muted);
-  margin-bottom: var(--spacing-3xl);
-  max-width: 600px;
+  font-size: clamp(13px, 1.8vw, 16px);
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.7;
+  margin-bottom: var(--spacing-2xl);
+  max-width: 480px;
   margin-left: auto;
   margin-right: auto;
 }
 
-/* Badges */
 .badges {
   display: flex;
   justify-content: center;
-  gap: var(--spacing-xl);
   flex-wrap: wrap;
-  margin-top: var(--spacing-2xl);
+  gap: var(--spacing-xl);
 }
-
 .badge {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  background-color: rgba(201, 168, 76, 0.1);
-  border: 1px solid rgba(201, 168, 76, 0.3);
-  border-radius: 50px;
-  backdrop-filter: blur(10px);
-}
-
-.badgeIcon {
-  font-size: 20px;
-}
-
-.badgeText {
-  font-family: var(--font-body);
-  font-size: 14px;
+  gap: 7px;
+  font-family: var(--font-montserrat);
+  font-size: 12px;
   font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+.badgeIcon {
+  width: 16px;
+  height: 16px;
   color: var(--color-gold);
+  flex-shrink: 0;
 }
 
-/* ========================================
-   Advantages Section
-   ======================================== */
-
-.advantages {
-  padding: var(--spacing-3xl) 0;
-  background-color: var(--color-bg);
+/* ══ Section Forfaits — fond noir opaque, pas d'image ══ */
+.forfaits {
+  background: #0a0a0a;
+  padding: var(--spacing-3xl) 0 calc(var(--spacing-3xl) * 1.5);
 }
 
-.advantagesGrid {
+.sectionTitle {
+  font-family: var(--font-title);
+  font-size: clamp(22px, 3vw, 38px);
+  font-weight: 800;
+  color: var(--color-white);
+  text-align: center;
+  margin-bottom: var(--spacing-sm);
+}
+.sectionSeparator {
+  width: 56px;
+  height: 2px;
+  background: var(--color-gold);
+  margin: 0 auto var(--spacing-3xl);
+}
+
+/* Layout 2 colonnes */
+.forfaitsLayout {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 240px 1fr;
   gap: var(--spacing-2xl);
-  margin-top: var(--spacing-3xl);
+  align-items: start;
+}
+
+/* ══ Avantages compacts ══ */
+.advantages {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
 }
 
 .advantageCard {
-  padding: var(--spacing-xl);
-  background-color: rgba(26, 26, 26, 0.5);
-  border: 1px solid rgba(201, 168, 76, 0.2);
-  border-radius: 12px;
-  text-align: center;
-  transition: all 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
 }
 
-.advantageCard:hover {
-  border-color: var(--color-gold);
-  background-color: rgba(26, 26, 26, 0.8);
+.advantageIconWrap {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+  background: rgba(201, 168, 76, 0.10);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-gold);
+  margin-top: 2px;
 }
-
-.advantageIcon {
-  font-size: 48px;
-  margin-bottom: var(--spacing-md);
-  display: block;
-}
+.advantageIconWrap svg { width: 15px; height: 15px; }
 
 .advantageTitle {
-  font-family: var(--font-title);
-  font-size: 18px;
+  font-family: var(--font-montserrat);
+  font-size: 13px;
   font-weight: 700;
-  margin-bottom: var(--spacing-sm);
   color: var(--color-white);
+  margin-bottom: 4px;
 }
-
-.advantageDescription {
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--color-text-muted);
-  line-height: 1.6;
-}
-
-/* ========================================
-   Tarifs Section
-   ======================================== */
-
-.tarifs {
-  padding: var(--spacing-3xl) 0;
-  background-color: var(--color-bg-alt);
-}
-
-.tarifHeader {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-  justify-content: center;
-  margin-bottom: var(--spacing-3xl);
-}
-
-.separator {
-  flex: 1;
-  max-width: 80px;
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--color-gold));
-}
-
-.tarifHeader .separator:last-child {
-  background: linear-gradient(to left, transparent, var(--color-gold));
-}
-
-.tarifTitle {
-  font-family: var(--font-title);
-  font-size: clamp(24px, 3vw, 36px);
-  font-weight: 800;
-  color: var(--color-gold);
-  letter-spacing: 0.06em;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.loading {
-  text-align: center;
-  padding: var(--spacing-3xl) 0;
-  color: var(--color-text-muted);
-}
-
-.tarifGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-2xl);
-}
-
-.tarifCard {
-  padding: var(--spacing-xl);
-  background-color: rgba(26, 26, 26, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-  transition: all 0.3s ease;
-}
-
-.tarifCard:hover {
-  border-color: var(--color-gold);
-  background-color: rgba(26, 26, 26, 0.8);
-  transform: translateY(-4px);
-}
-
-.tarifIcon {
-  font-size: 32px;
-  text-align: center;
-}
-
-.tarifRoute {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-
-.routeFrom {
+.advantageDesc {
   font-family: var(--font-body);
   font-size: 12px;
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ══ Grille aéroports ══ */
+.airportsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.airportCard {
+  background: rgba(26, 26, 26, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 10px;
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  text-align: center;
+  transition: border-color 0.25s;
+}
+.airportCard:hover { border-color: rgba(201, 168, 76, 0.35); }
+
+.cardFrom {
+  font-family: var(--font-montserrat);
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  margin: 0;
 }
-
-.routeArrow {
-  font-size: 16px;
-  color: var(--color-gold);
-}
-
-.routeTo {
-  font-family: var(--font-title);
-  font-size: 15px;
+.cardArrow { font-size: 14px; color: var(--color-gold); line-height: 1; }
+.cardDest {
+  font-family: var(--font-body);
+  font-size: 13px;
   font-weight: 700;
   color: var(--color-white);
   line-height: 1.3;
-}
-
-.tarifPricing {
+  margin: 0;
+  min-height: 38px;
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg) 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.priceType {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
 }
-
-.typeLabel {
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text-muted);
-  letter-spacing: 0.05em;
-}
-
-.typePrice {
-  font-family: var(--font-title);
-  font-size: 18px;
+.cardIcon { font-size: 18px; color: var(--color-gold); margin: 4px 0; }
+.cardFromLabel {
+  font-family: var(--font-montserrat);
+  font-size: 8px;
   font-weight: 700;
-  color: var(--color-gold);
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  margin: 8px 0 0;
 }
-
-.tarifCta {
+.cardPrice {
+  font-family: var(--font-title);
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--color-gold);
+  line-height: 1;
+  margin: 0 0 14px;
+}
+.cardCurrency { font-size: 26px; }
+.cardBtn {
   display: block;
-  text-align: center;
-  padding: 12px 24px;
-  background-color: var(--color-gold);
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--color-gold);
   color: #000;
-  font-family: var(--font-body);
-  font-size: 13px;
+  font-family: var(--font-montserrat);
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.05em;
   border-radius: 50px;
   text-decoration: none;
-  transition: all 0.3s ease;
+  text-align: center;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.cardBtn:hover {
+  background: #d4b55a;
+  box-shadow: 0 4px 14px rgba(201, 168, 76, 0.3);
 }
 
-.tarifCta:hover {
-  background-color: #d4b55a;
-  box-shadow: 0 4px 16px rgba(201, 168, 76, 0.4);
+/* ══ Responsive ══ */
+@media (max-width: 1024px) {
+  .forfaitsLayout { grid-template-columns: 200px 1fr; }
+  .airportsGrid { grid-template-columns: repeat(2, 1fr); }
 }
-
-/* ========================================
-   Responsive
-   ======================================== */
-
-@media (max-width: 1200px) {
-  .tarifGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .advantagesGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 @media (max-width: 768px) {
-  .heroTitle {
-    font-size: clamp(32px, 6vw, 48px);
-  }
-
-  .tarifGrid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-xl);
-  }
-
-  .advantagesGrid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-xl);
-  }
-
-  .badges {
-    gap: var(--spacing-md);
-  }
-
-  .badge {
-    padding: var(--spacing-xs) var(--spacing-md);
-    font-size: 12px;
-  }
+  .forfaitsLayout { grid-template-columns: 1fr; }
+  .advantages { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-lg); }
+  .airportsGrid { grid-template-columns: repeat(2, 1fr); }
 }
-
 @media (max-width: 480px) {
-  .hero {
-    height: calc(100vh - 60px);
-  }
-
-  .heroTitle {
-    font-size: 28px;
-  }
-
-  .heroSubtitle {
-    font-size: 14px;
-    margin-bottom: var(--spacing-xl);
-  }
-
-  .badges {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .tarifCard {
-    padding: var(--spacing-md);
-  }
-
-  .tarifIcon {
-    font-size: 24px;
-  }
-
-  .typePrice {
-    font-size: 16px;
-  }
+  .advantages { grid-template-columns: 1fr; }
+  .airportsGrid { grid-template-columns: 1fr; }
 }

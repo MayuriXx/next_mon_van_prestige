@@ -41,11 +41,22 @@
     "back": "Terug",
     "close": "Sluiten"
   },
-  "sections": {
-    "hero": {
-      "title": "Luchthaven Transfer",
-      "subtitle": "Reis met gemak naar uw bestemmingen",
-      "cta_reserve": "Nu Boeken"
-    }
+  "transfertAeroport": {
+    "tag": "LUCHTHAVENS & STATIONS",
+    "title": "Privévervoer naar alle luchthavens en treinstations",
+    "subtitle": "Geniet van een stressvrije transfer naar of van luchthavens (CDG, Orly, Lille, Brussel) en treinstations. Vaste en transparante tarieven.",
+    "badge_security": "Veiligheid",
+    "badge_punctuality": "Stiptheid",
+    "badge_price": "Beste prijs gegarandeerd",
+    "section_title": "Onze Luchthavenformules",
+    "from": "Valenciennes",
+    "from_label": "VANAF",
+    "book_btn": "Boeken",
+    "adv_custom_title": "Service op maat",
+    "adv_custom_desc": "Uw wensen, uw reis. Geniet van een ongeëvenaarde transportervaring die is afgestemd op uw voorkeuren.",
+    "adv_punctuality_title": "Stiptheid gegarandeerd",
+    "adv_punctuality_desc": "Onze chauffeurs komen altijd vroeg aan om uw gemoedsrust te garanderen en een serene vertrek te verzekeren.",
+    "adv_support_title": "Ondersteuning 24/7",
+    "adv_support_desc": "Uw gemoedsrust is onze verbintenis. Ons team staat dag en nacht voor u klaar."
   }
 }

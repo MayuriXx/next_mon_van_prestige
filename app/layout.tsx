@@ -7,6 +7,8 @@ export const metadata: Metadata = {
     'Service de transport VTC premium à Valenciennes. Transferts aéroport, déplacements professionnels, événements spéciaux.',
 };
 
+// Le layout [locale] fournit <html lang={locale}> et <body>.
+// Ce root layout ne doit pas les dupliquer.
 export default function RootLayout({
   children,
 }: Readonly<{

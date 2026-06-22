@@ -41,11 +41,22 @@
     "back": "Back",
     "close": "Close"
   },
-  "sections": {
-    "hero": {
-      "title": "Airport Transfer",
-      "subtitle": "Travel with peace of mind to your destinations",
-      "cta_reserve": "Book Now"
-    }
+  "transfertAeroport": {
+    "tag": "AIRPORTS & STATIONS",
+    "title": "Private transfers to all airports and train stations",
+    "subtitle": "Enjoy a stress-free transfer to or from airports (CDG, Orly, Lille, Brussels) and train stations. Fixed and transparent prices.",
+    "badge_security": "Safety",
+    "badge_punctuality": "Punctuality",
+    "badge_price": "Best price guaranteed",
+    "section_title": "Our Airport Packages",
+    "from": "Valenciennes",
+    "from_label": "FROM",
+    "book_btn": "Book",
+    "adv_custom_title": "Tailored service",
+    "adv_custom_desc": "Your wishes, your journey. Enjoy an unmatched transport experience designed around your preferences.",
+    "adv_punctuality_title": "Guaranteed punctuality",
+    "adv_punctuality_desc": "Our drivers always arrive early to ensure your total peace of mind and a serene departure.",
+    "adv_support_title": "24/7 Support",
+    "adv_support_desc": "Your peace of mind is our commitment. Our team is at your service around the clock."
   }
 }
