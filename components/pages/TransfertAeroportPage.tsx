@@ -52,22 +52,21 @@ export default function TransfertAeroportPage() {
   }
 
   return (
-    <div className={styles.page}>
-      {/* Image de fond persistante sur toute la page */}
-      <div className={styles.pageBg}>
-        <Image
-          src="/images/sections/transfert-aeroport.jpg"
-          alt=""
-          fill
-          className={styles.pageBgImage}
-          priority
-          quality={85}
-        />
-        <div className={styles.pageBgOverlay} />
-      </div>
-
-      {/* ── Hero ── */}
+    <>
+      {/* ── Hero : image + overlay + gradient bas ── */}
       <section className={styles.hero}>
+        <div className={styles.heroImageWrapper}>
+          <Image
+            src="/images/sections/transfert-aeroport.jpg"
+            alt="Transfert Aéroport MS Prestige Driver"
+            fill
+            className={styles.heroImage}
+            priority
+          />
+        </div>
+        <div className={styles.heroOverlay} />
+        <div className={styles.heroGradient} />
+
         <div className={styles.heroContent}>
           <p className={styles.heroTag}>{t('tag')}</p>
           <h1 className={styles.heroTitle}>{t('title')}</h1>
@@ -95,18 +94,17 @@ export default function TransfertAeroportPage() {
         </div>
       </section>
 
-      {/* ── Forfaits ── */}
+      {/* ── Section Forfaits — fond noir opaque ── */}
       <section className={styles.forfaits}>
         <div className="container">
           <h2 className={styles.sectionTitle}>{t('section_title')}</h2>
           <div className={styles.sectionSeparator} />
 
           <div className={styles.forfaitsLayout}>
-            {/* Avantages */}
             <div className={styles.advantages}>
               {ADV_KEYS.map((adv) => (
                 <div key={adv.id} className={styles.advantageCard}>
-                  <div className={styles.advantageIconCircle}>{adv.icon}</div>
+                  <div className={styles.advantageIconWrap}>{adv.icon}</div>
                   <div>
                     <h3 className={styles.advantageTitle}>{t(adv.titleKey as any)}</h3>
                     <p className={styles.advantageDesc}>{t(adv.descKey as any)}</p>
@@ -115,7 +113,6 @@ export default function TransfertAeroportPage() {
               ))}
             </div>
 
-            {/* Grille forfaits */}
             <div className={styles.airportsGrid}>
               {AIRPORTS.map((airport) => (
                 <div key={airport.id} className={styles.airportCard}>
@@ -132,6 +129,6 @@ export default function TransfertAeroportPage() {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 }
