@@ -1,45 +1,39 @@
-/* ══ Image de fond fixe derrière toute la page ══ */
-.page {
-  position: relative;
-  min-height: 100vh;
-}
-
-.pageBg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-}
-.pageBgImage {
-  object-fit: cover;
-  object-position: center top;
-}
-/* Overlay uniforme — laisse voir l'image comme dans la maquette */
-.pageBgOverlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(10, 10, 10, 0.58);
-}
-
-/* ══ Hero ══ */
+/* ══ Hero — image dans le hero uniquement ══ */
 .hero {
   position: relative;
-  /* On retire le paddingTop déjà appliqué par le layout (72px) */
   height: calc(100vh - 72px);
   min-height: 520px;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+.heroImageWrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.heroImage {
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* Overlay sombre sur l'image */
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.55);
   z-index: 1;
 }
 
-/* Dégradé bas du hero → transition vers section noire */
-.hero::after {
-  content: '';
+/* Dégradé noir progressif en bas — fondu vers la section forfaits */
+.heroGradient {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 180px;
+  height: 200px;
   background: linear-gradient(to bottom, transparent 0%, #0a0a0a 100%);
   z-index: 2;
   pointer-events: none;
@@ -105,10 +99,8 @@
   flex-shrink: 0;
 }
 
-/* ══ Section Forfaits ══ */
+/* ══ Section Forfaits — fond noir opaque, pas d'image ══ */
 .forfaits {
-  position: relative;
-  z-index: 1;
   background: #0a0a0a;
   padding: var(--spacing-3xl) 0 calc(var(--spacing-3xl) * 1.5);
 }
@@ -136,7 +128,7 @@
   align-items: start;
 }
 
-/* ══ Avantages — style maquette : icône petite + texte compact ══ */
+/* ══ Avantages compacts ══ */
 .advantages {
   display: flex;
   flex-direction: column;
@@ -149,7 +141,6 @@
   gap: 14px;
 }
 
-/* Petite icône dorée — pas de gros cercle */
 .advantageIconWrap {
   width: 32px;
   height: 32px;
@@ -163,10 +154,7 @@
   color: var(--color-gold);
   margin-top: 2px;
 }
-.advantageIconWrap svg {
-  width: 15px;
-  height: 15px;
-}
+.advantageIconWrap svg { width: 15px; height: 15px; }
 
 .advantageTitle {
   font-family: var(--font-montserrat);
@@ -191,7 +179,7 @@
 }
 
 .airportCard {
-  background: rgba(20, 20, 20, 0.92);
+  background: rgba(26, 26, 26, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 10px;
   padding: 20px 14px;
@@ -213,11 +201,7 @@
   text-transform: uppercase;
   margin: 0;
 }
-.cardArrow {
-  font-size: 14px;
-  color: var(--color-gold);
-  line-height: 1;
-}
+.cardArrow { font-size: 14px; color: var(--color-gold); line-height: 1; }
 .cardDest {
   font-family: var(--font-body);
   font-size: 13px;
@@ -230,11 +214,7 @@
   align-items: center;
   justify-content: center;
 }
-.cardIcon {
-  font-size: 18px;
-  color: var(--color-gold);
-  margin: 4px 0;
-}
+.cardIcon { font-size: 18px; color: var(--color-gold); margin: 4px 0; }
 .cardFromLabel {
   font-family: var(--font-montserrat);
   font-size: 8px;
@@ -253,7 +233,6 @@
   margin: 0 0 14px;
 }
 .cardCurrency { font-size: 26px; }
-
 .cardBtn {
   display: block;
   width: 100%;
@@ -281,11 +260,7 @@
 }
 @media (max-width: 768px) {
   .forfaitsLayout { grid-template-columns: 1fr; }
-  .advantages {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-lg);
-  }
+  .advantages { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-lg); }
   .airportsGrid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 480px) {
