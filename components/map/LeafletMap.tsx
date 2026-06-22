@@ -22,7 +22,6 @@ export default function LeafletMap({ from, to, routeCoords }: LeafletMapProps) {
   useEffect(() => {
     if (!mapRef.current) return;
 
-    // Dynamically import leaflet (client-only)
     import('leaflet').then((L) => {
       // Fix default icon paths
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,11 +32,10 @@ export default function LeafletMap({ from, to, routeCoords }: LeafletMapProps) {
         shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
       });
 
-      // Initialize map only once
       if (!mapInstanceRef.current) {
         const center: [number, number] = from
           ? [from.lat, from.lng]
-          : [50.3569, 3.5234]; // Valenciennes default
+          : [50.3569, 3.5234];
 
         const map = L.map(mapRef.current!, { zoomControl: true, scrollWheelZoom: false });
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -49,16 +47,15 @@ export default function LeafletMap({ from, to, routeCoords }: LeafletMapProps) {
 
       const map = mapInstanceRef.current;
 
-      // Clear existing layers except tile layer
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       map.eachLayer((layer: any) => {
         if (!(layer instanceof L.TileLayer)) {
           map.removeLayer(layer);
         }
       });
 
-      // Add markers and route
       const goldIcon = L.divIcon({
-        html: \`<div style="width:16px;height:16px;background:#C9A84C;border:2px solid #fff;border-radius:50%;box-shadow:0 0 6px rgba(201,168,76,0.6)"></div>\`,
+        html: '<div style="width:16px;height:16px;background:#C9A84C;border:2px solid #fff;border-radius:50%;box-shadow:0 0 6px rgba(201,168,76,0.6)"></div>',
         iconSize: [16, 16],
         iconAnchor: [8, 8],
         className: '',
@@ -69,14 +66,14 @@ export default function LeafletMap({ from, to, routeCoords }: LeafletMapProps) {
       if (from) {
         L.marker([from.lat, from.lng], { icon: goldIcon })
           .addTo(map)
-          .bindPopup(\`<b>Départ</b><br/>\${from.label}\`);
+          .bindPopup('<b>Départ</b><br/>' + from.label);
         markers.push([from.lat, from.lng]);
       }
 
       if (to) {
         L.marker([to.lat, to.lng], { icon: goldIcon })
           .addTo(map)
-          .bindPopup(\`<b>Arrivée</b><br/>\${to.label}\`);
+          .bindPopup('<b>Arrivée</b><br/>' + to.label);
         markers.push([to.lat, to.lng]);
       }
 
