@@ -4,10 +4,19 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import { getSectionContent, type SectionContent } from '@/lib/firebase/contenu';
 import { getSectionImages, type ImageData } from '@/lib/firebase/images';
-import { localePath, getLocaleFromPath } from '@/lib/utils/locale';
 import styles from './ServiceSection.module.css';
+
+const SERVICE_HREFS: Record<string, string> = {
+  'transfert-aeroport':          '/services/transfert-aeroport',
+  'transfert-simple':            '/services/transfert-simple',
+  'mise-a-disposition':          '/services/mise-a-disposition',
+  'evenements-speciaux':         '/services/evenements-speciaux',
+  'escapades-loisirs':           '/services/escapades-loisirs',
+  'deplacements-professionnels': '/services/deplacements-professionnels',
+};
 
 interface ServiceSectionProps {
   sectionId: string;
@@ -35,31 +44,21 @@ export default function ServiceSection({ sectionId, slug }: ServiceSectionProps)
   if (!content) return null;
 
   const imageLeft = content.imagePosition === 'left';
+  const href = localePath(SERVICE_HREFS[sectionId] ?? '/reservation', locale);
 
   return (
     <div className={`${styles.section} ${imageLeft ? styles.imageLeft : styles.imageRight}`}>
       <div className={styles.imageWrapper}>
         {image && (
-          <Image
-            src={image.url}
-            alt={image.alt || content.title}
-            fill
-            className={styles.image}
-          />
+          <Image src={image.url} alt={image.alt || content.title} fill className={styles.image} />
         )}
       </div>
-
       <div className={styles.textWrapper}>
         <h2 className={styles.title}>{content.title}</h2>
         <p className={styles.description}>{content.description}</p>
-        <div className={styles.ctaGroup}>
-          <Link href={localePath(`/services/${slug}`, locale)} className={styles.ctaLearn}>
-            En savoir plus →
-          </Link>
-          <Link href={localePath('/reservation', locale)} className={styles.cta}>
-            Réserver
-          </Link>
-        </div>
+        <Link href={href} className={styles.cta}>
+          En savoir plus →
+        </Link>
       </div>
     </div>
   );
