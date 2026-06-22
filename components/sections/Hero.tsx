@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Hero.module.css';
+import { localePath, getLocaleFromPath } from '@/lib/utils/locale';
 
 const SLIDES = [
   {
@@ -37,6 +39,8 @@ const SLIDES = [
 ];
 
 export default function Hero() {
+  const pathname = usePathname();
+  const locale = getLocaleFromPath(pathname);
   const [current, setCurrent] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -87,7 +91,7 @@ export default function Hero() {
           <h1 className={styles.title}>{slide.title}</h1>
           <p className={styles.tagline}>{slide.tagline}</p>
           <p className={styles.subtitle}>{slide.subtitle}</p>
-          <Link href="/reservation" className={styles.cta}>
+          <Link href={localePath('/reservation', locale)} className={styles.cta}>
             Réserver maintenant
           </Link>
         </div>
