@@ -1,0 +1,365 @@
+/* ══ Hero ══ */
+.hero {
+  position: relative;
+  min-height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.heroImageWrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.heroImage {
+  object-fit: cover;
+  object-position: center center;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.60);
+  z-index: 1;
+}
+
+.heroGradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 220px;
+  background: linear-gradient(to bottom, transparent 0%, #0a0a0a 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ── Hero content : 2 colonnes ── */
+.heroContent {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px var(--spacing-xl) 60px;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 60px;
+  align-items: center;
+}
+
+/* ── Gauche : texte ── */
+.heroLeft {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.heroTag {
+  font-family: var(--font-montserrat);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: var(--color-gold);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.heroTitle {
+  font-family: var(--font-playfair);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.heroSubtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.65;
+  max-width: 480px;
+  margin: 0;
+}
+
+.heroNote {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  margin: 0;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.badgeIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-gold);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.badgeIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Droite : formulaire ── */
+.formCard {
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 8px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
+}
+
+.formTitle {
+  font-family: var(--font-playfair);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+  text-align: center;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.formLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #555;
+  text-transform: none;
+}
+
+.inputWithIcon {
+  position: relative;
+}
+
+.formInput {
+  width: 100%;
+  padding: 10px 36px 10px 12px;
+  border: 1px solid #d4d4d4;
+  border-radius: 4px;
+  font-size: 0.88rem;
+  color: #333;
+  background: #fff;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.formInput::placeholder {
+  color: #aaa;
+}
+
+.formInput:focus {
+  border-color: var(--color-gold);
+}
+
+.inputIcon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: #aaa;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.formSelect {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d4d4d4;
+  border-radius: 4px;
+  font-size: 0.88rem;
+  color: #333;
+  background: #fff;
+  outline: none;
+  cursor: pointer;
+  appearance: auto;
+  transition: border-color 0.2s;
+}
+
+.formSelect:focus {
+  border-color: var(--color-gold);
+}
+
+.formBtn {
+  display: block;
+  text-align: center;
+  background: var(--color-gold);
+  color: #0a0a0a;
+  font-family: var(--font-montserrat);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 13px 20px;
+  border-radius: 4px;
+  text-decoration: none;
+  margin-top: 4px;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.formBtn:hover {
+  opacity: 0.88;
+}
+
+/* ══ Section Features ══ */
+.features {
+  background: #0a0a0a;
+  padding: 80px 0 100px;
+}
+
+.sectionTitle {
+  font-family: var(--font-playfair);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  margin: 0 0 16px;
+}
+
+.sectionSeparator {
+  width: 60px;
+  height: 2px;
+  background: var(--color-gold);
+  margin: 0 auto 60px;
+}
+
+.featuresGrid {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.featureItem {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 20px;
+  align-items: flex-start;
+  padding: 28px 0;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.12);
+  position: relative;
+}
+
+.featureItem:last-child {
+  border-bottom: none;
+}
+
+/* Subtle alternating background cue from mockup */
+.featureItem:nth-child(odd)::before {
+  content: '';
+  position: absolute;
+  inset: 0 -40px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.featureIconWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(201, 168, 76, 0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-gold);
+  margin-top: 2px;
+}
+
+.featureIconWrap svg {
+  width: 22px;
+  height: 22px;
+}
+
+.featureText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.featureTitle {
+  font-family: var(--font-montserrat);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.featureDesc {
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ══ Responsive ══ */
+@media (max-width: 900px) {
+  .heroContent {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 60px var(--spacing-lg) 50px;
+  }
+
+  .heroSubtitle {
+    max-width: 100%;
+  }
+
+  .formCard {
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .featureItem {
+    grid-template-columns: 44px 1fr;
+    gap: 14px;
+  }
+}
