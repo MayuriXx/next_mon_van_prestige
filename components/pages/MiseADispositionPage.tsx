@@ -3,20 +3,98 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState, useRef, useEffect } from 'react';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import styles from './MiseADispositionPage.module.css';
 
+/* ── Nominatim autocomplete ── */
+interface Suggestion { display_name: string; lat: string; lon: string; }
+
+async function fetchSuggestions(query: string): Promise<Suggestion[]> {
+  if (query.length < 3) return [];
+  const url =
+    'https://nominatim.openstreetmap.org/search?format=json&q=' +
+    encodeURIComponent(query) +
+    '&limit=5&addressdetails=1&countrycodes=fr,be';
+  const res = await fetch(url, { headers: { 'Accept-Language': 'fr' } });
+  return res.json();
+}
+
+interface AutocompleteFieldProps {
+  placeholder: string;
+  value: string;
+  onChange: (val: string) => void;
+}
+
+function AutocompleteField({ placeholder, value, onChange }: AutocompleteFieldProps) {
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [open, setOpen] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handle(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handle);
+    return () => document.removeEventListener('mousedown', handle);
+  }, []);
+
+  function handleChange(val: string) {
+    onChange(val);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      const results = await fetchSuggestions(val);
+      setSuggestions(results);
+      setOpen(results.length > 0);
+    }, 350);
+  }
+
+  function handleSelect(s: Suggestion) {
+    onChange(s.display_name);
+    setSuggestions([]);
+    setOpen(false);
+  }
+
+  return (
+    <div className={styles.autocompleteWrap} ref={wrapRef}>
+      <input
+        type="text"
+        className={styles.formInput}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => handleChange(e.target.value)}
+        onFocus={() => suggestions.length > 0 && setOpen(true)}
+        autoComplete="off"
+      />
+      {open && (
+        <ul className={styles.suggestions}>
+          {suggestions.map((s, i) => (
+            <li key={i} className={styles.suggestionItem} onMouseDown={() => handleSelect(s)}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={styles.suggestionIcon}>
+                <circle cx="12" cy="11" r="3"/><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z"/>
+              </svg>
+              <span>{s.display_name}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+/* ── Features data ── */
 const FEATURES = [
   {
     id: 'chauffeur',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="7" r="4" /><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
       </svg>
     ),
-    title_fr: 'Chauffeur dédié',
-    title_en: 'Dedicated chauffeur',
-    title_nl: 'Toegewijde chauffeur',
+    title_fr: 'Chauffeur dédié',        title_en: 'Dedicated chauffeur',         title_nl: 'Toegewijde chauffeur',
     desc_fr: 'Votre chauffeur reste à votre entière disposition pendant toute la durée réservée.',
     desc_en: 'Your chauffeur remains fully at your disposal for the entire reserved duration.',
     desc_nl: 'Uw chauffeur blijft volledig tot uw beschikking gedurende de gehele gereserveerde duur.',
@@ -25,13 +103,11 @@ const FEATURES = [
     id: 'flexibilite',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
       </svg>
     ),
-    title_fr: 'Flexibilité totale',
-    title_en: 'Total flexibility',
-    title_nl: 'Totale flexibiliteit',
-    desc_fr: 'Changez d\'itinéraire à tout moment. Vous êtes libre de vos déplacements.',
+    title_fr: 'Flexibilité totale',      title_en: 'Total flexibility',           title_nl: 'Totale flexibiliteit',
+    desc_fr: "Changez d'itinéraire à tout moment. Vous êtes libre de vos déplacements.",
     desc_en: 'Change your itinerary at any time. You are free to go wherever you need.',
     desc_nl: 'Verander uw route op elk moment. U bent vrij om te gaan waar u wilt.',
   },
@@ -39,12 +115,10 @@ const FEATURES = [
     id: 'attente',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /><line x1="12" y1="11" x2="12" y2="17" /><line x1="9" y1="14" x2="15" y2="14" />
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/>
       </svg>
     ),
-    title_fr: 'Attente incluse',
-    title_en: 'Waiting time included',
-    title_nl: 'Wachttijd inbegrepen',
+    title_fr: 'Attente incluse',         title_en: 'Waiting time included',       title_nl: 'Wachttijd inbegrepen',
     desc_fr: 'Votre chauffeur vous attend pendant vos rendez-vous ou vos courses sans frais supplémentaires.',
     desc_en: 'Your chauffeur waits for you during your appointments or errands at no extra cost.',
     desc_nl: 'Uw chauffeur wacht op u tijdens uw afspraken of boodschappen zonder extra kosten.',
@@ -53,12 +127,10 @@ const FEATURES = [
     id: 'extension',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 5v14" /><path d="M5 12l7 7 7-7" />
+        <path d="M12 5v14"/><path d="M5 12l7 7 7-7"/>
       </svg>
     ),
-    title_fr: 'Extension possible',
-    title_en: 'Extendable service',
-    title_nl: 'Verlengbaar',
+    title_fr: 'Extension possible',      title_en: 'Extendable service',          title_nl: 'Verlengbaar',
     desc_fr: 'Besoin de plus de temps ? Prolongez votre mise à disposition sur demande.',
     desc_en: 'Need more time? Extend your chauffeur service on request.',
     desc_nl: 'Meer tijd nodig? Verleng uw chauffeursdienst op aanvraag.',
@@ -66,25 +138,28 @@ const FEATURES = [
 ];
 
 const DURATIONS_FR = ['2 heures', '3 heures', '4 heures', '5 heures', '6 heures', '8 heures', '10 heures', '12 heures'];
-const DURATIONS_EN = ['2 hours', '3 hours', '4 hours', '5 hours', '6 hours', '8 hours', '10 hours', '12 hours'];
-const DURATIONS_NL = ['2 uur', '3 uur', '4 uur', '5 uur', '6 uur', '8 uur', '10 uur', '12 uur'];
+const DURATIONS_EN = ['2 hours',  '3 hours',  '4 hours',  '5 hours',  '6 hours',  '8 hours',  '10 hours',  '12 hours'];
+const DURATIONS_NL = ['2 uur',    '3 uur',    '4 uur',    '5 uur',    '6 uur',    '8 uur',    '10 uur',    '12 uur'];
 
 const PASSENGERS_FR = ['1 Passager', '2 Passagers', '3 Passagers', '4 Passagers', '5 Passagers', '6 Passagers', '7 Passagers', '8 Passagers'];
-const PASSENGERS_EN = ['1 Passenger', '2 Passengers', '3 Passengers', '4 Passengers', '5 Passengers', '6 Passengers', '7 Passengers', '8 Passengers'];
-const PASSENGERS_NL = ['1 Passagier', '2 Passagiers', '3 Passagiers', '4 Passagiers', '5 Passagiers', '6 Passagiers', '7 Passagiers', '8 Passagiers'];
+const PASSENGERS_EN = ['1 Passenger','2 Passengers','3 Passengers','4 Passengers','5 Passengers','6 Passengers','7 Passengers','8 Passengers'];
+const PASSENGERS_NL = ['1 Passagier','2 Passagiers','3 Passagiers','4 Passagiers','5 Passagiers','6 Passagiers','7 Passagiers','8 Passagiers'];
 
 type Locale = 'fr' | 'en' | 'nl';
 
-const CONTENT = {
+const CONTENT: Record<Locale, {
+  tag: string; title: string; subtitle: string; note: string; badges: string[];
+  formTitle: string; pickupPlaceholder: string; dropoffPlaceholder: string;
+  durationLabel: string; passengersLabel: string; ctaBtn: string; sectionTitle: string;
+  durations: string[]; passengers: string[];
+}> = {
   fr: {
     tag: 'MISE À DISPOSITION',
     title: 'Un chauffeur à votre disposition',
-    subtitle: 'Profitez d\'un service de chauffeur privé pendant la durée de votre choix. Idéal pour vos rendez-vous d\'affaires, shopping, visites ou événements.',
+    subtitle: "Profitez d'un service de chauffeur privé pendant la durée de votre choix. Idéal pour vos rendez-vous d'affaires, shopping, visites ou événements.",
     note: '* Durée minimum de mise à disposition : 2 heures (20km par heure inclus)',
     badges: ['Flexibilité totale', 'Chauffeur dédié', 'Sécurité'],
     formTitle: 'Réservez votre mise à disposition',
-    datePlaceholder: 'jj/mm/aaaa',
-    timePlaceholder: 'Sélectionner l\'heure',
     pickupPlaceholder: 'Adresse de prise en charge',
     dropoffPlaceholder: 'Adresse de destination',
     durationLabel: 'Durée de la mise à disposition',
@@ -101,8 +176,6 @@ const CONTENT = {
     note: '* Minimum duration: 2 hours (20 km per hour included)',
     badges: ['Total flexibility', 'Dedicated chauffeur', 'Safety'],
     formTitle: 'Book your chauffeur service',
-    datePlaceholder: 'dd/mm/yyyy',
-    timePlaceholder: 'Select time',
     pickupPlaceholder: 'Pickup address',
     dropoffPlaceholder: 'Destination address',
     durationLabel: 'Service duration',
@@ -119,8 +192,6 @@ const CONTENT = {
     note: '* Minimale duur: 2 uur (20 km per uur inbegrepen)',
     badges: ['Totale flexibiliteit', 'Toegewijde chauffeur', 'Veiligheid'],
     formTitle: 'Boek uw chauffeursdienst',
-    datePlaceholder: 'dd/mm/jjjj',
-    timePlaceholder: 'Tijd selecteren',
     pickupPlaceholder: 'Ophaaladres',
     dropoffPlaceholder: 'Bestemmingsadres',
     durationLabel: 'Duur van de dienst',
@@ -133,24 +204,25 @@ const CONTENT = {
 };
 
 const BADGE_ICONS = [
-  // Clock
   <svg key="clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
   </svg>,
-  // User
   <svg key="user" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
   </svg>,
-  // Shield
   <svg key="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
   </svg>,
 ];
 
+/* ── Page ── */
 export default function MiseADispositionPage() {
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname) as Locale;
   const c = CONTENT[locale] ?? CONTENT.fr;
+
+  const [pickup, setPickup] = useState('');
+  const [dropoff, setDropoff] = useState('');
 
   function getFeatureTitle(f: typeof FEATURES[0]): string {
     if (locale === 'en') return f.title_en;
@@ -207,7 +279,7 @@ export default function MiseADispositionPage() {
                   <input type="date" className={styles.formInput} />
                   <span className={styles.inputIcon}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+                      <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
                     </svg>
                   </span>
                 </div>
@@ -225,13 +297,17 @@ export default function MiseADispositionPage() {
               </div>
             </div>
 
-            <div className={styles.formGroup}>
-              <input type="text" className={styles.formInput} placeholder={c.pickupPlaceholder} />
-            </div>
+            <AutocompleteField
+              placeholder={c.pickupPlaceholder}
+              value={pickup}
+              onChange={setPickup}
+            />
 
-            <div className={styles.formGroup}>
-              <input type="text" className={styles.formInput} placeholder={c.dropoffPlaceholder} />
-            </div>
+            <AutocompleteField
+              placeholder={c.dropoffPlaceholder}
+              value={dropoff}
+              onChange={setDropoff}
+            />
 
             <div className={styles.formGroup}>
               <label className={styles.formLabel}>{c.durationLabel}</label>
