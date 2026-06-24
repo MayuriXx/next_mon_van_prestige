@@ -235,6 +235,35 @@
     "error_addresses": "Voer een vertrek- en aankomstadres in.",
     "error_geocode": "Adres niet gevonden. Verfijn uw invoer.",
     "error_route": "Kan de route niet berekenen.",
-    "error_generic": "Er is een fout opgetreden. Probeer het opnieuw."
+    "error_generic": "Er is een fout opgetreden. Probeer het opnieuw.",
+    "error_client_info": "Vul uw naam, e-mail en telefoonnummer in.",
+    "error_datetime": "Selecteer een vertrekdatum en -tijd.",
+    "error_stripe": "Er is een fout opgetreden bij de verbinding met het betalingssysteem.",
+    "back": "Terug",
+    "deposit_note": "Een voorschot wordt in rekening gebracht: 50% bij vertrek > 7 dagen, 30% bij < 7 dagen, 100% bij < 24u.",
+    "client_name_placeholder": "Uw volledige naam",
+    "client_email_placeholder": "Uw e-mailadres",
+    "client_phone_placeholder": "Uw telefoonnummer",
+    "client_notes_placeholder": "Bijzondere instructies (optioneel)",
+    "pay_cta": "Doorgaan naar betaling →",
+    "redirecting": "Doorsturen naar betaling...",
+    "stripe_note": "Veilige betaling via Stripe — uw bankgegevens worden nooit met ons gedeeld."
+  },
+  "reservationSuccess": {
+    "title": "Boeking bevestigd!",
+    "subtitle": "Uw voorschot is ontvangen. U ontvangt binnenkort een bevestigingsmail.",
+    "point_email": "Een samenvatting is naar u gemaild.",
+    "point_balance": "Het resterende saldo dient voor vertrek aan boord te worden betaald.",
+    "point_contact": "Uw chauffeur neemt contact met u op vóór de rit om de details te bevestigen.",
+    "contact_label": "Een vraag?",
+    "cta_home": "Terug naar home"
+  },
+  "reservationCancel": {
+    "title": "Betaling geannuleerd",
+    "subtitle": "Uw boeking is niet voltooid. Er is geen bedrag in rekening gebracht.",
+    "info": "U kunt de boeking op elk moment opnieuw starten. Als u een probleem heeft ondervonden, neem dan contact met ons op via WhatsApp.",
+    "contact_label": "Hulp nodig?",
+    "cta_retry": "Opnieuw proberen",
+    "cta_home": "Terug naar home"
   }
 }
