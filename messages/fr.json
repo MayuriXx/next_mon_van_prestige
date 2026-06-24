@@ -123,5 +123,25 @@
     "error_geocode": "Adresse introuvable. Veuillez préciser votre saisie.",
     "error_route": "Impossible de calculer l'itinéraire.",
     "error_generic": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "escapadesLoisirs": {
+    "tag": "ESCAPADES LOISIRS",
+    "title": "Parcs d'attractions & Événements sportifs",
+    "subtitle": "Profitez de vos sorties en famille ou entre amis en toute sérénité. Avec Mon Van Prestige, libérez-vous des contraintes du stationnement. Tarifs fixes et transparents, sans frais cachés.",
+    "badge_relax": "Détente",
+    "badge_group": "Ponctualité",
+    "badge_safety": "Sécurité",
+    "section_title": "Nos Forfaits Loisirs",
+    "parks_title": "PARCS D'ATTRACTIONS",
+    "sports_title": "ÉVÉNEMENTS SPORTIFS",
+    "from": "Valenciennes",
+    "from_label": "À PARTIR DE",
+    "book_btn": "Réserver",
+    "adv_relax_title": "Journées détente",
+    "adv_relax_desc": "Profitez pleinement de votre journée sans vous soucier de la route. Nous gérons le transport, vous profitez.",
+    "adv_group_title": "Idéal en groupe",
+    "adv_group_desc": "Jusqu'à 7 passagers dans nos véhicules. Parfait pour les familles et les groupes d'amis.",
+    "adv_flexible_title": "Flexibilité horaire",
+    "adv_flexible_desc": "Récupération à l'heure convenue. Adaptez votre retour selon la durée de votre visite."
   }
 }
