@@ -175,5 +175,32 @@
     "adv_pro_desc": "Ervaren chauffeurs die uw veiligheid vooropstellen en een comfortabele rit garanderen.",
     "adv_secu_title": "Maximale veiligheid",
     "adv_secu_desc": "Voertuigen in perfecte staat onderhouden en volledig verzekerd voor uw comfort en veiligheid."
+  },
+  "faq": {
+    "page_title": "Veelgestelde Vragen",
+    "q_how_to_book": "Hoe kan ik boeken?",
+    "a_how_to_book": "U kunt boeken via ons online formulier, per telefoon op +33 6 XX XX XX XX of via WhatsApp. Na validatie van uw aanvraag ontvangt u een bevestiging per e-mail.",
+    "q_payment_methods": "Welke betaalmethoden accepteert u?",
+    "a_payment_methods": "Wij accepteren betalingen per creditcard (Visa, Mastercard), bankoverschrijving en contant. Alle online transacties zijn beveiligd.",
+    "q_where_to_meet": "Waar kunnen we u ontmoeten?",
+    "a_where_to_meet": "Wij zijn actief vanuit Valenciennes en omgeving. Onze chauffeurs halen u op op het adres van uw keuze: thuis, hotel, treinstation, luchthaven of elke andere locatie in Hauts-de-France.",
+    "q_animals_allowed": "Accepteert u dieren in uw voertuigen?",
+    "a_animals_allowed": "Ja, wij accepteren huisdieren onder bepaalde voorwaarden (dier in een geschikte transportkooi of aangelijnd). Gelieve ons te informeren bij de boeking.",
+    "q_no_driver_rental": "Kan men uw voertuigen huren zonder chauffeur?",
+    "a_no_driver_rental": "Nee, onze voertuigen zijn uitsluitend beschikbaar met een professionele chauffeur. Wij bieden geen zelfrijdende verhuur aan.",
+    "q_chauffeur_disposal": "Is het mogelijk een chauffeur voor een paar uur ter beschikking te stellen?",
+    "a_chauffeur_disposal": "Ja, onze 'Chauffeur ter beschikking' service stelt u in staat te genieten van een toegewijde chauffeur voor een volledige of halve dag, naargelang uw behoeften.",
+    "q_child_seats": "Beschikt u over kinderzitjes?",
+    "a_child_seats": "Ja, wij voorzien geschikte kinderzitjes (baby, kind, zitverhoger) op eenvoudig verzoek bij de boeking, zonder meerprijs.",
+    "q_private_and_pro": "Zijn uw diensten bestemd voor particulieren en bedrijven?",
+    "a_private_and_pro": "Ja, wij werken zowel met particulieren als met bedrijven. Wij bieden facturatie aan aangepast aan professionals met btw en een toegewijde accountbeheerder.",
+    "q_delay_policy": "Wat gebeurt er als mijn vliegtuig of trein vertraging heeft?",
+    "a_delay_policy": "Geen probleem! Wij volgen de status van uw vlucht of trein in realtime. Uw chauffeur past zich automatisch aan aan uw werkelijke aankomsttijd, zonder extra kosten.",
+    "q_invoice_payment": "Hoe kan ik mijn factuur betalen?",
+    "a_invoice_payment": "Uw factuur wordt automatisch opgesteld na elke rit en per e-mail verzonden. U kunt online betalen per kaart, via bankoverschrijving of contant aan uw chauffeur.",
+    "q_how_to_book_2": "Hoe kan ik reserveren?",
+    "a_how_to_book_2": "Reserveren is eenvoudig: gebruik ons online formulier dat 24/7 beschikbaar is, of neem contact met ons op per telefoon of WhatsApp. Wij bevestigen elk verzoek zo snel mogelijk.",
+    "cta_text": "Heeft u nog andere vragen? Ons team is 7 dagen per week, 24 uur per dag beschikbaar.",
+    "cta_btn": "Neem contact op"
   }
 }

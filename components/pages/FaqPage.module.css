@@ -1,0 +1,205 @@
+/* ── FaqPage.module.css ───────────────────────────────────────────────────── */
+
+.wrapper {
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  overflow: hidden;
+}
+
+/* ── Background ── */
+.bgOverlay {
+  position: fixed;
+  inset: 0;
+  background-image: url('/images/sections/deplacements-pro.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  opacity: 0.18;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 80px var(--spacing-xl) 48px;
+}
+
+.heroTitle {
+  font-family: var(--font-title);
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 700;
+  color: var(--color-white);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  line-height: 1.2;
+}
+
+.separator {
+  width: 60px;
+  height: 3px;
+  background: var(--color-gold);
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+/* ── Accordion section ── */
+.accordionSection {
+  position: relative;
+  z-index: 1;
+  padding: 0 var(--spacing-xl) 60px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.accordionList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Single item ── */
+.item {
+  background-color: rgba(26, 26, 26, 0.92);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color var(--transition-base);
+}
+
+.itemOpen {
+  border-color: rgba(201, 168, 76, 0.35);
+}
+
+/* ── Question button ── */
+.question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 20px 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  gap: 16px;
+  text-align: left;
+  transition: background-color var(--transition-fast);
+}
+
+.question:hover {
+  background-color: rgba(201, 168, 76, 0.04);
+}
+
+.questionText {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-white);
+  line-height: 1.4;
+  flex: 1;
+}
+
+.itemOpen .questionText {
+  color: var(--color-gold);
+}
+
+/* ── Icon ── */
+.icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-gold);
+  border-radius: 50%;
+  color: var(--color-gold);
+  transition: transform var(--transition-base), background-color var(--transition-base);
+}
+
+.itemOpen .icon {
+  background-color: var(--color-gold);
+  color: var(--color-bg);
+  transform: rotate(180deg);
+}
+
+/* ── Answer ── */
+.answerWrapper {
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.answer {
+  padding: 0 24px 20px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.75;
+  border-top: 1px solid var(--color-border);
+  padding-top: 16px;
+}
+
+/* ── CTA bottom ── */
+.ctaSection {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 0 var(--spacing-xl) 80px;
+}
+
+.ctaText {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+}
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 40px;
+  background-color: var(--color-gold);
+  color: var(--color-bg);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-base), transform var(--transition-fast);
+}
+
+.ctaBtn:hover {
+  background-color: #b8962e;
+  transform: translateY(-2px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .hero {
+    padding: 60px var(--spacing-md) 40px;
+  }
+
+  .accordionSection {
+    padding: 0 var(--spacing-md) 48px;
+  }
+
+  .question {
+    padding: 16px 18px;
+  }
+
+  .questionText {
+    font-size: 14px;
+  }
+
+  .answer {
+    padding: 0 18px 16px;
+    padding-top: 14px;
+  }
+}

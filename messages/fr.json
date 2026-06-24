@@ -175,5 +175,32 @@
     "adv_pro_desc": "Des chauffeurs expérimentés qui privilégient votre sécurité tout en assurant un trajet confortable.",
     "adv_secu_title": "Sécurité maximale",
     "adv_secu_desc": "Véhicules maintenus en parfait état et assurés tous risques pour garantir votre confort et votre sécurité."
+  },
+  "faq": {
+    "page_title": "Questions Fréquemment Posées",
+    "q_how_to_book": "Comment réserver ?",
+    "a_how_to_book": "Vous pouvez réserver via notre formulaire en ligne, par téléphone au +33 6 XX XX XX XX ou par WhatsApp. Une confirmation vous sera envoyée par email dès validation de votre demande.",
+    "q_payment_methods": "Quels moyens de paiement acceptez-vous ?",
+    "a_payment_methods": "Nous acceptons les paiements par carte bancaire (Visa, Mastercard), virement bancaire et espèces. Toutes les transactions en ligne sont sécurisées.",
+    "q_where_to_meet": "Où pouvons-nous vous rencontrer ?",
+    "a_where_to_meet": "Nous opérons depuis Valenciennes et ses alentours. Nos chauffeurs vous récupèrent à l'adresse de votre choix : domicile, hôtel, gare, aéroport ou tout autre lieu en Hauts-de-France.",
+    "q_animals_allowed": "Acceptez-vous les animaux dans vos véhicules ?",
+    "a_animals_allowed": "Oui, nous acceptons les animaux de compagnie sous certaines conditions (animal dans une cage de transport adaptée ou tenu en laisse). Merci de nous informer lors de la réservation.",
+    "q_no_driver_rental": "Peut-on louer vos véhicules sans chauffeur ?",
+    "a_no_driver_rental": "Non, nos véhicules sont exclusivement disponibles avec chauffeur professionnel. Nous ne proposons pas de location sans conducteur.",
+    "q_chauffeur_disposal": "Est-il possible de mettre un chauffeur à disposition quelques heures ?",
+    "a_chauffeur_disposal": "Oui, notre service « Mise à Disposition » vous permet de bénéficier d'un chauffeur dédié à la journée ou au demi-journée, selon vos besoins.",
+    "q_child_seats": "Disposez-vous de sièges enfants ?",
+    "a_child_seats": "Oui, nous mettons des sièges enfants adaptés à disposition (bébé, enfant, rehausseur) sur simple demande lors de la réservation, sans supplément.",
+    "q_private_and_pro": "Vos services sont-ils dédiés aux particuliers et aux professionnels ?",
+    "a_private_and_pro": "Oui, nous travaillons aussi bien avec les particuliers qu'avec les entreprises. Nous proposons une facturation adaptée aux professionnels avec TVA et un suivi de compte dédié.",
+    "q_delay_policy": "Que se passe-t-il si mon avion ou mon train a du retard ?",
+    "a_delay_policy": "Pas de souci ! Nous suivons en temps réel l'état de votre vol ou de votre train. Votre chauffeur s'adapte automatiquement à l'heure réelle d'arrivée, sans frais supplémentaires.",
+    "q_invoice_payment": "Comment puis-je régler ma facture ?",
+    "a_invoice_payment": "Votre facture est émise automatiquement après chaque course. Elle vous est envoyée par email. Vous pouvez la régler en ligne par carte, par virement ou en espèces auprès de votre chauffeur.",
+    "q_how_to_book_2": "Comment puis-je réserver ?",
+    "a_how_to_book_2": "La réservation est simple : utilisez notre formulaire en ligne disponible 24h/24, contactez-nous par téléphone ou WhatsApp. Nous confirmons chaque demande dans les plus brefs délais.",
+    "cta_text": "Vous avez d'autres questions ? Notre équipe est disponible 7j/7, 24h/24.",
+    "cta_btn": "Nous contacter"
   }
 }

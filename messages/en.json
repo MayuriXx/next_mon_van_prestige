@@ -175,5 +175,32 @@
     "adv_pro_desc": "Experienced drivers who prioritize your safety while ensuring a comfortable journey.",
     "adv_secu_title": "Maximum safety",
     "adv_secu_desc": "Vehicles maintained in perfect condition and fully insured to guarantee your comfort and safety."
+  },
+  "faq": {
+    "page_title": "Frequently Asked Questions",
+    "q_how_to_book": "How do I make a booking?",
+    "a_how_to_book": "You can book via our online form, by phone at +33 6 XX XX XX XX or by WhatsApp. A confirmation will be sent to you by email once your request is validated.",
+    "q_payment_methods": "What payment methods do you accept?",
+    "a_payment_methods": "We accept payments by credit card (Visa, Mastercard), bank transfer and cash. All online transactions are secured.",
+    "q_where_to_meet": "Where can we meet you?",
+    "a_where_to_meet": "We operate from Valenciennes and the surrounding area. Our drivers will pick you up at the address of your choice: home, hotel, train station, airport or any other location in Hauts-de-France.",
+    "q_animals_allowed": "Do you accept animals in your vehicles?",
+    "a_animals_allowed": "Yes, we accept pets under certain conditions (animal in a suitable transport cage or kept on a leash). Please let us know when booking.",
+    "q_no_driver_rental": "Can we rent your vehicles without a driver?",
+    "a_no_driver_rental": "No, our vehicles are exclusively available with a professional driver. We do not offer self-drive rental.",
+    "q_chauffeur_disposal": "Is it possible to have a chauffeur available for a few hours?",
+    "a_chauffeur_disposal": "Yes, our 'Chauffeur at Disposal' service allows you to benefit from a dedicated driver for a full or half-day, according to your needs.",
+    "q_child_seats": "Do you have child seats?",
+    "a_child_seats": "Yes, we provide suitable child seats (baby, child, booster) on simple request when booking, at no extra charge.",
+    "q_private_and_pro": "Are your services for private individuals and businesses?",
+    "a_private_and_pro": "Yes, we work with both private individuals and businesses. We offer invoicing adapted to professionals with VAT and a dedicated account manager.",
+    "q_delay_policy": "What happens if my flight or train is delayed?",
+    "a_delay_policy": "No problem! We monitor your flight or train status in real time. Your driver automatically adjusts to your actual arrival time, at no extra charge.",
+    "q_invoice_payment": "How can I pay my invoice?",
+    "a_invoice_payment": "Your invoice is issued automatically after each trip and sent to you by email. You can pay online by card, by bank transfer or in cash to your driver.",
+    "q_how_to_book_2": "How can I book?",
+    "a_how_to_book_2": "Booking is simple: use our online form available 24/7, or contact us by phone or WhatsApp. We confirm every request as quickly as possible.",
+    "cta_text": "Have more questions? Our team is available 7 days a week, 24 hours a day.",
+    "cta_btn": "Contact us"
   }
 }
