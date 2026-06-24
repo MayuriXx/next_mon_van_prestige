@@ -449,3 +449,59 @@
     gap: 8px;
   }
 }
+
+/* ── Autocomplete ── */
+.autocompleteWrap {
+  position: relative;
+  width: 100%;
+}
+
+.suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.suggestionItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: #333;
+  line-height: 1.4;
+  transition: background 0.15s;
+}
+
+.suggestionItem:hover {
+  background: #f5f0e8;
+}
+
+.suggestionIcon {
+  width: 14px;
+  height: 14px;
+  color: var(--color-gold, #C9A84C);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ── Hero note ── */
+.heroNote {
+  font-family: var(--font-lato, sans-serif);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  margin: 0;
+}
