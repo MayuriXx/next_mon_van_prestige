@@ -5,9 +5,12 @@ import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useState, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import app from '@/lib/firebase/client';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import { calculatePrice, formatPrice } from '@/lib/utils/pricing';
 import type { VehicleType } from '@/lib/types/pricing';
+import type { CheckoutPayload } from '@/lib/types/reservation';
 import styles from './ReservationPage.module.css';
 
 const LeafletMap = dynamic(() => import('@/components/map/LeafletMap'), { ssr: false });
@@ -158,7 +161,7 @@ export default function ReservationPage() {
   const [passengers, setPassengers] = useState('1');
   const [tripType, setTripType] = useState('one_way');
   const [vehicleType, setVehicleType] = useState<VehicleType>('BUSINESS');
-  const [duration, setDuration] = useState('2'); // MAD hours
+  const [duration, setDuration] = useState('2');
 
   /* ── Geo / route state ── */
   const [fromPoint, setFromPoint] = useState<GeoPoint | null>(null);
@@ -173,7 +176,17 @@ export default function ReservationPage() {
     durationMin: number;
     businessPrice: string;
     vanPrice: string;
+    rawPrice: number; // numeric total for Stripe
   } | null>(null);
+
+  /* ── Client info modal state ── */
+  const [showClientForm, setShowClientForm] = useState(false);
+  const [clientName, setClientName] = useState('');
+  const [clientEmail, setClientEmail] = useState('');
+  const [clientPhone, setClientPhone] = useState('');
+  const [clientNotes, setClientNotes] = useState('');
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingError, setBookingError] = useState('');
 
   const mapColRef = useRef<HTMLDivElement>(null);
 
@@ -202,35 +215,111 @@ export default function ReservationPage() {
       const businessResult = calculatePrice({ serviceType: 'TRANSFER', vehicleType: 'BUSINESS', distanceKm: km });
       const vanResult      = calculatePrice({ serviceType: 'TRANSFER', vehicleType: 'VAN',      distanceKm: km });
 
+      const rawB = typeof businessResult.price === 'number' ? businessResult.price : businessResult.price.min;
+      const rawV = typeof vanResult.price === 'number' ? vanResult.price : vanResult.price.min;
+
       setResult({
         distanceKm: route.distanceKm,
         durationMin: route.durationMin,
         businessPrice: formatPrice(businessResult.price),
         vanPrice: formatPrice(vanResult.price),
+        rawPrice: vehicleType === 'BUSINESS' ? rawB : rawV,
       });
       setTimeout(() => mapColRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     } catch { setError(t('error_generic')); }
     finally { setLoading(false); }
-  }, [departure, arrival, fromPoint, toPoint, tripType, t]);
+  }, [departure, arrival, fromPoint, toPoint, tripType, vehicleType, t]);
 
   /* ── Calculate — MAD ── */
   const handleCalculateMAD = useCallback(() => {
     const hours = parseInt(duration, 10);
     const businessResult = calculatePrice({ serviceType: 'MAD', vehicleType: 'BUSINESS', durationHours: hours });
     const vanResult      = calculatePrice({ serviceType: 'MAD', vehicleType: 'VAN',      durationHours: hours });
+    const rawB = typeof businessResult.price === 'number' ? businessResult.price : businessResult.price.min;
+    const rawV = typeof vanResult.price === 'number' ? vanResult.price : vanResult.price.min;
     setResult({
       distanceKm: 0,
       durationMin: hours * 60,
       businessPrice: formatPrice(businessResult.price),
       vanPrice: formatPrice(vanResult.price),
+      rawPrice: vehicleType === 'BUSINESS' ? rawB : rawV,
     });
-  }, [duration]);
+  }, [duration, vehicleType]);
 
-  /* ── Book CTA — passes data to Stripe (issue #18) ── */
-  function handleBook() {
-    // Placeholder — Stripe Checkout integration in issue #18
-    window.location.href = localePath('/reservation/success', locale);
+  /* ── Update rawPrice when vehicle type changes ── */
+  function handleVehicleChange(v: VehicleType) {
+    setVehicleType(v);
+    setResult(null); // reset so user recalculates with new vehicle
   }
+
+  /* ── Open client info form ── */
+  function handleBook() {
+    if (!result) return;
+    setShowClientForm(true);
+    setBookingError('');
+  }
+
+  /* ── Submit booking → Cloud Function → Stripe ── */
+  const handleSubmitBooking = useCallback(async () => {
+    if (!clientName.trim() || !clientEmail.trim() || !clientPhone.trim()) {
+      setBookingError(t('error_client_info'));
+      return;
+    }
+    if (!date || !hour) {
+      setBookingError(t('error_datetime'));
+      return;
+    }
+    if (!result) return;
+
+    setBookingLoading(true);
+    setBookingError('');
+
+    try {
+      const departureDateTime = `${date}T${hour}:00`;
+      const currentPrice = vehicleType === 'BUSINESS' ? result.rawPrice : result.rawPrice;
+
+      const payload: CheckoutPayload = {
+        totalPrice       : currentPrice,
+        departureDateTime,
+        departureAddress : departure,
+        arrivalAddress   : activeTab === 'simple' ? arrival : undefined,
+        vehicleType,
+        serviceType      : activeTab === 'simple' ? 'TRANSFER' : 'MAD',
+        tripType         : activeTab === 'simple' ? tripType : undefined,
+        passengers       : parseInt(passengers, 10),
+        durationHours    : activeTab === 'mad' ? parseInt(duration, 10) : undefined,
+        distanceKm       : activeTab === 'simple' ? result.distanceKm : undefined,
+        locale,
+        clientName       : clientName.trim(),
+        clientEmail      : clientEmail.trim(),
+        clientPhone      : clientPhone.trim(),
+        notes            : clientNotes.trim() || undefined,
+      };
+
+      const functions = getFunctions(app, 'europe-west1');
+      const createSession = httpsCallable<CheckoutPayload, { sessionUrl: string }>(
+        functions,
+        'createCheckoutSession'
+      );
+
+      const res = await createSession(payload);
+
+      if (res.data.sessionUrl) {
+        window.location.href = res.data.sessionUrl;
+      } else {
+        setBookingError(t('error_stripe'));
+      }
+    } catch (err) {
+      console.error('Booking error:', err);
+      setBookingError(t('error_generic'));
+    } finally {
+      setBookingLoading(false);
+    }
+  }, [
+    clientName, clientEmail, clientPhone, clientNotes,
+    date, hour, result, vehicleType, departure, arrival,
+    activeTab, tripType, passengers, duration, locale, t,
+  ]);
 
   return (
     <>
@@ -284,20 +373,20 @@ export default function ReservationPage() {
             <div className={styles.formTabs}>
               <button
                 className={`${styles.formTab} ${activeTab === 'simple' ? styles.formTabActive : ''}`}
-                onClick={() => { setActiveTab('simple'); setResult(null); setError(''); }}
+                onClick={() => { setActiveTab('simple'); setResult(null); setError(''); setShowClientForm(false); }}
               >
                 {t('tab_simple')}
               </button>
               <button
                 className={`${styles.formTab} ${activeTab === 'mad' ? styles.formTabActive : ''}`}
-                onClick={() => { setActiveTab('mad'); setResult(null); setError(''); }}
+                onClick={() => { setActiveTab('mad'); setResult(null); setError(''); setShowClientForm(false); }}
               >
                 {t('tab_mad')}
               </button>
             </div>
 
             {/* ── Tab: Trajet Simple ── */}
-            {activeTab === 'simple' && (
+            {activeTab === 'simple' && !showClientForm && (
               <>
                 <AutocompleteField
                   placeholder={t('form_departure_placeholder')}
@@ -352,7 +441,7 @@ export default function ReservationPage() {
                 <div className={styles.vehicleSelector}>
                   <button
                     className={`${styles.vehicleBtn} ${vehicleType === 'BUSINESS' ? styles.vehicleBtnActive : ''}`}
-                    onClick={() => setVehicleType('BUSINESS')}
+                    onClick={() => handleVehicleChange('BUSINESS')}
                     type="button"
                   >
                     <span className={styles.vehicleEmoji}>🚗</span>
@@ -360,7 +449,7 @@ export default function ReservationPage() {
                   </button>
                   <button
                     className={`${styles.vehicleBtn} ${vehicleType === 'VAN' ? styles.vehicleBtnActive : ''}`}
-                    onClick={() => setVehicleType('VAN')}
+                    onClick={() => handleVehicleChange('VAN')}
                     type="button"
                   >
                     <span className={styles.vehicleEmoji}>🚐</span>
@@ -395,7 +484,7 @@ export default function ReservationPage() {
             )}
 
             {/* ── Tab: Mise à Disposition ── */}
-            {activeTab === 'mad' && (
+            {activeTab === 'mad' && !showClientForm && (
               <>
                 <AutocompleteField
                   placeholder={t('form_departure_placeholder')}
@@ -447,7 +536,7 @@ export default function ReservationPage() {
                 <div className={styles.vehicleSelector}>
                   <button
                     className={`${styles.vehicleBtn} ${vehicleType === 'BUSINESS' ? styles.vehicleBtnActive : ''}`}
-                    onClick={() => setVehicleType('BUSINESS')}
+                    onClick={() => handleVehicleChange('BUSINESS')}
                     type="button"
                   >
                     <span className={styles.vehicleEmoji}>🚗</span>
@@ -455,7 +544,7 @@ export default function ReservationPage() {
                   </button>
                   <button
                     className={`${styles.vehicleBtn} ${vehicleType === 'VAN' ? styles.vehicleBtnActive : ''}`}
-                    onClick={() => setVehicleType('VAN')}
+                    onClick={() => handleVehicleChange('VAN')}
                     type="button"
                   >
                     <span className={styles.vehicleEmoji}>🚐</span>
@@ -485,6 +574,74 @@ export default function ReservationPage() {
                   </div>
                 )}
               </>
+            )}
+
+            {/* ── Client info form (step 2) ── */}
+            {showClientForm && result && (
+              <div className={styles.clientForm}>
+                <button
+                  className={styles.backBtn}
+                  onClick={() => { setShowClientForm(false); setBookingError(''); }}
+                  type="button"
+                >
+                  ← {t('back')}
+                </button>
+
+                {/* Price recap */}
+                <div className={styles.priceRecap}>
+                  <span className={styles.priceRecapLabel}>{t('estimated_price')}</span>
+                  <span className={styles.priceRecapValue}>
+                    {vehicleType === 'BUSINESS' ? result.businessPrice : result.vanPrice}
+                  </span>
+                </div>
+                <p className={styles.depositNote}>{t('deposit_note')}</p>
+
+                <input
+                  type="text"
+                  className={styles.formInput}
+                  placeholder={t('client_name_placeholder')}
+                  value={clientName}
+                  onChange={(e) => setClientName(e.target.value)}
+                  autoComplete="name"
+                />
+                <input
+                  type="email"
+                  className={styles.formInput}
+                  placeholder={t('client_email_placeholder')}
+                  value={clientEmail}
+                  onChange={(e) => setClientEmail(e.target.value)}
+                  autoComplete="email"
+                />
+                <input
+                  type="tel"
+                  className={styles.formInput}
+                  placeholder={t('client_phone_placeholder')}
+                  value={clientPhone}
+                  onChange={(e) => setClientPhone(e.target.value)}
+                  autoComplete="tel"
+                />
+                <textarea
+                  className={styles.formTextarea}
+                  placeholder={t('client_notes_placeholder')}
+                  value={clientNotes}
+                  onChange={(e) => setClientNotes(e.target.value)}
+                  rows={2}
+                />
+
+                {bookingError && <p className={styles.errorMsg}>{bookingError}</p>}
+
+                <button
+                  className={styles.bookBtn}
+                  onClick={handleSubmitBooking}
+                  disabled={bookingLoading}
+                >
+                  {bookingLoading ? t('redirecting') : t('pay_cta')}
+                </button>
+
+                <p className={styles.stripeNote}>
+                  🔒 {t('stripe_note')}
+                </p>
+              </div>
             )}
           </div>
         </div>
