@@ -123,5 +123,25 @@
     "error_geocode": "Address not found. Please refine your search.",
     "error_route": "Unable to calculate the route.",
     "error_generic": "An error occurred. Please try again."
+  },
+  "escapadesLoisirs": {
+    "tag": "LEISURE ESCAPES",
+    "title": "Theme Parks & Sporting Events",
+    "subtitle": "Enjoy your outings with family or friends in complete serenity. With Mon Van Prestige, forget about parking hassles. Fixed, transparent pricing with no hidden fees.",
+    "badge_relax": "Relaxation",
+    "badge_group": "Punctuality",
+    "badge_safety": "Safety",
+    "section_title": "Our Leisure Packages",
+    "parks_title": "THEME PARKS",
+    "sports_title": "SPORTING EVENTS",
+    "from": "Valenciennes",
+    "from_label": "STARTING FROM",
+    "book_btn": "Book",
+    "adv_relax_title": "Relaxing days out",
+    "adv_relax_desc": "Enjoy your day to the fullest without worrying about driving. We handle the transport, you enjoy the experience.",
+    "adv_group_title": "Perfect for groups",
+    "adv_group_desc": "Up to 7 passengers in our vehicles. Perfect for families and groups of friends.",
+    "adv_flexible_title": "Flexible timings",
+    "adv_flexible_desc": "Pick-up at the agreed time. Adjust your return journey to suit the duration of your visit."
   }
 }
