@@ -1,0 +1,568 @@
+'use client';
+
+import Image from 'next/image';
+import { useTranslations } from 'next-intl';
+import { usePathname } from 'next/navigation';
+import { useState, useCallback, useRef } from 'react';
+import dynamic from 'next/dynamic';
+import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
+import { calculatePrice, formatPrice } from '@/lib/utils/pricing';
+import type { VehicleType } from '@/lib/types/pricing';
+import styles from './ReservationPage.module.css';
+
+const LeafletMap = dynamic(() => import('@/components/map/LeafletMap'), { ssr: false });
+
+/* ── Nominatim helpers ── */
+interface GeoPoint { lat: number; lng: number; label: string; }
+interface Suggestion { display_name: string; lat: string; lon: string; }
+
+async function fetchSuggestions(query: string): Promise<Suggestion[]> {
+  if (query.length < 3) return [];
+  const url =
+    'https://nominatim.openstreetmap.org/search?format=json&q=' +
+    encodeURIComponent(query) +
+    '&limit=5&addressdetails=1&countrycodes=fr,be';
+  const res = await fetch(url, { headers: { 'Accept-Language': 'fr' } });
+  return res.json();
+}
+
+async function geocode(address: string): Promise<GeoPoint | null> {
+  const url =
+    'https://nominatim.openstreetmap.org/search?format=json&q=' +
+    encodeURIComponent(address) +
+    '&limit=1';
+  const res = await fetch(url, { headers: { 'Accept-Language': 'fr' } });
+  const data = await res.json();
+  if (!data.length) return null;
+  return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), label: data[0].display_name };
+}
+
+async function getRoute(
+  from: GeoPoint,
+  to: GeoPoint
+): Promise<{ distanceKm: number; durationMin: number; coords: [number, number][] } | null> {
+  const url =
+    'https://router.project-osrm.org/route/v1/driving/' +
+    from.lng + ',' + from.lat + ';' +
+    to.lng + ',' + to.lat +
+    '?overview=full&geometries=geojson';
+  const res = await fetch(url);
+  const data = await res.json();
+  if (data.code !== 'Ok' || !data.routes.length) return null;
+  const route = data.routes[0];
+  return {
+    distanceKm: route.distance / 1000,
+    durationMin: Math.round(route.duration / 60),
+    coords: route.geometry.coordinates.map(
+      ([lng, lat]: [number, number]) => [lat, lng] as [number, number]
+    ),
+  };
+}
+
+/* ── AutocompleteField ── */
+interface AutocompleteFieldProps {
+  placeholder: string;
+  value: string;
+  onChange: (val: string) => void;
+  onSelect: (point: GeoPoint) => void;
+}
+
+function AutocompleteField({ placeholder, value, onChange, onSelect }: AutocompleteFieldProps) {
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [open, setOpen] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  function handleChange(val: string) {
+    onChange(val);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      const results = await fetchSuggestions(val);
+      setSuggestions(results);
+      setOpen(results.length > 0);
+    }, 350);
+  }
+
+  function handleSelect(s: Suggestion) {
+    onChange(s.display_name);
+    onSelect({ lat: parseFloat(s.lat), lng: parseFloat(s.lon), label: s.display_name });
+    setSuggestions([]);
+    setOpen(false);
+  }
+
+  return (
+    <div className={styles.autocompleteWrap} ref={wrapRef}>
+      <input
+        type="text"
+        className={styles.formInput}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => handleChange(e.target.value)}
+        onFocus={() => suggestions.length > 0 && setOpen(true)}
+        onBlur={() => setTimeout(() => setOpen(false), 200)}
+        autoComplete="off"
+      />
+      {open && (
+        <ul className={styles.suggestions}>
+          {suggestions.map((s, i) => (
+            <li key={i} className={styles.suggestionItem} onMouseDown={() => handleSelect(s)}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={styles.suggestionIcon}>
+                <circle cx="12" cy="11" r="3" />
+                <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z" />
+              </svg>
+              <span>{s.display_name}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+/* ── SVG Icons ── */
+const ICON_CLOCK = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+  </svg>
+);
+const ICON_USER = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+  </svg>
+);
+const ICON_SHIELD = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
+
+/* ── MAD duration options ── */
+const MAD_DURATIONS = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12];
+
+/* ══════════════════════════════════════════════
+   ReservationPage
+   ══════════════════════════════════════════════ */
+export default function ReservationPage() {
+  const t = useTranslations('reservation');
+  const pathname = usePathname();
+  const locale = getLocaleFromPath(pathname);
+
+  /* ── Tab state ── */
+  const [activeTab, setActiveTab] = useState<'simple' | 'mad'>('simple');
+
+  /* ── Shared fields ── */
+  const [departure, setDeparture] = useState('');
+  const [arrival, setArrival] = useState('');
+  const [date, setDate] = useState('');
+  const [hour, setHour] = useState('');
+  const [passengers, setPassengers] = useState('1');
+  const [tripType, setTripType] = useState('one_way');
+  const [vehicleType, setVehicleType] = useState<VehicleType>('BUSINESS');
+  const [duration, setDuration] = useState('2'); // MAD hours
+
+  /* ── Geo / route state ── */
+  const [fromPoint, setFromPoint] = useState<GeoPoint | null>(null);
+  const [toPoint, setToPoint] = useState<GeoPoint | null>(null);
+  const [routeCoords, setRouteCoords] = useState<[number, number][]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  /* ── Result state ── */
+  const [result, setResult] = useState<{
+    distanceKm: number;
+    durationMin: number;
+    businessPrice: string;
+    vanPrice: string;
+  } | null>(null);
+
+  const mapColRef = useRef<HTMLDivElement>(null);
+
+  /* ── Field change handlers ── */
+  function handleDepartureChange(val: string) { setDeparture(val); setFromPoint(null); setResult(null); }
+  function handleArrivalChange(val: string) { setArrival(val); setToPoint(null); setResult(null); }
+
+  /* ── Calculate — TRANSFER ── */
+  const handleCalculateTransfer = useCallback(async () => {
+    if (!departure.trim() || !arrival.trim()) { setError(t('error_addresses')); return; }
+    setLoading(true); setError(''); setResult(null); setRouteCoords([]);
+    try {
+      const [from, to] = await Promise.all([
+        fromPoint ? Promise.resolve(fromPoint) : geocode(departure),
+        toPoint   ? Promise.resolve(toPoint)   : geocode(arrival),
+      ]);
+      if (!from || !to) { setError(t('error_geocode')); setLoading(false); return; }
+      setFromPoint(from); setToPoint(to);
+      const route = await getRoute(from, to);
+      if (!route) { setError(t('error_route')); setLoading(false); return; }
+
+      const multiplier = tripType === 'round_trip' ? 2 : 1;
+      const km = route.distanceKm * multiplier;
+      setRouteCoords(route.coords);
+
+      const businessResult = calculatePrice({ serviceType: 'TRANSFER', vehicleType: 'BUSINESS', distanceKm: km });
+      const vanResult      = calculatePrice({ serviceType: 'TRANSFER', vehicleType: 'VAN',      distanceKm: km });
+
+      setResult({
+        distanceKm: route.distanceKm,
+        durationMin: route.durationMin,
+        businessPrice: formatPrice(businessResult.price),
+        vanPrice: formatPrice(vanResult.price),
+      });
+      setTimeout(() => mapColRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    } catch { setError(t('error_generic')); }
+    finally { setLoading(false); }
+  }, [departure, arrival, fromPoint, toPoint, tripType, t]);
+
+  /* ── Calculate — MAD ── */
+  const handleCalculateMAD = useCallback(() => {
+    const hours = parseInt(duration, 10);
+    const businessResult = calculatePrice({ serviceType: 'MAD', vehicleType: 'BUSINESS', durationHours: hours });
+    const vanResult      = calculatePrice({ serviceType: 'MAD', vehicleType: 'VAN',      durationHours: hours });
+    setResult({
+      distanceKm: 0,
+      durationMin: hours * 60,
+      businessPrice: formatPrice(businessResult.price),
+      vanPrice: formatPrice(vanResult.price),
+    });
+  }, [duration]);
+
+  /* ── Book CTA — passes data to Stripe (issue #18) ── */
+  function handleBook() {
+    // Placeholder — Stripe Checkout integration in issue #18
+    window.location.href = localePath('/reservation/success', locale);
+  }
+
+  return (
+    <>
+      {/* ══ HERO ══ */}
+      <section className={styles.hero}>
+        <div className={styles.heroImageWrapper}>
+          <Image
+            src="/images/sections/deplacements-professionnels.jpg"
+            alt="Réservation MS Prestige Driver"
+            fill
+            className={styles.heroImage}
+            priority
+          />
+        </div>
+        <div className={styles.heroOverlay} />
+        <div className={styles.heroGradient} />
+
+        <div className={styles.heroInner}>
+          {/* ── Left: heading ── */}
+          <div className={styles.heroText}>
+            <p className={styles.heroTag}>{t('tag')}</p>
+            <h1 className={styles.heroTitle}>{t('title')}</h1>
+            <p className={styles.heroSubtitle}>{t('subtitle')}</p>
+            <div className={styles.heroBadges}>
+              <span className={styles.heroBadge}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.badgeIcon}>
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                {t('badge_price')}
+              </span>
+              <span className={styles.heroBadge}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.badgeIcon}>
+                  <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+                </svg>
+                {t('badge_punctuality')}
+              </span>
+              <span className={styles.heroBadge}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.badgeIcon}>
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                {t('badge_security')}
+              </span>
+            </div>
+          </div>
+
+          {/* ── Right: booking form card ── */}
+          <div className={styles.heroForm}>
+            <h3 className={styles.heroFormTitle}>{t('form_title')}</h3>
+
+            {/* Tabs */}
+            <div className={styles.formTabs}>
+              <button
+                className={`${styles.formTab} ${activeTab === 'simple' ? styles.formTabActive : ''}`}
+                onClick={() => { setActiveTab('simple'); setResult(null); setError(''); }}
+              >
+                {t('tab_simple')}
+              </button>
+              <button
+                className={`${styles.formTab} ${activeTab === 'mad' ? styles.formTabActive : ''}`}
+                onClick={() => { setActiveTab('mad'); setResult(null); setError(''); }}
+              >
+                {t('tab_mad')}
+              </button>
+            </div>
+
+            {/* ── Tab: Trajet Simple ── */}
+            {activeTab === 'simple' && (
+              <>
+                <AutocompleteField
+                  placeholder={t('form_departure_placeholder')}
+                  value={departure}
+                  onChange={handleDepartureChange}
+                  onSelect={(p) => { setFromPoint(p); setDeparture(p.label); }}
+                />
+                <AutocompleteField
+                  placeholder={t('form_arrival_placeholder')}
+                  value={arrival}
+                  onChange={handleArrivalChange}
+                  onSelect={(p) => { setToPoint(p); setArrival(p.label); }}
+                />
+                <div className={styles.formRow}>
+                  <input
+                    type="date"
+                    className={styles.formInput}
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                  <input
+                    type="time"
+                    className={styles.formInput}
+                    value={hour}
+                    onChange={(e) => setHour(e.target.value)}
+                  />
+                </div>
+                <div className={styles.formRow}>
+                  <select
+                    className={styles.formSelect}
+                    value={tripType}
+                    onChange={(e) => setTripType(e.target.value)}
+                  >
+                    <option value="one_way">{t('trip_one_way')}</option>
+                    <option value="round_trip">{t('trip_round_trip')}</option>
+                  </select>
+                  <select
+                    className={styles.formSelect}
+                    value={passengers}
+                    onChange={(e) => setPassengers(e.target.value)}
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                      <option key={n} value={n}>
+                        {n} {t('passengers_label')}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Vehicle selector */}
+                <div className={styles.vehicleSelector}>
+                  <button
+                    className={`${styles.vehicleBtn} ${vehicleType === 'BUSINESS' ? styles.vehicleBtnActive : ''}`}
+                    onClick={() => setVehicleType('BUSINESS')}
+                    type="button"
+                  >
+                    <span className={styles.vehicleEmoji}>🚗</span>
+                    <span>Business</span>
+                  </button>
+                  <button
+                    className={`${styles.vehicleBtn} ${vehicleType === 'VAN' ? styles.vehicleBtnActive : ''}`}
+                    onClick={() => setVehicleType('VAN')}
+                    type="button"
+                  >
+                    <span className={styles.vehicleEmoji}>🚐</span>
+                    <span>Van</span>
+                  </button>
+                </div>
+
+                <button
+                  className={styles.formBtn}
+                  onClick={handleCalculateTransfer}
+                  disabled={loading}
+                >
+                  {loading ? t('calculating') : t('form_calculate')}
+                </button>
+                {error && <p className={styles.errorMsg}>{error}</p>}
+
+                {/* Inline price result */}
+                {result && (
+                  <div className={styles.inlinePrice}>
+                    <div className={styles.inlinePriceRow}>
+                      <span className={styles.inlinePriceLabel}>{t('estimated_price')}</span>
+                      <span className={styles.inlinePriceValue}>
+                        {vehicleType === 'BUSINESS' ? result.businessPrice : result.vanPrice}
+                      </span>
+                    </div>
+                    <button className={styles.bookBtn} onClick={handleBook}>
+                      {t('book_cta')}
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* ── Tab: Mise à Disposition ── */}
+            {activeTab === 'mad' && (
+              <>
+                <AutocompleteField
+                  placeholder={t('form_departure_placeholder')}
+                  value={departure}
+                  onChange={handleDepartureChange}
+                  onSelect={(p) => { setFromPoint(p); setDeparture(p.label); }}
+                />
+                <div className={styles.formRow}>
+                  <input
+                    type="date"
+                    className={styles.formInput}
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                  <input
+                    type="time"
+                    className={styles.formInput}
+                    value={hour}
+                    onChange={(e) => setHour(e.target.value)}
+                  />
+                </div>
+                <div className={styles.formRow}>
+                  <select
+                    className={styles.formSelect}
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
+                  >
+                    {MAD_DURATIONS.map((h) => (
+                      <option key={h} value={h}>
+                        {h}h {t('mad_duration_label')}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    className={styles.formSelect}
+                    value={passengers}
+                    onChange={(e) => setPassengers(e.target.value)}
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                      <option key={n} value={n}>
+                        {n} {t('passengers_label')}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Vehicle selector */}
+                <div className={styles.vehicleSelector}>
+                  <button
+                    className={`${styles.vehicleBtn} ${vehicleType === 'BUSINESS' ? styles.vehicleBtnActive : ''}`}
+                    onClick={() => setVehicleType('BUSINESS')}
+                    type="button"
+                  >
+                    <span className={styles.vehicleEmoji}>🚗</span>
+                    <span>Business</span>
+                  </button>
+                  <button
+                    className={`${styles.vehicleBtn} ${vehicleType === 'VAN' ? styles.vehicleBtnActive : ''}`}
+                    onClick={() => setVehicleType('VAN')}
+                    type="button"
+                  >
+                    <span className={styles.vehicleEmoji}>🚐</span>
+                    <span>Van</span>
+                  </button>
+                </div>
+
+                <button className={styles.formBtn} onClick={handleCalculateMAD}>
+                  {t('form_calculate')}
+                </button>
+
+                {/* MAD price result */}
+                {result && (
+                  <div className={styles.inlinePrice}>
+                    <div className={styles.inlinePriceRow}>
+                      <span className={styles.inlinePriceLabel}>{t('estimated_price')}</span>
+                      <span className={styles.inlinePriceValue}>
+                        {vehicleType === 'BUSINESS' ? result.businessPrice : result.vanPrice}
+                      </span>
+                    </div>
+                    <p className={styles.madRateNote}>
+                      {vehicleType === 'BUSINESS' ? '55 €/h · Business' : '90 €/h · Van'}
+                    </p>
+                    <button className={styles.bookBtn} onClick={handleBook}>
+                      {t('book_cta')}
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ POURQUOI NOUS CHOISIR ══ */}
+      <section className={styles.advantageSection}>
+        <div className="container">
+          <h2 className={styles.sectionTitle}>{t('section_title')}</h2>
+          <div className={styles.sectionSeparator} />
+
+          <div className={styles.advantageLayout}>
+            {/* Avantages */}
+            <div className={styles.advantages}>
+              <div className={styles.advantageCard}>
+                <div className={styles.advantageIconWrap}>{ICON_CLOCK}</div>
+                <div>
+                  <h3 className={styles.advantageTitle}>{t('adv_punctuality_title')}</h3>
+                  <p className={styles.advantageDesc}>{t('adv_punctuality_desc')}</p>
+                </div>
+              </div>
+              <div className={styles.advantageCard}>
+                <div className={styles.advantageIconWrap}>{ICON_USER}</div>
+                <div>
+                  <h3 className={styles.advantageTitle}>{t('adv_driver_title')}</h3>
+                  <p className={styles.advantageDesc}>{t('adv_driver_desc')}</p>
+                </div>
+              </div>
+              <div className={styles.advantageCard}>
+                <div className={styles.advantageIconWrap}>{ICON_SHIELD}</div>
+                <div>
+                  <h3 className={styles.advantageTitle}>{t('adv_security_title')}</h3>
+                  <p className={styles.advantageDesc}>{t('adv_security_desc')}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Map + stats */}
+            <div className={styles.mapCol} ref={mapColRef}>
+              <div className={styles.mapWrapper}>
+                <LeafletMap from={fromPoint} to={toPoint} routeCoords={routeCoords} />
+              </div>
+              <div className={styles.mapStats}>
+                <div className={styles.statItem}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={styles.statIcon}>
+                    <circle cx="12" cy="11" r="3" />
+                    <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z" />
+                  </svg>
+                  <div>
+                    <span className={styles.statLabel}>{t('result_distance')}</span>
+                    <span className={styles.statValue}>
+                      {result && result.distanceKm > 0 ? result.distanceKm.toFixed(1) + ' km' : '-- km'}
+                    </span>
+                  </div>
+                </div>
+                <div className={styles.statDivider} />
+                <div className={styles.statItem}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={styles.statIcon}>
+                    <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  <div>
+                    <span className={styles.statLabel}>{t('result_duration')}</span>
+                    <span className={styles.statValue}>
+                      {result
+                        ? activeTab === 'mad'
+                          ? parseInt(duration, 10) + 'h'
+                          : result.durationMin >= 60
+                            ? Math.floor(result.durationMin / 60) + 'h' + String(result.durationMin % 60).padStart(2, '0')
+                            : result.durationMin + ' min'
+                        : '-- min'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
