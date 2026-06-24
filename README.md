@@ -27,14 +27,12 @@ components/
   sections/            # Sections homepage (Hero, Services, Véhicules, À Propos, Contact)
   ui/                  # Composants atomiques réutilisables
 lib/
-  firebase/            # Config & helpers Firebase
-  hooks/               # Custom hooks
+  data/                # Données statiques (tarifs, véhicules, services…)
+  firebase/            # Config & helpers Firebase (client + admin)
+  hooks/               # Custom hooks (useTariffs, …)
   types/               # TypeScript types/interfaces
-  utils/               # Fonctions utilitaires
-styles/                # CSS global, variables, tokens
-public/
-  images/              # Assets images
-  fonts/               # Polices locales
+  utils/               # Fonctions utilitaires (pricing, routing, locale…)
+scripts/               # Scripts d'initialisation et de maintenance (Node/ts-node)
 ```
 
 ## Variables d'environnement
@@ -48,7 +46,7 @@ cp .env.example .env.local
 Variables requises :
 
 ```env
-# Firebase
+# Firebase (client — exposées publiquement, préfixe NEXT_PUBLIC_)
 NEXT_PUBLIC_FIREBASE_API_KEY=
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=
@@ -56,6 +54,8 @@ NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
+
+# Firebase Admin (serveur uniquement — NE JAMAIS COMMITER)
 FIREBASE_ADMIN_PROJECT_ID=
 FIREBASE_ADMIN_CLIENT_EMAIL=
 FIREBASE_ADMIN_PRIVATE_KEY=
@@ -65,10 +65,13 @@ STRIPE_SECRET_KEY=
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
 STRIPE_WEBHOOK_SECRET=
 
-# OpenRouteService
+# OpenRouteService — calcul d'itinéraire routier (gratuit, basé OpenStreetMap)
+# Obtenir une clé gratuite sur https://openrouteservice.org → Dashboard → Token
+# Limite : 2 000 requêtes/jour en offre gratuite
+# Sans cette clé, le calcul de distance tombe en mode dégradé (estimation Haversine)
 NEXT_PUBLIC_ORS_API_KEY=
 
-# Resend
+# Resend — emails transactionnels
 RESEND_API_KEY=
 RESEND_FROM_EMAIL=
 
@@ -84,7 +87,7 @@ npm install
 npm run dev
 ```
 
-## Scripts
+## Scripts npm
 
 | Commande | Description |
 |---|---|
@@ -94,6 +97,50 @@ npm run dev
 | `npm run lint` | ESLint |
 | `npm run format` | Prettier |
 | `npm run type-check` | Vérification TypeScript |
+
+## Scripts d'initialisation (à run manuellement, une seule fois)
+
+Ces scripts requièrent les variables `FIREBASE_ADMIN_*` dans `.env.local`.
+
+### Initialiser les collections Firestore (structure vide)
+
+```bash
+npx ts-node --project tsconfig.json scripts/init-firestore.ts
+```
+
+Crée les documents `_structure` dans chaque collection (`tarifs`, `reservations`, `faq`, `vehicules`, `contenus`).
+À exécuter une seule fois après la création du projet Firebase.
+
+### Peupler la grille tarifaire 2026
+
+```bash
+npx ts-node --project tsconfig.json scripts/seed-tariffs.ts
+```
+
+Pousse la grille tarifaire complète dans la collection Firestore `tarifs` :
+- Forfaits aéroports (CDG, ORLY, ZAVENTEM, CHARLEROI, LESQUIN, GARES)
+- Forfaits loisirs (ASTERIX, WALIBI, DISNEY, LENS, LOSC)
+- Tarifs mise à disposition (55 €/h Business, 90 €/h Van)
+- Tranches kilométriques transfert simple (Business & Van)
+- Suppléments hors-base (Business & Van)
+
+**À ré-exécuter si la grille tarifaire change.** Le script supprime et recrée tous les documents existants.
+Une fois seedé, Mohammed peut modifier les tarifs directement depuis le panel Admin (Milestone 4) sans retoucher au code.
+
+## Architecture tarifaire
+
+```
+Firestore (collection: tarifs)
+        ↓  onSnapshot — temps réel
+  useTariffs()  [lib/hooks/useTariffs.ts]
+        ↓  TariffData
+  calculatePrice(request, tariffs)  [lib/utils/pricing.ts]
+        ↓  PriceResult
+  Formulaire de réservation / UI
+```
+
+- Si Firestore est indisponible → fallback automatique sur `lib/data/tariffs.ts` (données statiques)
+- Si Mohammed modifie un prix dans l'Admin → tous les onglets ouverts se mettent à jour instantanément
 
 ## Déploiement
 
