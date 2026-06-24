@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import styles from './EvenementsSpeciauxPage.module.css';
@@ -12,8 +12,16 @@ const LeafletMap = dynamic(() => import('@/components/map/LeafletMap'), { ssr: f
 
 /* ── Types ── */
 interface GeoPoint { lat: number; lng: number; label: string; }
+interface Suggestion { display_name: string; lat: string; lon: string; }
 
 /* ── Nominatim helpers ── */
+async function fetchSuggestions(query: string): Promise<Suggestion[]> {
+  if (query.length < 3) return [];
+  const url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query) + '&limit=5&addressdetails=1&countrycodes=fr,be';
+  const res = await fetch(url, { headers: { 'Accept-Language': 'fr' } });
+  return res.json();
+}
+
 async function geocode(address: string): Promise<GeoPoint | null> {
   const url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address) + '&limit=1';
   const res = await fetch(url, { headers: { 'Accept-Language': 'fr' } });
@@ -35,6 +43,74 @@ async function getRoute(from: GeoPoint, to: GeoPoint): Promise<{ distanceKm: num
   };
 }
 
+/* ── Autocomplete Field ── */
+interface AutocompleteFieldProps {
+  placeholder: string;
+  value: string;
+  onChange: (val: string) => void;
+  onSelect: (point: GeoPoint) => void;
+}
+
+function AutocompleteField({ placeholder, value, onChange, onSelect }: AutocompleteFieldProps) {
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [open, setOpen] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handle(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handle);
+    return () => document.removeEventListener('mousedown', handle);
+  }, []);
+
+  function handleChange(val: string) {
+    onChange(val);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      const results = await fetchSuggestions(val);
+      setSuggestions(results);
+      setOpen(results.length > 0);
+    }, 350);
+  }
+
+  function handleSelect(s: Suggestion) {
+    onChange(s.display_name);
+    onSelect({ lat: parseFloat(s.lat), lng: parseFloat(s.lon), label: s.display_name });
+    setSuggestions([]);
+    setOpen(false);
+  }
+
+  return (
+    <div className={styles.autocompleteWrap} ref={wrapRef}>
+      <input
+        type="text"
+        className={styles.formInput}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => handleChange(e.target.value)}
+        onFocus={() => suggestions.length > 0 && setOpen(true)}
+        autoComplete="off"
+      />
+      {open && (
+        <ul className={styles.suggestions}>
+          {suggestions.map((s, i) => (
+            <li key={i} className={styles.suggestionItem} onMouseDown={() => handleSelect(s)}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={styles.suggestionIcon}>
+                <circle cx="12" cy="11" r="3"/><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z"/>
+              </svg>
+              <span>{s.display_name}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 /* ── SVG Icons ── */
 const ICON_HEART = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -53,9 +129,9 @@ const ICON_CLOCK = (
 );
 
 const FEATURES = [
-  { id: 'decoration', icon: ICON_HEART, titleKey: 'feat_deco_title', descKey: 'feat_deco_desc' },
-  { id: 'driver',     icon: ICON_USER,  titleKey: 'feat_driver_title', descKey: 'feat_driver_desc' },
-  { id: 'flex',       icon: ICON_CLOCK, titleKey: 'feat_flex_title',  descKey: 'feat_flex_desc' },
+  { id: 'decoration', icon: ICON_HEART, titleKey: 'feat_deco_title',   descKey: 'feat_deco_desc'    },
+  { id: 'driver',     icon: ICON_USER,  titleKey: 'feat_driver_title', descKey: 'feat_driver_desc'  },
+  { id: 'flex',       icon: ICON_CLOCK, titleKey: 'feat_flex_title',   descKey: 'feat_flex_desc'    },
 ];
 
 const EVENT_TYPES_FR = ['Mariage', 'Soirée', 'Anniversaire', 'Cérémonie', 'Concert', 'Autre'];
@@ -185,6 +261,7 @@ export default function EvenementsSpeciauxPage() {
                 {t('badge_flex')}
               </span>
             </div>
+            <p className={styles.heroNote}>{t('hero_note')}</p>
           </div>
 
           {/* Formulaire flottant droite */}
@@ -219,20 +296,18 @@ export default function EvenementsSpeciauxPage() {
               ))}
             </select>
 
-            {/* Adresses */}
-            <input
-              type="text"
-              className={styles.formInput}
+            {/* Adresses avec autocomplete */}
+            <AutocompleteField
               placeholder={t('form_pickup_placeholder')}
               value={pickup}
-              onChange={(e) => { setPickup(e.target.value); setFromPoint(null); }}
+              onChange={(val) => { setPickup(val); setFromPoint(null); }}
+              onSelect={(p) => { setFromPoint(p); setPickup(p.label); }}
             />
-            <input
-              type="text"
-              className={styles.formInput}
+            <AutocompleteField
               placeholder={t('form_dest_placeholder')}
               value={destination}
-              onChange={(e) => { setDest(e.target.value); setToPoint(null); }}
+              onChange={(val) => { setDest(val); setToPoint(null); }}
+              onSelect={(p) => { setToPoint(p); setDest(p.label); }}
             />
 
             {/* Date + Heure */}
