@@ -5,14 +5,20 @@
  * Can be used safely in both server components and client components.
  *
  * Business rules implemented:
- * 1. AIRPORT service → fixed package price (PriceRange) from AIRPORT_PRICES
- * 2. LEISURE service → fixed package price (PriceRange) from LEISURE_PRICES
+ * 1. AIRPORT service → fixed package price (PriceRange) from airports tariff table
+ * 2. LEISURE service → fixed package price (PriceRange) from leisure tariff table
  * 3. MAD service → hourly rate × durationHours
  * 4. TRANSFER service → per-km bracket pricing
- *    a. Find the matching KmBracket in TRANSFER_BRACKETS
+ *    a. Find the matching KmBracket in the transfer_brackets table
  *    b. Apply flat fee or ratePerKm × distance
  *    c. Enforce minimum fare
  *    d. Add hors-base surcharge if outOfBaseKm is provided
+ *
+ * Dynamic tariffs:
+ *   calculatePrice() accepts an optional second argument `tariffs` of type TariffData
+ *   (from useTariffs hook). When provided, live Firestore values are used.
+ *   When omitted, the static fallback from lib/data/tariffs.ts is used.
+ *   This keeps the engine decoupled from the data source.
  */
 
 import {
@@ -26,38 +32,55 @@ import {
 } from '@/lib/data/tariffs';
 import type { PriceRequest, PriceResult } from '@/lib/types/pricing';
 
+// TariffData shape — mirrors the useTariffs hook output
+// Defined inline here to avoid a circular dependency with lib/hooks/useTariffs
+export interface TariffData {
+  airports: typeof AIRPORT_PRICES;
+  leisure: typeof LEISURE_PRICES;
+  mad: typeof MAD_RATES;
+  minimumFares: typeof MINIMUM_FARES;
+  transferBrackets: typeof TRANSFER_BRACKETS;
+  outOfBaseBrackets: typeof OUT_OF_BASE_BRACKETS;
+}
+
+/** Static tariff data — used as default when no dynamic data is provided */
+const STATIC_TARIFFS: TariffData = {
+  airports: AIRPORT_PRICES,
+  leisure: LEISURE_PRICES,
+  mad: MAD_RATES,
+  minimumFares: MINIMUM_FARES,
+  transferBrackets: TRANSFER_BRACKETS,
+  outOfBaseBrackets: OUT_OF_BASE_BRACKETS,
+};
+
 // ---------------------------------------------------------------------------
 // Internal helpers
 // ---------------------------------------------------------------------------
 
 /**
  * Find the matching bracket for a given distance in km.
- * Returns undefined if no bracket matches (should not happen with well-formed data).
+ * -1 stored in Firestore means Infinity (open-ended upper bound).
  */
 function findBracket(
   km: number,
   brackets: KmBracket[]
 ): KmBracket | undefined {
-  return brackets.find((b) => km >= b.from && km <= b.to);
+  return brackets.find((b) => {
+    const upper = b.to === -1 ? Infinity : b.to;
+    return km >= b.from && km <= upper;
+  });
 }
 
 /**
  * Calculate the price for a given distance using bracket pricing.
- * Returns the price in euros (not rounded — rounding happens at the end).
  */
 function applyBracket(km: number, bracket: KmBracket): number {
-  if (bracket.flat !== undefined) {
-    return bracket.flat;
-  }
-  if (bracket.ratePerKm !== undefined) {
-    return km * bracket.ratePerKm;
-  }
+  if (bracket.flat !== undefined) return bracket.flat;
+  if (bracket.ratePerKm !== undefined) return km * bracket.ratePerKm;
   return 0;
 }
 
-/**
- * Round a price to 2 decimal places.
- */
+/** Round a price to 2 decimal places. */
 function round2(value: number): number {
   return Math.round(value * 100) / 100;
 }
@@ -70,27 +93,22 @@ function round2(value: number): number {
  * Calculate the estimated price for an MS Prestige Driver service.
  *
  * @param request - The price request parameters
+ * @param tariffs - Optional live tariff data from useTariffs(). Falls back to static data.
  * @returns A PriceResult with the price, optional surcharge, and breakdown lines
  *
  * @example
- * // Airport transfer in a Business vehicle
- * calculatePrice({
- *   serviceType: 'AIRPORT',
- *   vehicleType: 'BUSINESS',
- *   airportDestination: 'CDG',
- * });
- * // → { price: { min: 300, max: 390 }, isFixed: true, breakdown: [...] }
+ * // With static tariffs (no hook needed)
+ * calculatePrice({ serviceType: 'AIRPORT', vehicleType: 'BUSINESS', airportDestination: 'CDG' });
  *
  * @example
- * // 35 km transfer in a VAN with a 10 km out-of-base pickup
- * calculatePrice({
- *   serviceType: 'TRANSFER',
- *   vehicleType: 'VAN',
- *   distanceKm: 35,
- *   outOfBaseKm: 10,
- * });
+ * // With live Firestore tariffs
+ * const { tariffs } = useTariffs();
+ * calculatePrice({ serviceType: 'TRANSFER', vehicleType: 'VAN', distanceKm: 35 }, tariffs);
  */
-export function calculatePrice(request: PriceRequest): PriceResult {
+export function calculatePrice(
+  request: PriceRequest,
+  tariffs: TariffData = STATIC_TARIFFS
+): PriceResult {
   const { serviceType, vehicleType } = request;
   const breakdown: string[] = [];
 
@@ -99,17 +117,11 @@ export function calculatePrice(request: PriceRequest): PriceResult {
     if (!request.airportDestination) {
       throw new Error('[pricing] AIRPORT service requires airportDestination');
     }
-    const range = AIRPORT_PRICES[request.airportDestination][vehicleType];
+    const range = tariffs.airports[request.airportDestination][vehicleType];
     breakdown.push(
       `Forfait aéroport ${request.airportDestination} (${vehicleType}) : ${range.min} € – ${range.max} €`
     );
-    return {
-      serviceType,
-      vehicleType,
-      price: range,
-      breakdown,
-      isFixed: true,
-    };
+    return { serviceType, vehicleType, price: range, breakdown, isFixed: true };
   }
 
   // ── LEISURE ──────────────────────────────────────────────────────────────
@@ -117,17 +129,11 @@ export function calculatePrice(request: PriceRequest): PriceResult {
     if (!request.leisureDestination) {
       throw new Error('[pricing] LEISURE service requires leisureDestination');
     }
-    const range = LEISURE_PRICES[request.leisureDestination][vehicleType];
+    const range = tariffs.leisure[request.leisureDestination][vehicleType];
     breakdown.push(
       `Forfait loisirs ${request.leisureDestination} (${vehicleType}) : ${range.min} € – ${range.max} €`
     );
-    return {
-      serviceType,
-      vehicleType,
-      price: range,
-      breakdown,
-      isFixed: true,
-    };
+    return { serviceType, vehicleType, price: range, breakdown, isFixed: true };
   }
 
   // ── MAD (Mise à Disposition) ──────────────────────────────────────────────
@@ -135,18 +141,12 @@ export function calculatePrice(request: PriceRequest): PriceResult {
     if (!request.durationHours || request.durationHours <= 0) {
       throw new Error('[pricing] MAD service requires durationHours > 0');
     }
-    const rate = MAD_RATES[vehicleType];
+    const rate = tariffs.mad[vehicleType];
     const price = round2(rate * request.durationHours);
     breakdown.push(
       `Mise à disposition (${vehicleType}) : ${rate} €/h × ${request.durationHours} h = ${price} €`
     );
-    return {
-      serviceType,
-      vehicleType,
-      price,
-      breakdown,
-      isFixed: true,
-    };
+    return { serviceType, vehicleType, price, breakdown, isFixed: true };
   }
 
   // ── TRANSFER (per-km) ─────────────────────────────────────────────────────
@@ -156,27 +156,22 @@ export function calculatePrice(request: PriceRequest): PriceResult {
     }
 
     const km = request.distanceKm;
-    const brackets = TRANSFER_BRACKETS[vehicleType];
+    const brackets = tariffs.transferBrackets[vehicleType];
     const bracket = findBracket(km, brackets);
 
     if (!bracket) {
-      throw new Error(
-        `[pricing] No bracket found for ${km} km (${vehicleType})`
-      );
+      throw new Error(`[pricing] No bracket found for ${km} km (${vehicleType})`);
     }
 
     let basePrice = applyBracket(km, bracket);
-    const minimum = MINIMUM_FARES[vehicleType];
+    const minimum = tariffs.minimumFares[vehicleType];
 
-    // Enforce minimum fare
     if (basePrice < minimum) {
       basePrice = minimum;
-      breakdown.push(
-        `Minimum garanti (${vehicleType}) : ${minimum} €`
-      );
+      breakdown.push(`Minimum garanti (${vehicleType}) : ${minimum} €`);
     } else if (bracket.flat !== undefined) {
       breakdown.push(
-        `Forfait ${bracket.from}–${bracket.to === Infinity ? `>${bracket.from - 1}` : bracket.to} km (${vehicleType}) : ${bracket.flat} €`
+        `Forfait ${bracket.from}–${bracket.to === Infinity || bracket.to === -1 ? `>${bracket.from - 1}` : bracket.to} km (${vehicleType}) : ${bracket.flat} €`
       );
     } else if (bracket.ratePerKm !== undefined) {
       breakdown.push(
@@ -191,7 +186,7 @@ export function calculatePrice(request: PriceRequest): PriceResult {
 
     if (request.outOfBaseKm && request.outOfBaseKm > 0) {
       const obKm = request.outOfBaseKm;
-      const obBrackets = OUT_OF_BASE_BRACKETS[vehicleType];
+      const obBrackets = tariffs.outOfBaseBrackets[vehicleType];
       const obBracket = findBracket(obKm, obBrackets);
 
       if (obBracket) {
@@ -199,9 +194,7 @@ export function calculatePrice(request: PriceRequest): PriceResult {
         if (obAmount > 0) {
           surcharge = obAmount;
           if (obBracket.flat !== undefined) {
-            breakdown.push(
-              `Supplément hors-base ${obKm} km (${vehicleType}) : ${obAmount} €`
-            );
+            breakdown.push(`Supplément hors-base ${obKm} km (${vehicleType}) : ${obAmount} €`);
           } else if (obBracket.ratePerKm !== undefined) {
             breakdown.push(
               `Supplément hors-base : ${obKm} km × ${obBracket.ratePerKm} €/km = ${obAmount} €`
@@ -211,13 +204,8 @@ export function calculatePrice(request: PriceRequest): PriceResult {
       }
     }
 
-    const totalPrice = surcharge
-      ? round2(basePrice + surcharge)
-      : basePrice;
-
-    if (surcharge) {
-      breakdown.push(`Total estimé : ${totalPrice} €`);
-    }
+    const totalPrice = surcharge ? round2(basePrice + surcharge) : basePrice;
+    if (surcharge) breakdown.push(`Total estimé : ${totalPrice} €`);
 
     return {
       serviceType,
@@ -225,7 +213,7 @@ export function calculatePrice(request: PriceRequest): PriceResult {
       price: totalPrice,
       outOfBaseSurcharge: surcharge,
       breakdown,
-      isFixed: false, // Transfer pricing depends on actual distance — treated as estimate
+      isFixed: false, // TRANSFER price depends on actual ORS distance — treated as estimate
     };
   }
 
@@ -233,25 +221,21 @@ export function calculatePrice(request: PriceRequest): PriceResult {
 }
 
 // ---------------------------------------------------------------------------
-// Helpers for UI display
+// UI helpers
 // ---------------------------------------------------------------------------
 
 /**
  * Format a price or price range as a human-readable string.
- *
- * @example
- * formatPrice(150)          // → "150 €"
- * formatPrice({ min: 90, max: 130 })  // → "90 € – 130 €"
+ * @example formatPrice(150)               → "150 €"
+ * @example formatPrice({ min: 90, max: 130 }) → "90 € – 130 €"
  */
 export function formatPrice(price: number | { min: number; max: number }): string {
-  if (typeof price === 'number') {
-    return `${price} €`;
-  }
+  if (typeof price === 'number') return `${price} €`;
   return `${price.min} € – ${price.max} €`;
 }
 
 /**
- * Returns true if the price result represents a fixed (non-estimated) price.
+ * Type guard — returns true when the price is a range (min/max), false when it's a fixed number.
  */
 export function isPriceRange(
   price: number | { min: number; max: number }
