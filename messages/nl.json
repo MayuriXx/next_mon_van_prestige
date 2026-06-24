@@ -123,5 +123,25 @@
     "error_geocode": "Adres niet gevonden. Verfijn uw zoekopdracht.",
     "error_route": "Route kan niet worden berekend.",
     "error_generic": "Er is een fout opgetreden. Probeer opnieuw."
+  },
+  "escapadesLoisirs": {
+    "tag": "VRIJETIJDSUITSTAPPEN",
+    "title": "Pretparken & Sportevenementen",
+    "subtitle": "Geniet van uw uitstapjes met familie of vrienden zonder zorgen. Met Mon Van Prestige geen parkeerproblemen meer. Vaste, transparante prijzen zonder verborgen kosten.",
+    "badge_relax": "Ontspanning",
+    "badge_group": "Stiptheid",
+    "badge_safety": "Veiligheid",
+    "section_title": "Onze Vrijetijdspakketten",
+    "parks_title": "PRETPARKEN",
+    "sports_title": "SPORTEVENEMENTEN",
+    "from": "Valenciennes",
+    "from_label": "VANAF",
+    "book_btn": "Reserveren",
+    "adv_relax_title": "Ontspannen dagjes uit",
+    "adv_relax_desc": "Geniet volop van uw dag zonder u zorgen te maken over de rit. Wij regelen het vervoer, u geniet.",
+    "adv_group_title": "Ideaal voor groepen",
+    "adv_group_desc": "Tot 7 passagiers in onze voertuigen. Perfect voor gezinnen en vriendengroepen.",
+    "adv_flexible_title": "Flexibele tijden",
+    "adv_flexible_desc": "Ophaling op het afgesproken tijdstip. Pas uw terugrit aan de duur van uw bezoek aan."
   }
 }
