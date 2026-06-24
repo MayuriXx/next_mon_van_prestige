@@ -192,7 +192,7 @@ export default function DeplProPage() {
       <section className={styles.hero}>
         <div className={styles.heroImageWrapper}>
           <Image
-            src="/images/sections/deplacements-pro.jpg"
+            src="/images/sections/deplacements-professionnels.jpg"
             alt="Déplacements Professionnels MS Prestige Driver"
             fill
             className={styles.heroImage}
