@@ -122,6 +122,7 @@ function buildServiceLabel(data: BookingData, depositRatio: number): string {
 
 export const createCheckoutSession = onRequest(
   {
+    region: 'europe-west1',
     secrets: [STRIPE_SECRET_KEY],
     cors: ['https://mon-van-prestige.web.app', 'http://localhost:3000'],
   },
@@ -372,6 +373,7 @@ export const stripeWebhook = onRequest(
     res.sendStatus(200);
   }
 );
+
 
 
 
