@@ -18,6 +18,7 @@
  */
 'use client';
 
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase/client';
@@ -58,7 +59,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <aside style={styles.sidebar}>
         {/* Branding */}
         <div style={styles.brand}>
-          <div style={styles.brandLogo}>MVP</div>
+          <Image
+            src="/images/ms_prestige_driver_logo_splash.png"
+            alt="MS Prestige Driver"
+            width={40}
+            height={40}
+            style={{ objectFit: 'contain', borderRadius: '8px', flexShrink: 0 }}
+            priority
+          />
           <div>
             <div style={styles.brandTitle}>MS Prestige</div>
             <div style={styles.brandSub}>Administration</div>
@@ -144,20 +152,7 @@ const styles: Record<string, React.CSSProperties> = {
     display        : 'flex',
     alignItems     : 'center',
     gap            : '12px',
-    padding        : '0 20px 0',
-  },
-  brandLogo: {
-    width          : '40px',
-    height         : '40px',
-    borderRadius   : '8px',
-    background     : '#C9A84C',
-    color          : '#0a0a0a',
-    fontWeight     : 700,
-    fontSize       : '13px',
-    display        : 'flex',
-    alignItems     : 'center',
-    justifyContent : 'center',
-    flexShrink     : 0,
+    padding        : '0 20px',
   },
   brandTitle: {
     color          : '#fff',
