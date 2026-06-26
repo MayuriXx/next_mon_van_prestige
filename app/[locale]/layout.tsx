@@ -12,10 +12,42 @@ import '../globals.css';
 
 export const dynamic = 'force-static';
 
+/**
+ * Site-level metadata defaults.
+ * metadataBase is required for Next.js to resolve relative OG image URLs.
+ * Individual pages override title/description/openGraph via their own
+ * generateMetadata() exports; these values act as fallbacks.
+ */
 export const metadata: Metadata = {
-  title: 'MS Prestige Driver — VTC de luxe à Valenciennes',
+  metadataBase: new URL('https://mon-van-prestige.web.app'),
+  title: {
+    default: 'MS Prestige Driver — VTC de luxe à Valenciennes',
+    template: '%s | MS Prestige Driver',
+  },
   description:
-    'Service de transport VTC premium à Valenciennes. Transferts aéroport, déplacements professionnels, événements spéciaux.',
+    'Service de transport VTC premium à Valenciennes. Transferts aéroport, déplacements professionnels, événements spéciaux. Chauffeur privé haut de gamme.',
+  openGraph: {
+    siteName: 'MS Prestige Driver',
+    type: 'website',
+    locale: 'fr_FR',
+    images: [
+      {
+        url: '/og-default.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'MS Prestige Driver — VTC de luxe à Valenciennes',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@MSPrestigeDriver',
+    images: ['/og-default.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export function generateStaticParams() {
