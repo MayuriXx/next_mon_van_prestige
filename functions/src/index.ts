@@ -21,7 +21,6 @@
 
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { onRequest } from 'firebase-functions/v2/https';
-import { setGlobalOptions } from 'firebase-functions/v2';
 import { initializeApp } from 'firebase-admin/app';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import Stripe from 'stripe';
@@ -31,11 +30,8 @@ import { Resend } from 'resend';
 initializeApp();
 const db = getFirestore();
 
-// ── Global CORS — allow calls from Firebase Hosting ───────────────────────────
-setGlobalOptions({
-  region: 'europe-west1',
-  cors: ['https://mon-van-prestige.web.app', 'http://localhost:3000'],
-});
+// ── Global region ────────────────────────────────────────────────────────────
+// CORS is configured per-function on onCall (see createCheckoutSession below)
 
 // ── Runtime secrets (set via: firebase functions:secrets:set SECRET_NAME) ────
 // Access via functions.params.defineSecret in v2
@@ -370,5 +366,6 @@ export const stripeWebhook = onRequest(
     res.sendStatus(200);
   }
 );
+
 
 
