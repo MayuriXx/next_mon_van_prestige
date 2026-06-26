@@ -179,7 +179,7 @@ export default function ReservationDetailPage() {
           <Row label="Nom"       value={reservation.client?.name}  />
           <Row label="Email"     value={reservation.client?.email} link={`mailto:${reservation.client?.email}`} />
           <Row label="Téléphone" value={reservation.client?.phone} link={`tel:${reservation.client?.phone}`}  />
-          {reservation.client?.notes && (
+          {!!reservation.client?.notes && (
             <Row label="Notes" value={reservation.client.notes} />
           )}
         </Section>
@@ -189,7 +189,7 @@ export default function ReservationDetailPage() {
           <Row label="Service"   value={SERVICE_LABELS[reservation.serviceType] ?? reservation.serviceType} />
           <Row label="Véhicule"  value={VEHICLE_LABELS[reservation.vehicleType] ?? reservation.vehicleType} />
           <Row label="Départ"    value={reservation.departureAddress} />
-          {reservation.arrivalAddress && (
+          {!!reservation.arrivalAddress && (
             <Row label="Arrivée" value={reservation.arrivalAddress} />
           )}
           <Row label="Date/heure départ" value={reservation.departureDateTime
@@ -205,7 +205,7 @@ export default function ReservationDetailPage() {
           {reservation.durationHours != null && (
             <Row label="Durée MAD" value={`${reservation.durationHours} h`} />
           )}
-          {reservation.tripType && (
+          {!!reservation.tripType && (
             <Row label="Aller/retour" value={reservation.tripType === 'round_trip' ? 'Aller-retour' : 'Aller simple'} />
           )}
         </Section>
@@ -217,17 +217,17 @@ export default function ReservationDetailPage() {
           {reservation.amountPaid != null && (
             <Row label="Montant encaissé" value={formatEur(reservation.amountPaid)} />
           )}
-          {reservation.paidAt && (
+          {!!reservation.paidAt && (
             <Row label="Payé le" value={formatDate(reservation.paidAt)} />
           )}
-          {reservation.stripeSessionId && (
+          {!!reservation.stripeSessionId && (
             <Row
               label="Session Stripe"
               value={reservation.stripeSessionId.slice(0, 20) + '…'}
               link={`https://dashboard.stripe.com/payments/${reservation.stripeSessionId}`}
             />
           )}
-          {reservation.stripePaymentId && (
+          {!!reservation.stripePaymentId && (
             <Row label="Payment ID" value={reservation.stripePaymentId} />
           )}
           <Row label="Locale"  value={reservation.locale?.toUpperCase() ?? '—'} />
