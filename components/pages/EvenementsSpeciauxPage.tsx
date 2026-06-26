@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { useContenus } from '@/lib/hooks/useContenus';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import styles from './EvenementsSpeciauxPage.module.css';
 
@@ -153,6 +154,7 @@ export default function EvenementsSpeciauxPage() {
   const t = useTranslations('evenementsSpeciaux');
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname) as Locale;
+  const contenus = useContenus('evenementsSpeciaux', locale as 'fr' | 'en' | 'nl');
 
   /* Form state */
   const [mode, setMode]             = useState<'trajet' | 'mad'>('mad');
@@ -233,8 +235,8 @@ export default function EvenementsSpeciauxPage() {
           {/* Texte gauche */}
           <div className={styles.heroText}>
             <p className={styles.heroTag}>{t('tag')}</p>
-            <h1 className={styles.heroTitle}>{t('title')}</h1>
-            <p className={styles.heroSubtitle}>{t('subtitle')}</p>
+            <h1 className={styles.heroTitle}>{contenus.get('title') || t('title')}</h1>
+            <p className={styles.heroSubtitle}>{contenus.get('subtitle') || t('subtitle')}</p>
             <div className={styles.heroBadges}>
               <span className={styles.heroBadge}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.badgeIcon}>
@@ -426,3 +428,4 @@ export default function EvenementsSpeciauxPage() {
     </>
   );
 }
+
