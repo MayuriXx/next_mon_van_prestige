@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase/client';
 import { useAuth } from '@/lib/firebase/auth-context';
+import Image from 'next/image';
 
 export default function AdminLoginPage() {
   const { user, loading } = useAuth();
@@ -57,7 +58,16 @@ export default function AdminLoginPage() {
       <div style={styles.card}>
         {/* Logo / branding */}
         <div style={styles.header}>
-          <div style={styles.logo}>MVP</div>
+          <div style={styles.logoWrapper}>
+            <Image
+              src="/images/ms_prestige_driver_logo_splash.png"
+              alt="MS Prestige Driver"
+              width={80}
+              height={80}
+              style={{ objectFit: 'contain', borderRadius: '12px' }}
+              priority
+            />
+          </div>
           <h1 style={styles.title}>MS Prestige Driver</h1>
           <p style={styles.subtitle}>Espace administration</p>
         </div>
@@ -107,7 +117,7 @@ export default function AdminLoginPage() {
   );
 }
 
-// ── Inline styles (no CSS module needed for a single page) ───────────────────
+// ── Inline styles ─────────────────────────────────────────────────────────────
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight       : '100vh',
@@ -130,19 +140,11 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign       : 'center',
     marginBottom    : '32px',
   },
-  logo: {
-    width           : '56px',
-    height          : '56px',
-    borderRadius    : '12px',
-    background      : '#C9A84C',
-    color           : '#0a0a0a',
-    fontWeight      : 700,
-    fontSize        : '18px',
+  logoWrapper: {
     display         : 'flex',
     alignItems      : 'center',
     justifyContent  : 'center',
-    margin          : '0 auto 16px',
-    letterSpacing   : '.05em',
+    marginBottom    : '16px',
   },
   title: {
     margin          : 0,
