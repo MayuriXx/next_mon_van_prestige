@@ -33,6 +33,7 @@
 
 'use client';
 
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/client';
@@ -388,9 +389,9 @@ function PackageTable<T extends string>({
             <tr key={dest}>
               <td style={t.tdLabel}>{labels[dest]}</td>
               {(['BUSINESS', 'VAN'] as VehicleType[]).map((vehicle, vi) => (
-                <>
-                  {vi === 1 && <td key="sep" style={t.tdSep} />}
-                  <td key={`${vehicle}-min`} style={t.td}>
+                <React.Fragment key={vehicle}>
+                  {vi === 1 && <td style={t.tdSep} />}
+                  <td style={t.td}>
                     <input
                       type="number"
                       min="0"
@@ -400,7 +401,7 @@ function PackageTable<T extends string>({
                       style={s.inputSm}
                     />
                   </td>
-                  <td key={`${vehicle}-max`} style={t.td}>
+                  <td style={t.td}>
                     <input
                       type="number"
                       min="0"
@@ -410,7 +411,7 @@ function PackageTable<T extends string>({
                       style={s.inputSm}
                     />
                   </td>
-                </>
+                </React.Fragment>
               ))}
             </tr>
           ))}

@@ -1,7 +1,16 @@
+/**
+ * lib/data/images.ts
+ *
+ * Static fallback image data used when Firestore is unavailable.
+ * All paths point to existing files under public/images/.
+ *
+ * Firestore (via lib/firebase/images.ts) takes precedence at runtime;
+ * this file is only used as a last-resort fallback.
+ */
 export const imagesData = {
   hero: {
-    url: '/images/hero/placeholder.jpg',
-    alt: 'Aéroport - Transfer Premium',
+    url: '/images/hero/chauffeur-prive.jpg',
+    alt: 'Chauffeur privé MS Prestige Driver',
   },
   vehicles: {
     business: {
