@@ -2,15 +2,21 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
 
-    // Images publiques (lecture seule)
+    // ── Public read for all site images ────────────────────────────────────
+    // Images served from Storage are publicly readable (they are used on the
+    // public website without authentication).
     match /images/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null;
+
+      // Write only by authenticated admin
+      // isAdmin() checks the Firebase Auth token email.
+      allow write: if request.auth != null
+                   && request.auth.token.email == 'martho.evan@gmail.com';
     }
 
-    // Tout le reste : authentifié uniquement
+    // ── All other paths: deny by default ───────────────────────────────────
     match /{allPaths=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if false;
     }
   }
 }
