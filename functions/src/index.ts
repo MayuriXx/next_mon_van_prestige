@@ -122,6 +122,7 @@ export const createCheckoutSession = onCall(
   {
     region: 'europe-west1',
     secrets: [STRIPE_SECRET_KEY],
+    cors: ['https://mon-van-prestige.web.app', 'http://localhost:3000'],
   },
   async (request) => {
     // Reject unauthenticated calls (optional — remove if no Firebase Auth)
@@ -364,3 +365,4 @@ export const stripeWebhook = onRequest(
     res.sendStatus(200);
   }
 );
+
