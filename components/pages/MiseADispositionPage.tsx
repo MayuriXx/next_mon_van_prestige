@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
+import { useContenus } from '@/lib/hooks/useContenus';
 import styles from './MiseADispositionPage.module.css';
 
 /* ── Nominatim autocomplete ── */
@@ -219,6 +220,7 @@ const BADGE_ICONS = [
 export default function MiseADispositionPage() {
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname) as Locale;
+  const contenus = useContenus('miseADisposition', locale);
   const c = CONTENT[locale] ?? CONTENT.fr;
 
   const [pickup, setPickup] = useState('');
@@ -255,8 +257,8 @@ export default function MiseADispositionPage() {
           {/* Gauche : texte */}
           <div className={styles.heroLeft}>
             <p className={styles.heroTag}>{c.tag}</p>
-            <h1 className={styles.heroTitle}>{c.title}</h1>
-            <p className={styles.heroSubtitle}>{c.subtitle}</p>
+            <h1 className={styles.heroTitle}>{contenus.get('title') || c.title}</h1>
+            <p className={styles.heroSubtitle}>{contenus.get('subtitle') || c.subtitle}</p>
             <p className={styles.heroNote}>{c.note}</p>
             <div className={styles.badges}>
               {c.badges.map((badge, i) => (
@@ -358,3 +360,4 @@ export default function MiseADispositionPage() {
     </>
   );
 }
+

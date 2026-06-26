@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
+import { useContenus } from '@/lib/hooks/useContenus';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import styles from './EscapadesLoisirsPage.module.css';
 
@@ -87,6 +88,7 @@ export default function EscapadesLoisirsPage() {
   const t = useTranslations('escapadesLoisirs');
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname) as Locale;
+  const contenus = useContenus('escapadesLoisirs', locale as 'fr' | 'en' | 'nl');
 
   function getDest(item: typeof PARKS[0] | typeof SPORTS[0]): string {
     if (locale === 'en') return item.destination_en;
@@ -112,8 +114,8 @@ export default function EscapadesLoisirsPage() {
 
         <div className={styles.heroContent}>
           <p className={styles.heroTag}>{t('tag')}</p>
-          <h1 className={styles.heroTitle}>{t('title')}</h1>
-          <p className={styles.heroSubtitle}>{t('subtitle')}</p>
+          <h1 className={styles.heroTitle}>{contenus.get('title') || t('title')}</h1>
+          <p className={styles.heroSubtitle}>{contenus.get('subtitle') || t('subtitle')}</p>
           <div className={styles.badges}>
             <span className={styles.badge}>
               <svg className={styles.badgeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -212,3 +214,4 @@ export default function EscapadesLoisirsPage() {
     </>
   );
 }
+

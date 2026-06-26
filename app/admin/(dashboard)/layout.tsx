@@ -14,7 +14,8 @@
  *   - Réservations  (#24)
  *   - Tarifs        (#22)
  *   - Images        (#23)
- *   - FAQ & Textes  (#25)
+ *   - FAQ           (#25) — FAQ entries CRUD
+ *   - Contenus      (#25) — Service descriptions & key texts editor
  */
 'use client';
 
@@ -28,7 +29,8 @@ const NAV_ITEMS = [
   { href: '/admin/reservations', label: 'Réservations', icon: '📋' },
   { href: '/admin/tarifs',       label: 'Tarifs',       icon: '💶' },
   { href: '/admin/images',       label: 'Images',       icon: '🖼️' },
-  { href: '/admin/faq',          label: 'FAQ & Textes', icon: '📝' },
+  { href: '/admin/faq',          label: 'FAQ',          icon: '❓' },
+  { href: '/admin/contenus',     label: 'Textes & Contenus', icon: '✏️' },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

@@ -1,8 +1,26 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
+import { getLocaleFromPath } from '@/lib/utils/locale';
+import { useContenus } from '@/lib/hooks/useContenus';
 import styles from './About.module.css';
 
 export default function About() {
+  const pathname = usePathname();
+  const locale = getLocaleFromPath(pathname) as 'fr' | 'en' | 'nl';
+  const contenus = useContenus('about', locale);
+
+  // Default texts (static fallback when Firestore has no override)
+  const defaultTitle = 'À PROPOS';
+  const defaultWhoText1 =
+    "Passionné par l'automobile et le service d'excellence, j'ai créé MON VAN PRESTIGE " +
+    'pour offrir bien plus qu'un simple trajet. Mon objectif est de vous apporter une ' +
+    'sérénité totale lors de vos déplacements.';
+  const defaultWhoText2 =
+    "Fort d'une expérience significative dans le transport de personnes, je m'engage " +
+    'personnellement à garantir votre satisfaction par une conduite souple, une ' +
+    'discrétion absolue et une disponibilité sans faille.';
+
   return (
     <section className={styles.section} id="a-propos">
       <div className={styles.overlay} />
@@ -11,23 +29,25 @@ export default function About() {
         {/* Titre */}
         <div className={styles.header}>
           <div className={styles.separator} />
-          <h2 className={styles.title}>À PROPOS</h2>
+          <h2 className={styles.title}>
+            {contenus.get('title') || defaultTitle}
+          </h2>
           <div className={styles.separator} />
         </div>
 
         {/* Carte QUI SUIS-JE */}
         <div className={styles.whoCard}>
           <h3 className={styles.whoTitle}>QUI SUIS-JE ?</h3>
-          <p className={styles.whoText}>
-            Passionné par l'automobile et le service d'excellence, j'ai créé MON VAN PRESTIGE
-            pour offrir bien plus qu'un simple trajet. Mon objectif est de vous apporter une
-            sérénité totale lors de vos déplacements.
-          </p>
-          <p className={styles.whoText}>
-            Fort d'une expérience significative dans le transport de personnes, je m'engage
-            personnellement à garantir votre satisfaction par une conduite souple, une
-            discrétion absolue et une disponibilité sans faille.
-          </p>
+          {contenus.get('text') ? (
+            /* Firestore override: single rich text block */
+            <p className={styles.whoText}>{contenus.get('text')}</p>
+          ) : (
+            /* Static fallback: two paragraphs */
+            <>
+              <p className={styles.whoText}>{defaultWhoText1}</p>
+              <p className={styles.whoText}>{defaultWhoText2}</p>
+            </>
+          )}
         </div>
 
         {/* 3 cartes valeurs */}
