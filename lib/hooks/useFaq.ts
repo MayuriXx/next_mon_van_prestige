@@ -3,39 +3,29 @@
  *
  * Public-facing hook that fetches FAQ entries from Firestore.
  *
- * Business purpose:
- *   Mohammed can add, edit, reorder, and delete FAQ entries from the admin
- *   panel (/admin/faq). This hook reads those entries for the public FAQ page.
- *   If Firestore returns no data (first deploy, offline, etc.) the component
- *   falls back to the static i18n keys already in messages/*.json.
+ * Query strategy:
+ *   We fetch ALL documents ordered by `order` only (single-field index,
+ *   automatically created by Firestore) and filter `active == true`
+ *   client-side. This avoids requiring a composite index on (active, order)
+ *   which would need manual creation in the Firebase console.
  *
  * Firestore structure:
  *   Collection: faq
  *   Documents: one per FAQ entry, with fields:
- *     - id        : string   (auto-generated or set)
  *     - question  : { fr: string; en: string; nl: string }
  *     - answer    : { fr: string; en: string; nl: string }
- *     - order     : number   (for display ordering, 0-based)
- *     - active    : boolean  (false = hidden on public page)
+ *     - order     : number
+ *     - active    : boolean
  *     - createdAt : Timestamp
  *     - updatedAt : Timestamp
- *
- * Usage:
- *   const { items, loading } = useFaq('fr');
  */
 
 import { useState, useEffect } from 'react';
-import {
-  collection,
-  query,
-  orderBy,
-  where,
-  onSnapshot,
-} from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase/client';
 
 export interface FaqItem {
-  id: string;
+  id:       string;
   question: { fr: string; en: string; nl: string };
   answer:   { fr: string; en: string; nl: string };
   order:    number;
@@ -54,16 +44,16 @@ export function useFaq(locale: 'fr' | 'en' | 'nl' = 'fr'): UseFaqResult {
   const [error,   setError]   = useState<string | null>(null);
 
   useEffect(() => {
-    const q = query(
-      collection(db, 'faq'),
-      where('active', '==', true),
-      orderBy('order', 'asc'),
-    );
+    // Single-field orderBy only — no composite index required.
+    // active filtering is done client-side.
+    const q = query(collection(db, 'faq'), orderBy('order', 'asc'));
 
     const unsub = onSnapshot(
       q,
       (snap) => {
-        const docs = snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<FaqItem, 'id'>) }));
+        const docs = snap.docs
+          .map((d) => ({ id: d.id, ...(d.data() as Omit<FaqItem, 'id'>) }))
+          .filter((item) => item.active === true);
         setItems(docs);
         setLoading(false);
       },
@@ -75,7 +65,7 @@ export function useFaq(locale: 'fr' | 'en' | 'nl' = 'fr'): UseFaqResult {
     );
 
     return () => unsub();
-  }, [locale]); // locale is kept in dep array for future index-based filtering
+  }, [locale]);
 
   return { items, loading, error };
 }
