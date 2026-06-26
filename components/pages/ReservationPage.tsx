@@ -5,8 +5,6 @@ import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useState, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import app from '@/lib/firebase/client';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import { calculatePrice, formatPrice } from '@/lib/utils/pricing';
 import type { VehicleType } from '@/lib/types/pricing';
@@ -296,16 +294,29 @@ export default function ReservationPage() {
         notes            : clientNotes.trim() || undefined,
       };
 
-      const functions = getFunctions(app, 'europe-west1');
-      const createSession = httpsCallable<CheckoutPayload, { sessionUrl: string }>(
-        functions,
-        'createCheckoutSession'
-      );
+      // Call Firebase Cloud Function directly via fetch (httpsCallable SDK
+      // does not handle CORS correctly with Cloud Functions Gen 2 / Cloud Run)
+      const fnUrl = 'https://europe-west1-mon-van-prestige.cloudfunctions.net/createCheckoutSession';
+      const response = await fetch(fnUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: payload }),
+      });
 
-      const res = await createSession(payload);
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error('Function error:', errText);
+        setBookingError(t('error_stripe'));
+        return;
+      }
 
-      if (res.data.sessionUrl) {
-        window.location.href = res.data.sessionUrl;
+      const result = await response.json();
+      const sessionUrl = result?.result?.sessionUrl ?? result?.sessionUrl;
+
+      if (sessionUrl) {
+        window.location.href = sessionUrl;
       } else {
         setBookingError(t('error_stripe'));
       }
@@ -723,3 +734,4 @@ export default function ReservationPage() {
     </>
   );
 }
+
