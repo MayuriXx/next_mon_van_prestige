@@ -1,7 +1,7 @@
 {
   "name": "mon-van-prestige-functions",
   "version": "1.0.0",
-  "description": "Firebase Cloud Functions — MS Prestige Driver",
+  "description": "Firebase Cloud Functions \u2014 MS Prestige Driver",
   "scripts": {
     "build": "tsc",
     "serve": "npm run build && firebase emulators:start --only functions",
@@ -9,7 +9,7 @@
     "lint": "eslint --ext .ts ."
   },
   "engines": {
-    "node": "20"
+    "node": "22"
   },
   "main": "lib/index.js",
   "dependencies": {
