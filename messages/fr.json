@@ -235,6 +235,35 @@
     "error_addresses": "Veuillez saisir un point de départ et d'arrivée.",
     "error_geocode": "Adresse introuvable. Veuillez préciser votre saisie.",
     "error_route": "Impossible de calculer l'itinéraire.",
-    "error_generic": "Une erreur est survenue. Veuillez réessayer."
+    "error_generic": "Une erreur est survenue. Veuillez réessayer.",
+    "error_client_info": "Veuillez renseigner votre nom, email et téléphone.",
+    "error_datetime": "Veuillez sélectionner une date et une heure de départ.",
+    "error_stripe": "Une erreur est survenue lors de la connexion au paiement.",
+    "back": "Retour",
+    "deposit_note": "Un acompte sera prélevé selon nos CGV : 50% si départ > 7 jours, 30% si < 7 jours, 100% si < 24h.",
+    "client_name_placeholder": "Votre nom complet",
+    "client_email_placeholder": "Votre adresse email",
+    "client_phone_placeholder": "Votre numéro de téléphone",
+    "client_notes_placeholder": "Instructions particulières (optionnel)",
+    "pay_cta": "Procéder au paiement →",
+    "redirecting": "Redirection vers le paiement...",
+    "stripe_note": "Paiement sécurisé par Stripe — vos données bancaires ne nous sont jamais transmises."
+  },
+  "reservationSuccess": {
+    "title": "Réservation confirmée !",
+    "subtitle": "Votre acompte a bien été reçu. Vous allez recevoir un email de confirmation dans quelques instants.",
+    "point_email": "Un récapitulatif vous a été envoyé par email.",
+    "point_balance": "Le solde restant sera à régler à bord du véhicule, avant le départ.",
+    "point_contact": "Votre chauffeur vous contactera avant la course pour confirmer les détails.",
+    "contact_label": "Une question ?",
+    "cta_home": "Retour à l'accueil"
+  },
+  "reservationCancel": {
+    "title": "Paiement annulé",
+    "subtitle": "Votre réservation n'a pas été finalisée. Aucun montant n'a été débité.",
+    "info": "Vous pouvez relancer la réservation à tout moment. Si vous avez rencontré un problème, n'hésitez pas à nous contacter directement via WhatsApp.",
+    "contact_label": "Besoin d'aide ?",
+    "cta_retry": "Réessayer",
+    "cta_home": "Retour à l'accueil"
   }
 }

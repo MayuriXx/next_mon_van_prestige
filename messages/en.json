@@ -235,6 +235,35 @@
     "error_addresses": "Please enter a pickup and drop-off address.",
     "error_geocode": "Address not found. Please refine your entry.",
     "error_route": "Unable to calculate the route.",
-    "error_generic": "An error occurred. Please try again."
+    "error_generic": "An error occurred. Please try again.",
+    "error_client_info": "Please fill in your name, email and phone number.",
+    "error_datetime": "Please select a departure date and time.",
+    "error_stripe": "An error occurred while connecting to the payment system.",
+    "back": "Back",
+    "deposit_note": "A deposit will be charged per our T&Cs: 50% if departure > 7 days, 30% if < 7 days, 100% if < 24h.",
+    "client_name_placeholder": "Your full name",
+    "client_email_placeholder": "Your email address",
+    "client_phone_placeholder": "Your phone number",
+    "client_notes_placeholder": "Special instructions (optional)",
+    "pay_cta": "Proceed to payment →",
+    "redirecting": "Redirecting to payment...",
+    "stripe_note": "Secure payment by Stripe — your banking details are never shared with us."
+  },
+  "reservationSuccess": {
+    "title": "Booking confirmed!",
+    "subtitle": "Your deposit has been received. You will receive a confirmation email shortly.",
+    "point_email": "A summary has been sent to you by email.",
+    "point_balance": "The remaining balance is to be paid on board, before departure.",
+    "point_contact": "Your driver will contact you before the ride to confirm the details.",
+    "contact_label": "Any question?",
+    "cta_home": "Back to home"
+  },
+  "reservationCancel": {
+    "title": "Payment cancelled",
+    "subtitle": "Your booking was not completed. No amount has been charged.",
+    "info": "You can restart the booking at any time. If you encountered an issue, feel free to contact us directly via WhatsApp.",
+    "contact_label": "Need help?",
+    "cta_retry": "Try again",
+    "cta_home": "Back to home"
   }
 }
