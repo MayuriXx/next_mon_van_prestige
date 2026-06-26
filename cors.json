@@ -1,0 +1,17 @@
+[
+  {
+    "origin": [
+      "https://mon-van-prestige.web.app"
+    ],
+    "method": [
+      "GET",
+      "PUT",
+      "POST",
+      "DELETE"
+    ],
+    "responseHeader": [
+      "Content-Type"
+    ],
+    "maxAgeSeconds": 3600
+  }
+]
