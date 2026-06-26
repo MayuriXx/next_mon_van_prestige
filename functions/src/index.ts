@@ -21,6 +21,7 @@
 
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { onRequest } from 'firebase-functions/v2/https';
+import { setGlobalOptions } from 'firebase-functions/v2';
 import { initializeApp } from 'firebase-admin/app';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import Stripe from 'stripe';
@@ -29,6 +30,12 @@ import { Resend } from 'resend';
 // ── Firebase Admin init ───────────────────────────────────────────────────────
 initializeApp();
 const db = getFirestore();
+
+// ── Global CORS — allow calls from Firebase Hosting ───────────────────────────
+setGlobalOptions({
+  region: 'europe-west1',
+  cors: ['https://mon-van-prestige.web.app', 'http://localhost:3000'],
+});
 
 // ── Runtime secrets (set via: firebase functions:secrets:set SECRET_NAME) ────
 // Access via functions.params.defineSecret in v2
@@ -120,7 +127,6 @@ function buildServiceLabel(data: BookingData, depositRatio: number): string {
 
 export const createCheckoutSession = onCall(
   {
-    region: 'europe-west1',
     secrets: [STRIPE_SECRET_KEY],
     cors: ['https://mon-van-prestige.web.app', 'http://localhost:3000'],
   },
@@ -229,7 +235,6 @@ export const createCheckoutSession = onCall(
 
 export const stripeWebhook = onRequest(
   {
-    region : 'europe-west1',
     secrets: [STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY, RESEND_FROM_EMAIL, ADMIN_EMAIL],
   },
   async (req, res) => {
@@ -365,4 +370,5 @@ export const stripeWebhook = onRequest(
     res.sendStatus(200);
   }
 );
+
 
