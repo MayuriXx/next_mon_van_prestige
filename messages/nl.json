@@ -265,5 +265,70 @@
     "contact_label": "Hulp nodig?",
     "cta_retry": "Opnieuw proberen",
     "cta_home": "Terug naar home"
+  },
+  "seo": {
+    "home": {
+      "title": "MS Prestige Driver — Luxe Privéchauffeur in Valenciennes",
+      "description": "Uw luxe privéchauffeur in Valenciennes. Luchthavenoverdrachten, zakenreizen, speciale evenementen, per uur huren. Online boeken.",
+      "ogTitle": "MS Prestige Driver — Premium VTC in Valenciennes",
+      "ogDescription": "Hoogwaardige privéchauffeur voor al uw ritten. CDG, Orly, Brussel, Lille. Business & Van voertuigen. Online reserveren.",
+      "ogImageAlt": "MS Prestige Driver — Luxe chauffeur Valenciennes"
+    },
+    "transfertAeroport": {
+      "title": "Luchthavenoverdracht VTC — CDG, Orly, Brussel | MS Prestige Driver",
+      "description": "Premium luchthavenoverdracht vanuit Valenciennes. Vaste pakketten naar CDG, Orly, Zaventem, Charleroi, Lille-Lesquin. Stiptheid gegarandeerd.",
+      "ogTitle": "Luchthavenoverdracht VTC vanuit Valenciennes",
+      "ogDescription": "Vaste tarieven naar CDG, Orly, Brussel, Charleroi, Lesquin. Privéchauffeur, gegarandeerde stiptheid, realtime vluchtvolging.",
+      "ogImageAlt": "Luchthavenoverdracht VTC MS Prestige Driver"
+    },
+    "transfertSimple": {
+      "title": "Stad-tot-Stad VTC Transfer — Op Maat | MS Prestige Driver",
+      "description": "Boek uw VTC-transfer tussen twee adressen. Bereken uw prijs in realtime, gepersonaliseerde rit, elite privéchauffeur vanuit Valenciennes.",
+      "ogTitle": "Punt-tot-Punt VTC Transfer — Direct Online Offerte",
+      "ogDescription": "Bereken en boek uw VTC-rit in een paar klikken. Transparante kilometerprijs, premium privéchauffeur.",
+      "ogImageAlt": "Punt-tot-punt VTC transfer MS Prestige Driver"
+    },
+    "evenementsSpeciaux": {
+      "title": "Privéchauffeur voor Speciale Evenementen — Bruiloft, Gala | MS Prestige Driver",
+      "description": "Privéchauffeur voor uw speciale evenementen in Valenciennes. Bruiloft, galadiner, verjaardag, ceremonie. Elegantie, discretie en totale flexibiliteit.",
+      "ogTitle": "VTC voor Speciale Evenementen — Bruiloft, Gala",
+      "ogDescription": "Gun uzelf een privéchauffeur voor uw bruiloft of gala. Luxe voertuig, gegarandeerde elegantie en stiptheid.",
+      "ogImageAlt": "Privéchauffeur speciale evenementen Valenciennes"
+    },
+    "escapadesLoisirs": {
+      "title": "VTC naar Pretparken & Sportevenementen | MS Prestige Driver",
+      "description": "VTC-vervoer naar Disneyland, Parc Astérix, Walibi, Stade de Lens, Pierre Mauroy. Vaste tarieven vanuit Valenciennes. Comfort en veiligheid.",
+      "ogTitle": "VTC Vrijetijd — Disneyland, Parc Astérix, Stade de Lens",
+      "ogDescription": "Reis comfortabel naar uw vrijetijdsuitjes en sportevenementen. Vaste tarieven vanuit Valenciennes, geen verrassingen.",
+      "ogImageAlt": "VTC vrijetijd pretparken Valenciennes"
+    },
+    "miseADisposition": {
+      "title": "Privéchauffeur per Uur Huren | MS Prestige Driver",
+      "description": "Privéchauffeur tot uw beschikking in Valenciennes. Transparant uurtarief, totale flexibiliteit voor uw afspraken, winkelen en evenementen.",
+      "ogTitle": "VTC per Uur — Privéchauffeur op Aanvraag",
+      "ogDescription": "Boek uw privéchauffeur per uur. Totale flexibiliteit, beschikbaar voor al uw dagelijkse ritten.",
+      "ogImageAlt": "Privéchauffeur per uur Valenciennes"
+    },
+    "deplPro": {
+      "title": "Zakelijk VTC Vervoer voor Bedrijven | MS Prestige Driver",
+      "description": "Premium VTC voor professionals en bedrijven in Valenciennes. Zakenreizen, transfers, wifi aan boord, zakelijke facturering.",
+      "ogTitle": "Zakelijk VTC — Bedrijfsvervoer Valenciennes",
+      "ogDescription": "Premium VTC-service voor executives en bedrijven. Wifi aan boord, zakelijke facturering, vertrouwelijkheid gegarandeerd.",
+      "ogImageAlt": "Zakelijk VTC bedrijfsvervoer Valenciennes"
+    },
+    "faq": {
+      "title": "FAQ — Veelgestelde Vragen VTC | MS Prestige Driver",
+      "description": "Vind antwoorden op al uw vragen over onze luxe VTC-diensten in Valenciennes: reservering, betaling, voertuigen, annulering.",
+      "ogTitle": "FAQ MS Prestige Driver — Uw Vragen Beantwoord",
+      "ogDescription": "Reservering, betaling, voertuigen, tarieven, annulering: alle antwoorden op uw vragen over onze premium VTC-service.",
+      "ogImageAlt": "FAQ MS Prestige Driver VTC Valenciennes"
+    },
+    "reservation": {
+      "title": "Boek uw VTC | MS Prestige Driver",
+      "description": "Boek online uw privéchauffeur in een paar stappen. Veilige betaling, directe bevestiging per e-mail.",
+      "ogTitle": "Online VTC Reservering — MS Prestige Driver",
+      "ogDescription": "Boek uw privéchauffeur in een paar klikken. Veilige betaling via Stripe, directe bevestiging.",
+      "ogImageAlt": "VTC reservering MS Prestige Driver"
+    }
   }
 }
