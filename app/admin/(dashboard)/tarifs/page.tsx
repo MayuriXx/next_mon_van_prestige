@@ -1,4 +1,3 @@
-import React from 'react';
 /**
  * app/admin/(dashboard)/tarifs/page.tsx
  *
@@ -34,6 +33,7 @@ import React from 'react';
 
 'use client';
 
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/client';
