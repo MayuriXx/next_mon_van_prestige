@@ -19,7 +19,6 @@
  *  - No-show                  → no refund
  */
 
-import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { onRequest } from 'firebase-functions/v2/https';
 import { initializeApp } from 'firebase-admin/app';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
@@ -121,26 +120,33 @@ function buildServiceLabel(data: BookingData, depositRatio: number): string {
 
 // ── Cloud Function: createCheckoutSession ─────────────────────────────────────
 
-export const createCheckoutSession = onCall(
+export const createCheckoutSession = onRequest(
   {
     secrets: [STRIPE_SECRET_KEY],
     cors: ['https://mon-van-prestige.web.app', 'http://localhost:3000'],
   },
-  async (request) => {
-    // Reject unauthenticated calls (optional — remove if no Firebase Auth)
-    // if (!request.auth) throw new HttpsError('unauthenticated', 'Login required');
+  async (req, res) => {
+    // Handle CORS preflight
+    res.set('Access-Control-Allow-Origin', 'https://mon-van-prestige.web.app');
+    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') {
+      res.status(204).send('');
+      return;
+    }
 
-    const data = request.data as BookingData;
+    const body = req.body as { data?: BookingData } | BookingData;
+    const data: BookingData = ('data' in body && body.data) ? body.data : body as BookingData;
 
     // ── Validation ──────────────────────────────────────────────────────────
     if (!data.totalPrice || data.totalPrice <= 0) {
-      throw new HttpsError('invalid-argument', 'totalPrice must be > 0');
+      res.status(400).json({ error: 'totalPrice must be > 0' }); return;
     }
     if (!data.departureDateTime) {
-      throw new HttpsError('invalid-argument', 'departureDateTime is required');
+      res.status(400).json({ error: 'departureDateTime is required' }); return;
     }
     if (!data.clientEmail || !data.clientName || !data.clientPhone) {
-      throw new HttpsError('invalid-argument', 'clientName, clientEmail, clientPhone are required');
+      res.status(400).json({ error: 'clientName, clientEmail, clientPhone are required' }); return;
     }
 
     const stripe = new Stripe(STRIPE_SECRET_KEY.value());
@@ -223,7 +229,7 @@ export const createCheckoutSession = onCall(
     // ── Update reservation with Stripe session ID ────────────────────────────
     await reservationRef.update({ stripeSessionId: session.id });
 
-    return { sessionUrl: session.url };
+    res.json({ result: { sessionUrl: session.url } });
   }
 );
 
@@ -366,6 +372,7 @@ export const stripeWebhook = onRequest(
     res.sendStatus(200);
   }
 );
+
 
 
 
