@@ -1,7 +1,8 @@
 [
   {
     "origin": [
-      "https://mon-van-prestige.web.app"
+      "https://mon-van-prestige.web.app",
+      "https://mon-van-prestige.firebaseapp.com"
     ],
     "method": [
       "GET",
