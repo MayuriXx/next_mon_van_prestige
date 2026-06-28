@@ -39,6 +39,7 @@ export default function SplashScreen() {
           width={280}
           height={280}
           priority
+          sizes="280px"
           className={styles.logo}
         />
         <p className={styles.name}>MS Prestige Driver</p>
