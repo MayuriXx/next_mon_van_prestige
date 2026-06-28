@@ -254,7 +254,7 @@ export default function ImagesPage() {
                   setPending((p) => p ? { ...p, altText: alt } : p);
                 }
               }}
-              fileInputRef={isPending ? fileInputRef : undefined}
+              fileInputRef={isPending ? fileInputRef as React.RefObject<HTMLInputElement> : undefined}
             />
           );
         })}
