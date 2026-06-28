@@ -50,6 +50,12 @@ export default function Vehicles() {
                   src={vehicle.image}
                   alt={vehicle.name}
                   fill
+                  /**
+                   * Vehicle cards are ~50vw on desktop (2-col grid), 100vw on mobile.
+                   * sizes prevents the browser from downloading a full-width image
+                   * for a half-width card, improving LCP and bandwidth.
+                   */
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className={styles.image}
                 />
               </div>
