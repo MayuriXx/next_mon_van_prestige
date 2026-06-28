@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { setRequestLocale, getTranslations } from 'next-intl/server';
 import Hero from '@/components/sections/Hero';
 import Features from '@/components/sections/Features';
 import VehiculesTarifsWrapper from '@/components/sections/VehiculesTarifsWrapper';
@@ -24,6 +24,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'seo' });
 
   const canonicalPath = locale === 'fr' ? '/' : `/${locale}`;
