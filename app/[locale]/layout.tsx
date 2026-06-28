@@ -72,10 +72,14 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
-        <head>
-          <OrganizationJsonLd />
-        </head>
       <body>
+        {/*
+         * OrganizationJsonLd renders a <script type="application/ld+json"> tag.
+         * Next.js App Router hoists script tags placed as direct children of the
+         * layout into the document <head> automatically — no explicit <head>
+         * element needed here.
+         */}
+        <OrganizationJsonLd />
         <NextIntlClientProvider messages={messages}>
           <SplashScreen />
           <Navbar />
