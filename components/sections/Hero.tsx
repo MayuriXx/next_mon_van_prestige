@@ -10,7 +10,7 @@ import styles from './Hero.module.css';
 const SLIDES = [
   {
     id: 'chauffeur-prive',
-    image: '/images/hero/chauffeur-prive.jpg',
+    image: '/images/hero/chauffeur-prive.webp',
     title: 'CHAUFFEUR PRIVÉ',
     tagline: 'VALENCIENNES ET SES ALENTOURS',
     subtitle: 'Excellence et raffinement depuis 2022',
@@ -18,7 +18,7 @@ const SLIDES = [
   },
   {
     id: 'transfert-aeroport',
-    image: '/images/hero/transfert-aeroport.jpg',
+    image: '/images/hero/transfert-aeroport.webp',
     title: 'TRANSFERT AÉROPORT',
     tagline: 'DISPONIBLE 24/7',
     subtitle: 'Paris CDG • Bruxelles • Lille',
@@ -26,7 +26,7 @@ const SLIDES = [
   },
   {
     id: 'deplacements-pro',
-    image: '/images/hero/deplacements-pro.jpg',
+    image: '/images/hero/deplacements-pro.webp',
     title: 'DÉPLACEMENTS PROFESSIONNELS',
     tagline: 'SERVICE PREMIUM',
     subtitle: 'Ponctualité et discrétion garanties',
@@ -34,7 +34,7 @@ const SLIDES = [
   },
   {
     id: 'evenements-speciaux',
-    image: '/images/hero/evenements-speciaux.jpg',
+    image: '/images/hero/evenements-speciaux.webp',
     title: 'ÉVÉNEMENTS SPÉCIAUX',
     tagline: 'MOMENTS INOUBLIABLES',
     subtitle: 'Mariages • Soirées • Cérémonies',
