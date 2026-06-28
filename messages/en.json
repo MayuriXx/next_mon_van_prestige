@@ -265,5 +265,70 @@
     "contact_label": "Need help?",
     "cta_retry": "Try again",
     "cta_home": "Back to home"
+  },
+  "seo": {
+    "home": {
+      "title": "MS Prestige Driver — Luxury Private Driver in Valenciennes",
+      "description": "Your luxury private chauffeur in Valenciennes. Airport transfers, business travel, special events, hourly hire. Book online.",
+      "ogTitle": "MS Prestige Driver — Premium VTC in Valenciennes",
+      "ogDescription": "High-end private chauffeur for all your journeys. CDG, Orly, Brussels, Lille. Business & Van vehicles. Online booking.",
+      "ogImageAlt": "MS Prestige Driver — Luxury chauffeur Valenciennes"
+    },
+    "transfertAeroport": {
+      "title": "Airport Transfer VTC — CDG, Orly, Brussels | MS Prestige Driver",
+      "description": "Premium airport transfer from Valenciennes. Fixed packages to CDG, Orly, Zaventem, Charleroi, Lille-Lesquin. Punctuality guaranteed, flight tracking.",
+      "ogTitle": "Airport Transfer VTC from Valenciennes",
+      "ogDescription": "Fixed-rate transfers to CDG, Orly, Brussels, Charleroi, Lesquin. Private driver, guaranteed punctuality, real-time flight tracking.",
+      "ogImageAlt": "Airport transfer VTC MS Prestige Driver"
+    },
+    "transfertSimple": {
+      "title": "City-to-City VTC Transfer — Custom Journey | MS Prestige Driver",
+      "description": "Book your VTC transfer between two addresses. Calculate your price in real time, personalised journey, elite private driver from Valenciennes.",
+      "ogTitle": "Point-to-Point VTC Transfer — Instant Online Quote",
+      "ogDescription": "Calculate and book your VTC journey in a few clicks. Transparent per-km pricing, premium private chauffeur.",
+      "ogImageAlt": "Point-to-point VTC transfer MS Prestige Driver"
+    },
+    "evenementsSpeciaux": {
+      "title": "Private Chauffeur for Special Events — Wedding, Gala | MS Prestige Driver",
+      "description": "Private driver for your special events in Valenciennes. Wedding, gala evening, anniversary, ceremony. Elegance, discretion and total flexibility.",
+      "ogTitle": "VTC for Special Events — Wedding, Gala Night",
+      "ogDescription": "Treat yourself to a private driver for your wedding or gala. Luxury vehicle, guaranteed elegance and punctuality.",
+      "ogImageAlt": "Private driver special events Valenciennes"
+    },
+    "escapadesLoisirs": {
+      "title": "VTC to Theme Parks & Sports Events | MS Prestige Driver",
+      "description": "VTC transport to Disneyland, Parc Astérix, Walibi, Stade de Lens, Pierre Mauroy. Fixed fares from Valenciennes. Comfort and safety.",
+      "ogTitle": "VTC Leisure — Disneyland, Parc Astérix, Stade de Lens",
+      "ogDescription": "Travel in comfort to your leisure outings and sports events. Fixed fares from Valenciennes, no surprises.",
+      "ogImageAlt": "VTC leisure theme parks Valenciennes"
+    },
+    "miseADisposition": {
+      "title": "Hourly Private Driver Hire | MS Prestige Driver",
+      "description": "Private chauffeur at your disposal in Valenciennes. Transparent hourly rate, total flexibility for your appointments, shopping and events.",
+      "ogTitle": "Hourly VTC Hire — Private Driver by the Hour",
+      "ogDescription": "Book your private driver by the hour. Total flexibility, available for all your day's journeys.",
+      "ogImageAlt": "Hourly private driver hire Valenciennes"
+    },
+    "deplPro": {
+      "title": "Corporate VTC Business Travel | MS Prestige Driver",
+      "description": "Premium VTC for professionals and companies in Valenciennes. Business travel, transfers, on-board Wi-Fi, corporate invoicing.",
+      "ogTitle": "Corporate VTC — Business Travel Valenciennes",
+      "ogDescription": "Premium VTC service for executives and businesses. On-board Wi-Fi, corporate billing, confidentiality assured.",
+      "ogImageAlt": "Corporate VTC business travel Valenciennes"
+    },
+    "faq": {
+      "title": "FAQ — Frequently Asked Questions VTC | MS Prestige Driver",
+      "description": "Find answers to all your questions about our luxury VTC services in Valenciennes: booking, payment, vehicles, cancellation.",
+      "ogTitle": "FAQ MS Prestige Driver — Your Questions Answered",
+      "ogDescription": "Booking, payment, vehicles, fares, cancellation: all answers to your questions about our premium VTC service.",
+      "ogImageAlt": "FAQ MS Prestige Driver VTC Valenciennes"
+    },
+    "reservation": {
+      "title": "Book your VTC | MS Prestige Driver",
+      "description": "Book your private driver online in a few steps. Secure payment, instant email confirmation.",
+      "ogTitle": "Online VTC Booking — MS Prestige Driver",
+      "ogDescription": "Book your private chauffeur in a few clicks. Secure payment via Stripe, instant confirmation.",
+      "ogImageAlt": "VTC booking MS Prestige Driver"
+    }
   }
 }
