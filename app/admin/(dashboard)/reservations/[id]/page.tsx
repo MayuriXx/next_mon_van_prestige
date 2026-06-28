@@ -79,6 +79,11 @@ function formatEur(amount: number | undefined | null): string {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
+
+// Required for output: 'export' — actual data loaded client-side from Firestore
+export function generateStaticParams() {
+  return [];
+}
 export default function ReservationDetailPage() {
   const { id }  = useParams<{ id: string }>();
   const router  = useRouter();
