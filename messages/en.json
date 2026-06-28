@@ -330,5 +330,8 @@
       "ogDescription": "Book your private chauffeur in a few clicks. Secure payment via Stripe, instant confirmation.",
       "ogImageAlt": "VTC booking MS Prestige Driver"
     }
+  },
+  "hero": {
+    "cta": "Book now"
   }
 }

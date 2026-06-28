@@ -330,5 +330,8 @@
       "ogDescription": "Réservez votre chauffeur privé en quelques clics. Paiement sécurisé par Stripe, confirmation instantanée.",
       "ogImageAlt": "Réservation VTC MS Prestige Driver"
     }
+  },
+  "hero": {
+    "cta": "Réserver maintenant"
   }
 }
