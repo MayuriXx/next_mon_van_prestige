@@ -70,7 +70,25 @@ export default function Hero() {
     <section className={styles.hero}>
       {SLIDES.map((s, i) => (
         <div key={s.id} className={`${styles.bgImage} ${i === current ? styles.bgActive : ''}`}>
-          <Image src={s.image} alt={s.title} fill priority={i === 0} quality={85} className={styles.image} />
+          <Image
+            src={s.image}
+            alt={s.title}
+            fill
+            /**
+             * priority=true only on the first slide (LCP element).
+             * Other slides are lazy-loaded; they are hidden off-screen
+             * and do not affect LCP or initial page load.
+             */
+            priority={i === 0}
+            /**
+             * sizes tells the browser the rendered width of this image at
+             * each breakpoint, so it can select the right srcset entry.
+             * Hero covers 100vw at all breakpoints.
+             */
+            sizes="100vw"
+            quality={85}
+            className={styles.image}
+          />
         </div>
       ))}
 
