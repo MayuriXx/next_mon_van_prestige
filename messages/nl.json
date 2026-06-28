@@ -330,5 +330,8 @@
       "ogDescription": "Boek uw privéchauffeur in een paar klikken. Veilige betaling via Stripe, directe bevestiging.",
       "ogImageAlt": "VTC reservering MS Prestige Driver"
     }
+  },
+  "hero": {
+    "cta": "Nu reserveren"
   }
 }
