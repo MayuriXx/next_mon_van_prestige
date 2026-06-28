@@ -12,9 +12,9 @@
  *   a tagline, a subtitle, and a CTA button that links to the relevant page.
  *
  * Firestore integration (issue #62):
- *   Mohammed can override the tagline of the FIRST slide (the "chauffeur-privé"
- *   slide) via the admin panel (/admin/contenus → "Page d'accueil — Hero").
- *   The override is stored in  as a multilingual field:
+ *   Mohammed can override the tagline of the FIRST slide (the "chauffeur-prive"
+ *   slide) via the admin panel (/admin/contenus -> "Page d'accueil - Hero").
+ *   The override is stored as a multilingual field:
  *     { tagline: { fr: string; en: string; nl: string } }
  *   If the field is empty or the document does not exist, the hardcoded
  *   static string is used as fallback. Slide images and titles are NOT
@@ -44,7 +44,7 @@ const SLIDES = [
   {
     id: 'chauffeur-prive',
     image: '/images/hero/chauffeur-prive.webp',
-    title: 'CHAUFFEUR PRIVÉ',
+    title: 'CHAUFFEUR PRIVE',
     tagline: 'VALENCIENNES ET SES ALENTOURS',
     subtitle: 'Excellence et raffinement depuis 2022',
     href: '/reservation',
@@ -52,25 +52,25 @@ const SLIDES = [
   {
     id: 'transfert-aeroport',
     image: '/images/hero/transfert-aeroport.webp',
-    title: 'TRANSFERT AÉROPORT',
+    title: 'TRANSFERT AEROPORT',
     tagline: 'DISPONIBLE 24/7',
-    subtitle: 'Paris CDG • Bruxelles • Lille',
+    subtitle: 'Paris CDG - Bruxelles - Lille',
     href: '/services/transfert-aeroport',
   },
   {
     id: 'deplacements-pro',
     image: '/images/hero/deplacements-pro.webp',
-    title: 'DÉPLACEMENTS PROFESSIONNELS',
+    title: 'DEPLACEMENTS PROFESSIONNELS',
     tagline: 'SERVICE PREMIUM',
-    subtitle: 'Ponctualité et discrétion garanties',
+    subtitle: 'Ponctualite et discretion garanties',
     href: '/services/deplacements-professionnels',
   },
   {
     id: 'evenements-speciaux',
     image: '/images/hero/evenements-speciaux.webp',
-    title: 'ÉVÉNEMENTS SPÉCIAUX',
+    title: 'EVENEMENTS SPECIAUX',
     tagline: 'MOMENTS INOUBLIABLES',
-    subtitle: 'Mariages • Soirées • Cérémonies',
+    subtitle: 'Mariages - Soirees - Ceremonies',
     href: '/services/evenements-speciaux',
   },
 ];
@@ -119,22 +119,15 @@ export default function Hero() {
   return (
     <section className={styles.hero}>
       {SLIDES.map((s, i) => (
-        <div key={s.id} className={}>
+        <div
+          key={s.id}
+          className={`${styles.bgImage}${i === current ? ` ${styles.bgActive}` : ''}`}
+        >
           <Image
             src={s.image}
             alt={s.title}
             fill
-            /**
-             * priority=true only on the first slide (LCP element).
-             * Other slides are lazy-loaded; they are hidden off-screen
-             * and do not affect LCP or initial page load.
-             */
             priority={i === 0}
-            /**
-             * sizes tells the browser the rendered width of this image at
-             * each breakpoint, so it can select the right srcset entry.
-             * Hero covers 100vw at all breakpoints.
-             */
             sizes="100vw"
             quality={85}
             className={styles.image}
@@ -144,7 +137,7 @@ export default function Hero() {
 
       <div className={styles.overlay} />
 
-      <div className={}>
+      <div className={`${styles.content}${isTransitioning ? ` ${styles.fadeOut}` : ` ${styles.fadeIn}`}`}>
         <div className={styles.inner}>
           <h1 className={styles.title}>{slide.title}</h1>
           <p className={styles.tagline}>{tagline}</p>
@@ -159,9 +152,9 @@ export default function Hero() {
         {SLIDES.map((_, i) => (
           <button
             key={i}
-            className={}
+            className={`${styles.dot}${i === current ? ` ${styles.dotActive}` : ''}`}
             onClick={() => goTo(i)}
-            aria-label={}
+            aria-label={`Slide ${i + 1}`}
           />
         ))}
       </div>
