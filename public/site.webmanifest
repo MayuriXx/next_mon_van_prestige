@@ -1,0 +1,22 @@
+{
+  "name": "MS Prestige Driver",
+  "short_name": "MS Prestige",
+  "description": "Service VTC de luxe à Valenciennes — transferts aéroport, événements, déplacements professionnels.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#C9A84C",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
