@@ -254,7 +254,7 @@ export default function AdminReservationsPage() {
                 <tr
                   key={r.id}
                   style={s.tr}
-                  onClick={() => router.push(`/admin/reservations/${r.id}`)}
+                  onClick={() => router.push(`/admin/reservations/detail?id=${r.id}`)}
                 >
                   <td style={s.td}>{formatDate(r.createdAt)}</td>
 
