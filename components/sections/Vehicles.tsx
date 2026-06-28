@@ -11,7 +11,7 @@ const VEHICLES = [
     models: ['Tesla Model S', 'Mercedes Classe E', 'ou équivalent'],
     badges: ['3 places', '3 bagages', 'WiFi'],
     price: '25',
-    image: '/images/vehicles/business.jpg',
+    image: '/images/vehicles/business.webp',
     popular: false,
   },
   {
@@ -20,7 +20,7 @@ const VEHICLES = [
     models: ['Mercedes Class V', 'Mercedes Vito', 'ou équivalent'],
     badges: ['7 places', '7 bagages', 'WiFi'],
     price: '45',
-    image: '/images/vehicles/van.jpg',
+    image: '/images/vehicles/van.webp',
     popular: false,
   },
 ];
@@ -50,6 +50,12 @@ export default function Vehicles() {
                   src={vehicle.image}
                   alt={vehicle.name}
                   fill
+                  /**
+                   * Vehicle cards are ~50vw on desktop (2-col grid), 100vw on mobile.
+                   * sizes prevents the browser from downloading a full-width image
+                   * for a half-width card, improving LCP and bandwidth.
+                   */
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className={styles.image}
                 />
               </div>

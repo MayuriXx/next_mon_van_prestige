@@ -50,7 +50,17 @@ export default function ServiceSection({ sectionId, slug }: ServiceSectionProps)
     <div className={`${styles.section} ${imageLeft ? styles.imageLeft : styles.imageRight}`}>
       <div className={styles.imageWrapper}>
         {image && (
-          <Image src={image.url} alt={image.alt || content.title} fill className={styles.image} />
+          <Image
+            src={image.url}
+            alt={image.alt || content.title}
+            fill
+            /**
+             * Service sections alternate image left/right at 50% width on desktop.
+             * On mobile they stack to full width.
+             */
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className={styles.image}
+          />
         )}
       </div>
       <div className={styles.textWrapper}>

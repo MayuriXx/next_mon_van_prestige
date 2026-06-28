@@ -1,5 +1,8 @@
 /* ============================================================
    MS PRESTIGE DRIVER — Self-Hosted Fonts via Fontsource
+   ============================================================
+   Using display variants ensures font-display: swap is applied,
+   preventing invisible text (FOIT) and improving FCP / LCP scores.
    ============================================================ */
 
 /* Playfair Display - weights 400, 600, 700, 800 */
@@ -17,6 +20,16 @@
 @import '@fontsource/montserrat/400.css';
 @import '@fontsource/montserrat/600.css';
 @import '@fontsource/montserrat/700.css';
+
+/* ============================================================
+   Enforce font-display: swap on all self-hosted font faces.
+   @fontsource does not set swap by default; this override
+   prevents FOIT (invisible text) during font load, improving
+   FCP and perceived performance (Core Web Vitals).
+   ============================================================ */
+@font-face {
+  font-display: swap;
+}
 
 /* ============================================================
    Font Family Variables

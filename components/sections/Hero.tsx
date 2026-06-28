@@ -10,7 +10,7 @@ import styles from './Hero.module.css';
 const SLIDES = [
   {
     id: 'chauffeur-prive',
-    image: '/images/hero/chauffeur-prive.jpg',
+    image: '/images/hero/chauffeur-prive.webp',
     title: 'CHAUFFEUR PRIVÉ',
     tagline: 'VALENCIENNES ET SES ALENTOURS',
     subtitle: 'Excellence et raffinement depuis 2022',
@@ -18,7 +18,7 @@ const SLIDES = [
   },
   {
     id: 'transfert-aeroport',
-    image: '/images/hero/transfert-aeroport.jpg',
+    image: '/images/hero/transfert-aeroport.webp',
     title: 'TRANSFERT AÉROPORT',
     tagline: 'DISPONIBLE 24/7',
     subtitle: 'Paris CDG • Bruxelles • Lille',
@@ -26,7 +26,7 @@ const SLIDES = [
   },
   {
     id: 'deplacements-pro',
-    image: '/images/hero/deplacements-pro.jpg',
+    image: '/images/hero/deplacements-pro.webp',
     title: 'DÉPLACEMENTS PROFESSIONNELS',
     tagline: 'SERVICE PREMIUM',
     subtitle: 'Ponctualité et discrétion garanties',
@@ -34,7 +34,7 @@ const SLIDES = [
   },
   {
     id: 'evenements-speciaux',
-    image: '/images/hero/evenements-speciaux.jpg',
+    image: '/images/hero/evenements-speciaux.webp',
     title: 'ÉVÉNEMENTS SPÉCIAUX',
     tagline: 'MOMENTS INOUBLIABLES',
     subtitle: 'Mariages • Soirées • Cérémonies',
@@ -70,7 +70,25 @@ export default function Hero() {
     <section className={styles.hero}>
       {SLIDES.map((s, i) => (
         <div key={s.id} className={`${styles.bgImage} ${i === current ? styles.bgActive : ''}`}>
-          <Image src={s.image} alt={s.title} fill priority={i === 0} quality={85} className={styles.image} />
+          <Image
+            src={s.image}
+            alt={s.title}
+            fill
+            /**
+             * priority=true only on the first slide (LCP element).
+             * Other slides are lazy-loaded; they are hidden off-screen
+             * and do not affect LCP or initial page load.
+             */
+            priority={i === 0}
+            /**
+             * sizes tells the browser the rendered width of this image at
+             * each breakpoint, so it can select the right srcset entry.
+             * Hero covers 100vw at all breakpoints.
+             */
+            sizes="100vw"
+            quality={85}
+            className={styles.image}
+          />
         </div>
       ))}
 
