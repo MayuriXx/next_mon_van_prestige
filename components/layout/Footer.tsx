@@ -34,6 +34,7 @@ export default function Footer() {
               alt="MS Prestige Driver"
               width={72}
               height={72}
+              sizes="72px"
               className={styles.logoImg}
             />
           </Link>
