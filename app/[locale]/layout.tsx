@@ -7,6 +7,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import FloatingButtons from '@/components/layout/FloatingButtons';
 import SplashScreen from '@/components/layout/SplashScreen';
+import OrganizationJsonLd from '@/components/seo/OrganizationJsonLd';
 import './fonts.css';
 import '../globals.css';
 
@@ -71,6 +72,9 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
+        <head>
+          <OrganizationJsonLd />
+        </head>
       <body>
         <NextIntlClientProvider messages={messages}>
           <SplashScreen />
