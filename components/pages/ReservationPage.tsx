@@ -312,8 +312,8 @@ export default function ReservationPage() {
         return;
       }
 
-      const result = await response.json();
-      const sessionUrl = result?.result?.sessionUrl ?? result?.sessionUrl;
+      const checkoutResult = await response.json();
+      const sessionUrl = checkoutResult?.result?.sessionUrl ?? checkoutResult?.sessionUrl;
 
       if (sessionUrl) {
         window.location.href = sessionUrl;
