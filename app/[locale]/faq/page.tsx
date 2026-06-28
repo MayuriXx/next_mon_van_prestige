@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import FaqJsonLd from '@/components/seo/FaqJsonLd';
-import { getTranslations } from 'next-intl/server';
+import { setRequestLocale, getTranslations } from 'next-intl/server';
 import FaqPage from '@/components/pages/FaqPage';
 
 /**
@@ -13,6 +13,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'seo.faq' });
 
   const slugPath = '/faq';
