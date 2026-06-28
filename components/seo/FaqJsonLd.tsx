@@ -32,7 +32,7 @@ const faqItems = [
   {
     question: 'Où pouvons-nous vous rencontrer ?',
     answer:
-      'Nous opérons depuis Valenciennes et ses alentours. Nos chauffeurs vous récupèrent à l'adresse de votre choix : domicile, hôtel, gare, aéroport ou tout autre lieu en Hauts-de-France.',
+      "Nous opérons depuis Valenciennes et ses alentours. Nos chauffeurs vous récupèrent à l'adresse de votre choix : domicile, hôtel, gare, aéroport ou tout autre lieu en Hauts-de-France.",
   },
   {
     question: 'Acceptez-vous les animaux dans vos véhicules ?',
