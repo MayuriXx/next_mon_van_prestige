@@ -14,7 +14,7 @@ export default function About() {
   const defaultTitle = 'À PROPOS';
   const defaultWhoText1 =
     "Passionné par l'automobile et le service d'excellence, j'ai créé MON VAN PRESTIGE " +
-    'pour offrir bien plus qu'un simple trajet. Mon objectif est de vous apporter une ' +
+    "pour offrir bien plus qu'un simple trajet. Mon objectif est de vous apporter une " +
     'sérénité totale lors de vos déplacements.';
   const defaultWhoText2 =
     "Fort d'une expérience significative dans le transport de personnes, je m'engage " +
