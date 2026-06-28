@@ -47,7 +47,7 @@ const faqItems = [
   {
     question: 'Est-il possible de mettre un chauffeur à disposition quelques heures ?',
     answer:
-      'Oui, notre service Mise à Disposition vous permet de bénéficier d'un chauffeur dédié à la journée ou au demi-journée, selon vos besoins.',
+      "Oui, notre service Mise à Disposition vous permet de bénéficier d'un chauffeur dédié à la journée ou au demi-journée, selon vos besoins.",
   },
   {
     question: 'Disposez-vous de sièges enfants ?',
@@ -57,12 +57,12 @@ const faqItems = [
   {
     question: 'Vos services sont-ils dédiés aux particuliers et aux professionnels ?',
     answer:
-      'Oui, nous travaillons aussi bien avec les particuliers qu'avec les entreprises. Nous proposons une facturation adaptée aux professionnels avec TVA et un suivi de compte dédié.',
+      "Oui, nous travaillons aussi bien avec les particuliers qu'avec les entreprises. Nous proposons une facturation adaptée aux professionnels avec TVA et un suivi de compte dédié.",
   },
   {
     question: 'Que se passe-t-il si mon avion ou mon train a du retard ?',
     answer:
-      'Pas de souci ! Nous suivons en temps réel l'état de votre vol ou de votre train. Votre chauffeur s'adapte automatiquement à l'heure réelle d'arrivée, sans frais supplémentaires.',
+      "Pas de souci ! Nous suivons en temps réel l'état de votre vol ou de votre train. Votre chauffeur s'adapte automatiquement à l'heure réelle d'arrivée, sans frais supplémentaires.",
   },
   {
     question: 'Comment puis-je régler ma facture ?',
@@ -72,13 +72,13 @@ const faqItems = [
 ];
 
 const schema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
+  "@context': 'https://schema.org",
+  "@type': 'FAQPage",
   mainEntity: faqItems.map((item) => ({
-    '@type': 'Question',
+    "@type': 'Question",
     name: item.question,
     acceptedAnswer: {
-      '@type': 'Answer',
+      "@type': 'Answer",
       text: item.answer,
     },
   })),
