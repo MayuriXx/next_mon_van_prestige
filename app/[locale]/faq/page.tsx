@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import FaqJsonLd from '@/components/seo/FaqJsonLd';
 import { getTranslations } from 'next-intl/server';
 import FaqPage from '@/components/pages/FaqPage';
 
@@ -51,5 +52,10 @@ export async function generateMetadata({
 }
 
 export default function Page() {
-  return <FaqPage />;
+  return (
+    <>
+      <FaqJsonLd />
+      <FaqPage />
+    </>
+  );
 }
