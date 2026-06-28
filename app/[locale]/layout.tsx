@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
+import { setRequestLocale, getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { getMessages } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -27,6 +27,15 @@ export const metadata: Metadata = {
   },
   description:
     'Service de transport VTC premium à Valenciennes. Transferts aéroport, déplacements professionnels, événements spéciaux. Chauffeur privé haut de gamme.',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+    other: [{ rel: 'manifest', url: '/site.webmanifest' }],
+  },
   openGraph: {
     siteName: 'MS Prestige Driver',
     type: 'website',
@@ -67,6 +76,11 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
+  // Required for static export with next-intl:
+  // Tells next-intl to use the locale from params (not from headers/cookies),
+  // making all downstream getTranslations/getMessages calls header-free.
+  setRequestLocale(locale);
 
   const messages = await getMessages();
 

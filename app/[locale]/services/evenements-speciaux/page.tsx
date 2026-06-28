@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { setRequestLocale, getTranslations } from 'next-intl/server';
 import EvenementsSpeciauxPage from '@/components/pages/EvenementsSpeciauxPage';
 
 /**
@@ -12,6 +12,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'seo.evenementsSpeciaux' });
 
   const slugPath = '/services/evenements-speciaux';
