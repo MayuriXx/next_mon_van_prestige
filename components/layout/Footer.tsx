@@ -90,7 +90,11 @@ export default function Footer() {
   const waNumber = phoneToWa(phone);
 
   return (
-    <footer className={styles.footer}>
+    // id="contact" is the scroll target for the Navbar "Contact" link
+    // (scrollToSection('contact') in components/layout/Navbar.tsx).
+    // Vertical offset for the fixed navbar is handled globally by
+    // `scroll-padding-top: var(--nav-height)` in app/globals.css.
+    <footer id="contact" className={styles.footer}>
       <div className={`container ${styles.inner}`}>
         {/* Colonne 1 — Marque */}
         <div className={styles.brand}>
