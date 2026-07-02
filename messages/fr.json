@@ -356,5 +356,69 @@
         "subtitle": "Mariages - Soirees - Ceremonies"
       }
     }
+  },
+  "vehicles": {
+    "title": "NOS VÉHICULES",
+    "cta": "Réserver",
+    "priceFrom": "À partir de",
+    "items": {
+      "business": {
+        "name": "BUSINESS",
+        "models": [
+          "Tesla Model S",
+          "Mercedes Classe E",
+          "ou équivalent"
+        ],
+        "badges": [
+          "3 places",
+          "3 bagages",
+          "WiFi"
+        ]
+      },
+      "van": {
+        "name": "VAN",
+        "models": [
+          "Mercedes Classe V",
+          "Mercedes Vito",
+          "ou équivalent"
+        ],
+        "badges": [
+          "7 places",
+          "7 bagages",
+          "WiFi"
+        ]
+      }
+    }
+  },
+  "tarifs": {
+    "title": "TRANSFERTS LES PLUS DEMANDÉS",
+    "cta": "Réserver",
+    "priceLabel": "À PARTIR DE",
+    "routes": {
+      "orly": {
+        "from": "Valenciennes",
+        "to": "Paris Orly"
+      },
+      "cdg": {
+        "from": "Valenciennes",
+        "to": "Paris Charles de Gaulle"
+      },
+      "zaventem": {
+        "from": "Valenciennes",
+        "to": "Bruxelles Zaventem"
+      },
+      "charleroi": {
+        "from": "Valenciennes",
+        "to": "Charleroi"
+      },
+      "lesquin": {
+        "from": "Valenciennes",
+        "to": "Lille Lesquin"
+      },
+      "gares": {
+        "from": "Valenciennes",
+        "to": "Lille Gares"
+      }
+    }
   }
 }
