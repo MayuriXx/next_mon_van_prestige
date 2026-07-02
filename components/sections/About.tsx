@@ -13,20 +13,29 @@
  *   `about` namespace, so the section is fully translated. The French strings
  *   were carried over verbatim, so the FR homepage is unchanged.
  *
- * Firestore overrides (issue #63, preserved):
- *   Mohammed can override two fields from the admin panel (/admin/contenus ->
- *   "À Propos"), stored as multilingual { fr, en, nl } fields:
- *     - `title` : the section title (falls back to about.title)
- *     - `text`  : the "Who am I?" body as a single rich block (falls back to
- *                 the two i18n paragraphs about.whoText1 / about.whoText2)
- *   Empty/missing fields fall through to the i18n defaults.
+ * Firestore overrides (issue #63, extended by issue #104):
+ *   Mohammed can override the following fields from the admin panel
+ *   (/admin/contenus -> "À Propos"), stored as multilingual { fr, en, nl }
+ *   fields on the single `contenus/about` document:
+ *     - `title`         : the section title (falls back to about.title)
+ *     - `text`          : the "Who am I?" body as a single rich block
+ *                         (falls back to the two i18n paragraphs
+ *                         about.whoText1 / about.whoText2)
+ *     - `whoTitle`       : the "Who am I?" heading (falls back to about.whoTitle)
+ *     - `values_title`   : Values card title  (falls back to about.values.title)
+ *     - `values_text`    : Values card text   (falls back to about.values.text)
+ *     - `mission_title`  : Mission card title (falls back to about.mission.title)
+ *     - `mission_text`   : Mission card text  (falls back to about.mission.text)
+ *     - `vision_title`   : Vision card title  (falls back to about.vision.title)
+ *     - `vision_text`    : Vision card text   (falls back to about.vision.text)
+ *   Empty/missing fields fall through to the i18n defaults (same
+ *   override+fallback pattern already used for `title` and `text`).
  *
- * NOTE (deferred, tracked as a follow-up issue): the three value cards
- * (Values / Mission / Vision) and the "Who am I?" heading are NOT yet editable
- * from the admin panel — they are i18n-only. Making them admin-editable
- * requires adding dedicated fields to the admin content form + Firestore
- * document, consistent with the "Mohammed can edit everything from admin"
- * requirement.
+ *   Note: the 3 value cards use compound field keys (`${key}_title` /
+ *   `${key}_text`) on the same flat `contenus/about` doc, consistent with the
+ *   compound-key pattern already used for `contenus/homeSections` (issue #102).
+ *   No change to useContenus.ts was needed — get() treats these as ordinary
+ *   field keys.
  */
 
 import { usePathname } from 'next/navigation';
@@ -42,9 +51,21 @@ export default function About() {
   const t = useTranslations('about');
 
   const cards = [
-    { key: 'values',  title: t('values.title'),  text: t('values.text') },
-    { key: 'mission', title: t('mission.title'), text: t('mission.text') },
-    { key: 'vision',  title: t('vision.title'),  text: t('vision.text') },
+    {
+      key: 'values',
+      title: contenus.get('values_title') || t('values.title'),
+      text: contenus.get('values_text') || t('values.text'),
+    },
+    {
+      key: 'mission',
+      title: contenus.get('mission_title') || t('mission.title'),
+      text: contenus.get('mission_text') || t('mission.text'),
+    },
+    {
+      key: 'vision',
+      title: contenus.get('vision_title') || t('vision.title'),
+      text: contenus.get('vision_text') || t('vision.text'),
+    },
   ];
 
   return (
@@ -63,7 +84,9 @@ export default function About() {
 
         {/* "Who am I?" card */}
         <div className={styles.whoCard}>
-          <h3 className={styles.whoTitle}>{t('whoTitle')}</h3>
+          <h3 className={styles.whoTitle}>
+            {contenus.get('whoTitle') || t('whoTitle')}
+          </h3>
           {contenus.get('text') ? (
             /* Firestore override: single rich text block */
             <p className={styles.whoText}>{contenus.get('text')}</p>
@@ -76,7 +99,7 @@ export default function About() {
           )}
         </div>
 
-        {/* Three value cards */}
+        {/* Three value cards (Firestore override -> i18n fallback) */}
         <div className={styles.cardsGrid}>
           {cards.map((card) => (
             <div key={card.key} className={styles.card}>
