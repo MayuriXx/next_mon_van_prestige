@@ -78,6 +78,15 @@ const SLIDES = [
 // Index of the slide whose tagline is controllable via Firestore.
 const FIRESTORE_TAGLINE_SLIDE_INDEX = 0;
 
+// Auto-advance interval for the hero carousel, in milliseconds.
+// Reduced from 5000 ms to 3500 ms (US-07 / issue #86): Mohammed reported the
+// previous 5 s pacing felt too slow. 3500 ms advances ~30% faster while still
+// leaving enough time to read each slide's title, tagline and subtitle.
+// The 300 ms text-fade transition (the goTo() setTimeout and the .fadeOut
+// animation in Hero.module.css) is intentionally left unchanged, per the
+// client decision to keep the elegant crossfade.
+const SLIDE_INTERVAL_MS = 3500;
+
 export default function Hero() {
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname);
@@ -101,7 +110,7 @@ export default function Hero() {
   useEffect(() => {
     const timer = setInterval(() => {
       goTo((current + 1) % SLIDES.length);
-    }, 5000);
+    }, SLIDE_INTERVAL_MS);
     return () => clearInterval(timer);
   }, [current, goTo]);
 
