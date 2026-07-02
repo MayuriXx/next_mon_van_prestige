@@ -16,7 +16,7 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase/client';
+import { getFirebaseAuth } from '@/lib/firebase/client';
 import { useAuth } from '@/lib/firebase/auth-context';
 import Image from 'next/image';
 
@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
     setPending(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
       router.replace('/admin');
     } catch {
       setError('Email ou mot de passe incorrect.');

@@ -22,7 +22,7 @@
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { signOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase/client';
+import { getFirebaseAuth } from '@/lib/firebase/client';
 import { useAdminAuth } from '@/lib/hooks/useAdminAuth';
 
 const NAV_ITEMS = [
@@ -39,7 +39,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname          = usePathname();
 
   async function handleLogout() {
-    await signOut(auth);
+    await signOut(getFirebaseAuth());
     router.replace('/admin/login');
   }
 

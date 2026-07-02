@@ -1,7 +1,7 @@
 import { initializeApp, getApps, getApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
-import { getAuth } from 'firebase/auth'
+import { getAuth, type Auth } from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -18,5 +18,22 @@ const app = getApps().length ? getApp() : initializeApp(firebaseConfig)
 
 export const db = getFirestore(app)
 export const storage = getStorage(app)
-export const auth = getAuth(app)
+
+// Firebase Auth is initialized lazily (unlike Firestore/Storage above).
+// getAuth() validates the API key format immediately and throws
+// `auth/invalid-api-key` at call time if it's missing/invalid. Calling it
+// eagerly at module scope meant *any* file importing this module — even
+// public pages that only need Firestore and never touch Auth — paid that
+// cost, which crashed `next build`'s static export whenever Firebase env
+// vars weren't configured (see issue #109). Only admin-side code
+// (login page, dashboard layout, auth-context) actually needs Auth, so we
+// defer initialization until one of them calls getFirebaseAuth().
+let _auth: Auth | undefined
+export function getFirebaseAuth(): Auth {
+  if (!_auth) {
+    _auth = getAuth(app)
+  }
+  return _auth
+}
+
 export default app
