@@ -12,16 +12,11 @@ const PHONE = '+33783698460';
 const WHATSAPP = '+33783698460';
 const EMAIL = 'contact@msprestigedriver.fr';
 
-/**
- * Pre-filled WhatsApp message. Kept short and generic; the client can adjust it.
- * Encoded via encodeURIComponent so accents/spaces are transmitted safely.
- */
-const WHATSAPP_PREFILL = 'Bonjour, je souhaite une information sur vos services de chauffeur.';
-
 export default function FloatingButtons() {
   // wa.me expects the international number WITHOUT the leading "+".
+  // No pre-filled message: the button just opens a blank WhatsApp chat.
   const waNumber = WHATSAPP.replace(/\D/g, '');
-  const waHref = `https://wa.me/${waNumber}?text=${encodeURIComponent(WHATSAPP_PREFILL)}`;
+  const waHref = `https://wa.me/${waNumber}`;
 
   return (
     <div className={styles.wrapper} aria-label="Contacts rapides">
@@ -37,7 +32,7 @@ export default function FloatingButtons() {
         </svg>
       </a>
 
-      {/* US2 — WhatsApp button: official WhatsApp glyph, opens a chat (prefilled) via wa.me. */}
+      {/* US2 — WhatsApp button: official WhatsApp glyph, opens a blank chat via wa.me. */}
       <a
         href={waHref}
         className={`${styles.btn} ${styles.whatsapp}`}
