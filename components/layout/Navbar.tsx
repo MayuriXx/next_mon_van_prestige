@@ -4,17 +4,19 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import styles from './Navbar.module.css';
 
+// Labels are resolved via next-intl (nav.servicesDropdown.*) — hrefs stay static.
 const SERVICES = [
-  { label: 'Transfert Aéroport',          href: '/services/transfert-aeroport' },
-  { label: 'Transfert Simple',             href: '/services/transfert-simple' },
-  { label: 'Mise à Disposition',           href: '/services/mise-a-disposition' },
-  { label: 'Événements Spéciaux',          href: '/services/evenements-speciaux' },
-  { label: 'Escapades & Loisirs',          href: '/services/escapades-loisirs' },
-  { label: 'Déplacements Professionnels',  href: '/services/deplacements-professionnels' },
-];
+  { key: 'airport',      href: '/services/transfert-aeroport' },
+  { key: 'simple',       href: '/services/transfert-simple' },
+  { key: 'disposal',     href: '/services/mise-a-disposition' },
+  { key: 'events',       href: '/services/evenements-speciaux' },
+  { key: 'leisure',      href: '/services/escapades-loisirs' },
+  { key: 'professional', href: '/services/deplacements-professionnels' },
+] as const;
 
 const LANGUAGES = [
   { code: 'fr', label: 'FR', flag: '🇫🇷' },
@@ -25,6 +27,7 @@ const LANGUAGES = [
 export default function Navbar() {
   const pathname = usePathname(); // ex: /fr/services/transfert-aeroport
   const locale = getLocaleFromPath(pathname);
+  const t = useTranslations('nav');
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -84,7 +87,7 @@ export default function Navbar() {
           <div className={styles.brandText}>
             {/* Brand name displayed next to the logo (design update, requested by Evan 2026-07-02). */}
             <span className={styles.brandName}>MS Prestige Driver</span>
-            {/* Brand slogan — kept in French across all locales (client decision, US-01). */}
+            {/* Brand slogan — kept in French across all locales (client decision, US-01 / #80). Not translated on purpose. */}
             <span className={styles.tagline}>
               {"L'excellence au service de votre mobilité"}
             </span>
@@ -104,7 +107,7 @@ export default function Navbar() {
               aria-expanded={dropdownOpen}
               aria-haspopup="true"
             >
-              Services
+              {t('services')}
               <svg className={styles.chevron} width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
                 <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
@@ -121,7 +124,7 @@ export default function Navbar() {
                       className={`${styles.dropdownItem} ${pathWithoutLocale === s.href ? styles.dropdownItemActive : ''}`}
                       role="menuitem"
                     >
-                      {s.label}
+                      {t(`servicesDropdown.${s.key}`)}
                     </Link>
                   );
                 })}
@@ -129,10 +132,10 @@ export default function Navbar() {
             )}
           </div>
 
-          <button className={styles.navLink} onClick={() => scrollToSection('vehicules')}>Véhicules</button>
-          <button className={styles.navLink} onClick={() => scrollToSection('a-propos')}>À Propos</button>
-          <Link href={localePath('/faq', locale)} className={`${styles.navLink} ${pathWithoutLocale === '/faq' ? styles.active : ''}`}>FAQ</Link>
-          <button className={styles.navLink} onClick={() => scrollToSection('contact')}>Contact</button>
+          <button className={styles.navLink} onClick={() => scrollToSection('vehicules')}>{t('vehicles')}</button>
+          <button className={styles.navLink} onClick={() => scrollToSection('a-propos')}>{t('about')}</button>
+          <Link href={localePath('/faq', locale)} className={`${styles.navLink} ${pathWithoutLocale === '/faq' ? styles.active : ''}`}>{t('faq')}</Link>
+          <button className={styles.navLink} onClick={() => scrollToSection('contact')}>{t('contact')}</button>
 
           <div className={styles.langSelector}>
             {LANGUAGES.map((l) => (
@@ -148,7 +151,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          <Link href={localePath('/reservation', locale)} className={styles.ctaBtn}>Réserver</Link>
+          <Link href={localePath('/reservation', locale)} className={styles.ctaBtn}>{t('book')}</Link>
         </nav>
 
         <button
@@ -163,16 +166,16 @@ export default function Navbar() {
 
       {menuOpen && (
         <div className={styles.mobileMenu}>
-          <button className={styles.mobileLink} onClick={() => scrollToSection('services')}>Services</button>
+          <button className={styles.mobileLink} onClick={() => scrollToSection('services')}>{t('services')}</button>
           <div className={styles.mobileSubmenu}>
             {SERVICES.map((s) => (
-              <Link key={s.href} href={localePath(s.href, locale)} className={styles.mobileSubLink}>{s.label}</Link>
+              <Link key={s.href} href={localePath(s.href, locale)} className={styles.mobileSubLink}>{t(`servicesDropdown.${s.key}`)}</Link>
             ))}
           </div>
-          <button className={styles.mobileLink} onClick={() => scrollToSection('vehicules')}>Véhicules</button>
-          <button className={styles.mobileLink} onClick={() => scrollToSection('a-propos')}>À Propos</button>
-          <Link href={localePath('/faq', locale)} className={styles.mobileLink}>FAQ</Link>
-          <button className={styles.mobileLink} onClick={() => scrollToSection('contact')}>Contact</button>
+          <button className={styles.mobileLink} onClick={() => scrollToSection('vehicules')}>{t('vehicles')}</button>
+          <button className={styles.mobileLink} onClick={() => scrollToSection('a-propos')}>{t('about')}</button>
+          <Link href={localePath('/faq', locale)} className={styles.mobileLink}>{t('faq')}</Link>
+          <button className={styles.mobileLink} onClick={() => scrollToSection('contact')}>{t('contact')}</button>
           <div className={styles.mobileLang}>
             {LANGUAGES.map((l) => (
               <button
@@ -184,10 +187,9 @@ export default function Navbar() {
               </button>
             ))}
           </div>
-          <Link href={localePath('/reservation', locale)} className={styles.mobileCta}>Réserver</Link>
+          <Link href={localePath('/reservation', locale)} className={styles.mobileCta}>{t('book')}</Link>
         </div>
       )}
     </header>
   );
 }
-
