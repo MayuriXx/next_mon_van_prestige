@@ -26,19 +26,20 @@ const schema = {
   image: 'https://mon-van-prestige.web.app/og-default.jpg',
   description:
     'Service de transport VTC premium à Valenciennes. Transferts aéroport, mise à disposition, déplacements professionnels et événements spéciaux en véhicule de luxe avec chauffeur privé.',
-  telephone: '+33600000000',
-  email: 'contact@ms-prestige-driver.fr',
+  telephone: '+33783698460',
+  email: 'contact@msprestigedriver.fr',
   address: {
     '@type': 'PostalAddress',
-    streetAddress: '',
-    addressLocality: 'Valenciennes',
-    postalCode: '59300',
+    streetAddress: '92 rue d\'Estreux',
+    addressLocality: 'Onnaing',
+    postalCode: '59264',
     addressCountry: 'FR',
   },
   geo: {
+    // Approximate coordinates for Onnaing (92 rue d'Estreux). Verify the exact point on Google Maps.
     '@type': 'GeoCoordinates',
-    latitude: 50.3573,
-    longitude: 3.5239,
+    latitude: 50.3736,
+    longitude: 3.5806,
   },
   areaServed: [
     { '@type': 'City', name: 'Valenciennes' },
