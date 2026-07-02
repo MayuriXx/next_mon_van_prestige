@@ -333,6 +333,28 @@
     }
   },
   "hero": {
-    "cta": "Book now"
+    "cta": "Book now",
+    "slides": {
+      "chauffeur-prive": {
+        "title": "PRIVATE CHAUFFEUR",
+        "tagline": "VALENCIENNES AND SURROUNDING AREAS",
+        "subtitle": "Excellence and refinement since 2022"
+      },
+      "transfert-aeroport": {
+        "title": "AIRPORT TRANSFER",
+        "tagline": "AVAILABLE 24/7",
+        "subtitle": "Paris CDG - Brussels - Lille"
+      },
+      "deplacements-pro": {
+        "title": "BUSINESS TRAVEL",
+        "tagline": "PREMIUM SERVICE",
+        "subtitle": "Punctuality and discretion guaranteed"
+      },
+      "evenements-speciaux": {
+        "title": "SPECIAL EVENTS",
+        "tagline": "UNFORGETTABLE MOMENTS",
+        "subtitle": "Weddings - Evenings - Ceremonies"
+      }
+    }
   }
 }
