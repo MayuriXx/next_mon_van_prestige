@@ -180,7 +180,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className={`container ${styles.bottom}`}>
         <p className={styles.copyright}>
-          © {year} MS Prestige Driver — Mon Van Prestige. Tous droits réservés.
+          © {year} MS Prestige Driver. Tous droits réservés.
         </p>
         <div className={styles.legal}>
           <Link href="/mentions-legales" className={styles.legalLink}>Mentions légales</Link>

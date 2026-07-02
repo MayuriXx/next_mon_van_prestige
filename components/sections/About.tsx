@@ -13,7 +13,7 @@ export default function About() {
   // Default texts (static fallback when Firestore has no override)
   const defaultTitle = 'À PROPOS';
   const defaultWhoText1 =
-    "Passionné par l'automobile et le service d'excellence, j'ai créé MON VAN PRESTIGE " +
+    "Passionné par l'automobile et le service d'excellence, j'ai créé MS PRESTIGE DRIVER " +
     "pour offrir bien plus qu'un simple trajet. Mon objectif est de vous apporter une " +
     'sérénité totale lors de vos déplacements.';
   const defaultWhoText2 =
@@ -80,7 +80,7 @@ export default function About() {
             <div className={styles.cardSeparator} />
             <p className={styles.cardText}>
               Incarner l'excellence du transport de personnes à Valenciennes et dans les
-              Hauts-de-France. Par Mon Van Prestige, nous réinventons le VTC premium en
+              Hauts-de-France. Par MS Prestige Driver, nous réinventons le VTC premium en
               tant que véritable alternative supérieure aux taxis : une promesse de
               service distingué, de confort inégalé, et de professionnalisme irréprochable.
             </p>

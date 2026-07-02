@@ -21,7 +21,6 @@ const schema = {
   '@context': 'https://schema.org',
   '@type': ['LocalBusiness', 'TaxiService'],
   name: 'MS Prestige Driver',
-  alternateName: 'Mon Van Prestige',
   url: 'https://mon-van-prestige.web.app',
   logo: 'https://mon-van-prestige.web.app/ms_prestige_driver_logo_splash.png',
   image: 'https://mon-van-prestige.web.app/og-default.jpg',
