@@ -81,10 +81,14 @@ export default function Navbar() {
             sizes="52px"
             className={styles.logoImg}
           />
-          {/* Brand slogan — kept in French across all locales (client decision, US-01). */}
-          <span className={styles.tagline}>
-            {"L'excellence au service de votre mobilité"}
-          </span>
+          <div className={styles.brandText}>
+            {/* Brand name displayed next to the logo (design update, requested by Evan 2026-07-02). */}
+            <span className={styles.brandName}>Mon Van Prestige</span>
+            {/* Brand slogan — kept in French across all locales (client decision, US-01). */}
+            <span className={styles.tagline}>
+              {"L'excellence au service de votre mobilité"}
+            </span>
+          </div>
         </Link>
 
         <nav className={styles.nav} aria-label="Navigation principale">
@@ -186,3 +190,4 @@ export default function Navbar() {
     </header>
   );
 }
+
