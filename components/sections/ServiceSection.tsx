@@ -35,12 +35,30 @@
  *   Section images are unchanged: they are still loaded from Firestore via
  *   `getSectionImages(sectionId)` (a separate images subsystem, issue #23).
  *
- * NOTE (deferred): the homepage teaser text is intentionally NOT wired to a
- * Firestore override in this PR. The admin `contenus/{service}` documents hold
- * the *service page* title/subtitle, which is different content from these
- * homepage teasers; reusing them would conflate the two. If Mohammed needs to
- * edit the homepage teasers from the admin panel, that requires a dedicated
- * admin field and can be done as a follow-up.
+ * Admin override (issue #102, follow-up to #87 / PR #101):
+ *   The teaser text is now editable from the admin panel
+ *   (/admin/contenus -> "Page d'accueil — Blocs services"), using the SAME
+ *   override+fallback pattern as Hero/About (issue #63 / #62): the generic
+ *   `useContenus` hook is reused as-is, pointed at a dedicated Firestore
+ *   document `contenus/homeSections` (NOT the per-service-page
+ *   `contenus/{service}` docs, which hold different content — the service
+ *   page's own title/subtitle, not these homepage teasers).
+ *
+ *   Because `useContenus('homeSections', locale).get(field)` expects one
+ *   flat map of `{fr,en,nl}` fields keyed by `field`, and this single
+ *   document must hold title+description for 5 different sections, each
+ *   field is stored under a compound key `${sectionId}_title` /
+ *   `${sectionId}_description` (e.g. `transfert-aeroport_title`). This keeps
+ *   `useContenus` and the admin page's generic per-field form fully unchanged
+ *   (see SECTIONS entry `homeSections` in app/admin/(dashboard)/contenus/page.tsx).
+ *
+ *   `deplacements-professionnels` is intentionally NOT in scope for this
+ *   override (see issue #102) and is not rendered on the homepage anyway
+ *   (app/[locale]/page.tsx only lists the 5 sections below) — its entries in
+ *   SERVICE_HREFS/IMAGE_POSITION above are only used if it's ever added back.
+ *
+ *   Empty/missing Firestore fields fall through to the `homeSections` i18n
+ *   defaults (no forced blanking), exactly like Hero/About.
  */
 
 import { useEffect, useState } from 'react';
@@ -49,6 +67,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
+import { useContenus } from '@/lib/hooks/useContenus';
 import { getSectionImages, type ImageData } from '@/lib/firebase/images';
 import styles from './ServiceSection.module.css';
 
@@ -83,6 +102,7 @@ export default function ServiceSection({ sectionId, slug }: ServiceSectionProps)
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname);
   const t = useTranslations('homeSections');
+  const contenus = useContenus('homeSections', locale);
   const [image, setImage] = useState<ImageData | null>(null);
 
   useEffect(() => {
@@ -93,8 +113,9 @@ export default function ServiceSection({ sectionId, slug }: ServiceSectionProps)
     return () => { cancelled = true; };
   }, [sectionId]);
 
-  const title = t(`${sectionId}.title`);
-  const description = t(`${sectionId}.description`);
+  // Firestore override (contenus/homeSections, compound keys) -> i18n fallback.
+  const title = contenus.get(`${sectionId}_title`) || t(`${sectionId}.title`);
+  const description = contenus.get(`${sectionId}_description`) || t(`${sectionId}.description`);
   const imageLeft = (IMAGE_POSITION[sectionId] ?? 'left') === 'left';
   const href = localePath(SERVICE_HREFS[sectionId] ?? '/reservation', locale);
 

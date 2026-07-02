@@ -27,6 +27,13 @@
  *   const { get } = useContenus('transfertAeroport', 'fr');
  *   const title = get('title') || t('title');   // Firestore override OR i18n fallback
  *
+ *   Special case (issue #102) — contenus/homeSections holds 5 sections'
+ *   worth of fields in one flat doc, so callers use compound field keys:
+ *     const contenus = useContenus('homeSections', locale);
+ *     const title = contenus.get(`${sectionId}_title`) || t(`${sectionId}.title`);
+ *   No change to this hook was needed for that; `get()` just treats
+ *   `${sectionId}_title` as an ordinary field key.
+ *
  * The hook fetches once on mount (getDoc, not onSnapshot) — content changes
  * in the admin panel take effect on the next page load, which is acceptable
  * for a content-management use case.
