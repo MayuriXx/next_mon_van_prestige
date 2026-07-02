@@ -16,9 +16,13 @@
  *   locale)`, so it always linked to the French route regardless of the
  *   active locale.
  *
- *   Price (`25`, `45`) stays as static display data — it is not sourced
- *   from the live `tarifs` Firestore collection at this stage (out of
- *   scope for this i18n bug fix, tracked separately if needed).
+ *   Prices are the "from" (à partir de) teaser figures on each vehicle card.
+ *   They stay static display data (not fetched from Firestore), but as of the
+ *   2026 tariff-consistency pass they are aligned to the guaranteed minimum
+ *   fare of each vehicle tier in the official grid
+ *   (lib/data/tariffs.ts → MINIMUM_FARES): BUSINESS 22 €, VAN 45 €.
+ *   This is the lowest amount the calculator can ever return for that vehicle,
+ *   so the "from" figure is truthful. Keep in sync with MINIMUM_FARES.
  */
 
 import Image from 'next/image';
@@ -31,7 +35,7 @@ import styles from './Vehicles.module.css';
 const VEHICLES = [
   {
     id: 'business',
-    price: '25',
+    price: '22',
     image: '/images/vehicles/business.webp',
     popular: false,
   },
