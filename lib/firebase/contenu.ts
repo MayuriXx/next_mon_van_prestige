@@ -1,8 +1,7 @@
 import { db } from '@/lib/firebase/client';
-import { collection, getDocs, query, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query } from 'firebase/firestore';
 import { servicesData } from '@/lib/data/services';
 import { vehiclesData } from '@/lib/data/vehicles';
-import { sectionsData } from '@/lib/data/sections';
 
 export interface ServiceContent {
   id: string;
@@ -19,12 +18,6 @@ export interface VehicleContent {
   description: string;
   features: string[];
   position: number;
-}
-
-export interface SectionContent {
-  title: string;
-  description: string;
-  imagePosition: 'left' | 'right';
 }
 
 // Récupérer tous les services
@@ -75,19 +68,3 @@ export async function getVehicles(): Promise<VehicleContent[]> {
   return vehiclesData;
 }
 
-// Récupérer contenu d'une section
-export async function getSectionContent(sectionId: string): Promise<SectionContent | null> {
-  try {
-    // Essayer Firestore d'abord
-    const docRef = doc(db, 'sections', sectionId);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      return docSnap.data() as SectionContent;
-    }
-  } catch (error) {
-    console.log(`Firestore unavailable for section ${sectionId}, using local data`);
-  }
-  
-  // Fallback: données locales
-  return sectionsData[sectionId] || null;
-}
