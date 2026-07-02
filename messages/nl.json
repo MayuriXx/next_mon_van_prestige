@@ -247,7 +247,8 @@
     "client_notes_placeholder": "Bijzondere instructies (optioneel)",
     "pay_cta": "Doorgaan naar betaling →",
     "redirecting": "Doorsturen naar betaling...",
-    "stripe_note": "Veilige betaling via Stripe — uw bankgegevens worden nooit met ons gedeeld."
+    "stripe_note": "Veilige betaling via Stripe — uw bankgegevens worden nooit met ons gedeeld.",
+    "van_required_note": "Sedan (Business) is beperkt tot 3 passagiers — Van vereist daarboven."
   },
   "reservationSuccess": {
     "title": "Boeking bevestigd!",
