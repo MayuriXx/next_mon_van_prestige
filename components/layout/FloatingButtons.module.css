@@ -34,7 +34,8 @@
 }
 
 .phone {
-  background-color: #1a73e8;
+  background-color: var(--color-gold);
+  color: #0a0a0a;
 }
 
 .whatsapp {
