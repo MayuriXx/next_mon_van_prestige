@@ -1,11 +1,18 @@
+/*
+ * Floating contact buttons.
+ * The wrapper is position:fixed so it stays visible while the page scrolls,
+ * and vertically centered (top:50% + translateY(-50%)) so the stack always
+ * sits in the middle of the viewport on the right-hand side.
+ */
 .wrapper {
   position: fixed;
   right: 20px;
-  bottom: 100px;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 900;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .btn {
@@ -27,22 +34,24 @@
 }
 
 .phone {
-  background-color: #1a73e8;
+  background-color: #25d366;
 }
 
 .whatsapp {
-  background-color: #25D366;
+  background-color: #25d366;
 }
 
 .email {
-  background-color: var(--color-gold);
-  color: #0a0a0a;
+  background-color: #1a73e8;
 }
 
 @media (max-width: 480px) {
   .wrapper {
     right: 12px;
-    bottom: 80px;
+    /* Stay vertically centered on mobile as well. */
+    top: 50%;
+    transform: translateY(-50%);
+    gap: 10px;
   }
 
   .btn {
