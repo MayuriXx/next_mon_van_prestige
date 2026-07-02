@@ -103,7 +103,7 @@ export default function Navbar() {
           >
             <button
               className={`${styles.navLink} ${dropdownOpen ? styles.active : ''}`}
-              onClick={() => scrollToSection('services')}
+              onClick={() => scrollToSection('transfert-aeroport')}
               aria-expanded={dropdownOpen}
               aria-haspopup="true"
             >
@@ -166,7 +166,7 @@ export default function Navbar() {
 
       {menuOpen && (
         <div className={styles.mobileMenu}>
-          <button className={styles.mobileLink} onClick={() => scrollToSection('services')}>{t('services')}</button>
+          <button className={styles.mobileLink} onClick={() => scrollToSection('transfert-aeroport')}>{t('services')}</button>
           <div className={styles.mobileSubmenu}>
             {SERVICES.map((s) => (
               <Link key={s.href} href={localePath(s.href, locale)} className={styles.mobileSubLink}>{t(`servicesDropdown.${s.key}`)}</Link>

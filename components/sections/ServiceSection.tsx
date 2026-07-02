@@ -120,7 +120,11 @@ export default function ServiceSection({ sectionId, slug }: ServiceSectionProps)
   const href = localePath(SERVICE_HREFS[sectionId] ?? '/reservation', locale);
 
   return (
-    <div className={`${styles.section} ${imageLeft ? styles.imageLeft : styles.imageRight}`}>
+    // id={sectionId} exposes each homepage service teaser as an in-page anchor
+    // (e.g. #transfert-aeroport). The Navbar "Services" link scrolls to the first
+    // one (transfert-aeroport). Fixed-navbar offset is handled globally by
+    // `scroll-padding-top: var(--nav-height)` in app/globals.css.
+    <div id={sectionId} className={`${styles.section} ${imageLeft ? styles.imageLeft : styles.imageRight}`}>
       <div className={styles.imageWrapper}>
         {image && (
           <Image
