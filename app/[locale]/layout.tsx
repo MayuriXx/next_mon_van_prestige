@@ -97,7 +97,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <SplashScreen />
           <Navbar />
-          <main style={{ paddingTop: '72px' }}>{children}</main>
+          <main style={{ paddingTop: 'var(--nav-height)' }}>{children}</main>
           <Footer />
           <FloatingButtons />
         </NextIntlClientProvider>
