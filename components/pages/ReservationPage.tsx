@@ -161,6 +161,9 @@ export default function ReservationPage() {
   const [vehicleType, setVehicleType] = useState<VehicleType>('BUSINESS');
   const [duration, setDuration] = useState('2');
 
+  /* ── US-04: Business seats max 3, Van required beyond that, hard cap 7 ── */
+  const businessAllowed = parseInt(passengers, 10) <= 3;
+
   /* ── Geo / route state ── */
   const [fromPoint, setFromPoint] = useState<GeoPoint | null>(null);
   const [toPoint, setToPoint] = useState<GeoPoint | null>(null);
@@ -246,8 +249,18 @@ export default function ReservationPage() {
 
   /* ── Update rawPrice when vehicle type changes ── */
   function handleVehicleChange(v: VehicleType) {
+    if (v === 'BUSINESS' && !businessAllowed) return; // guard: Business unavailable beyond 3 passengers
     setVehicleType(v);
     setResult(null); // reset so user recalculates with new vehicle
+  }
+
+  /* ── US-04: passenger count change — force Van beyond 3 passengers ── */
+  function handlePassengersChange(val: string) {
+    setPassengers(val);
+    if (parseInt(val, 10) > 3 && vehicleType === 'BUSINESS') {
+      setVehicleType('VAN');
+    }
+    setResult(null);
   }
 
   /* ── Open client info form ── */
@@ -438,9 +451,9 @@ export default function ReservationPage() {
                   <select
                     className={styles.formSelect}
                     value={passengers}
-                    onChange={(e) => setPassengers(e.target.value)}
+                    onChange={(e) => handlePassengersChange(e.target.value)}
                   >
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                    {[1, 2, 3, 4, 5, 6, 7].map((n) => (
                       <option key={n} value={n}>
                         {n} {t('passengers_label')}
                       </option>
@@ -451,9 +464,11 @@ export default function ReservationPage() {
                 {/* Vehicle selector */}
                 <div className={styles.vehicleSelector}>
                   <button
-                    className={`${styles.vehicleBtn} ${vehicleType === 'BUSINESS' ? styles.vehicleBtnActive : ''}`}
+                    className={`${styles.vehicleBtn} ${vehicleType === 'BUSINESS' ? styles.vehicleBtnActive : ''} ${!businessAllowed ? styles.vehicleBtnDisabled : ''}`}
                     onClick={() => handleVehicleChange('BUSINESS')}
                     type="button"
+                    disabled={!businessAllowed}
+                    aria-disabled={!businessAllowed}
                   >
                     <span className={styles.vehicleEmoji}>🚗</span>
                     <span>Business</span>
@@ -467,6 +482,9 @@ export default function ReservationPage() {
                     <span>Van</span>
                   </button>
                 </div>
+                {!businessAllowed && (
+                  <p className={styles.vanRequiredNote}>{t('van_required_note')}</p>
+                )}
 
                 <button
                   className={styles.formBtn}
@@ -533,9 +551,9 @@ export default function ReservationPage() {
                   <select
                     className={styles.formSelect}
                     value={passengers}
-                    onChange={(e) => setPassengers(e.target.value)}
+                    onChange={(e) => handlePassengersChange(e.target.value)}
                   >
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                    {[1, 2, 3, 4, 5, 6, 7].map((n) => (
                       <option key={n} value={n}>
                         {n} {t('passengers_label')}
                       </option>
@@ -546,9 +564,11 @@ export default function ReservationPage() {
                 {/* Vehicle selector */}
                 <div className={styles.vehicleSelector}>
                   <button
-                    className={`${styles.vehicleBtn} ${vehicleType === 'BUSINESS' ? styles.vehicleBtnActive : ''}`}
+                    className={`${styles.vehicleBtn} ${vehicleType === 'BUSINESS' ? styles.vehicleBtnActive : ''} ${!businessAllowed ? styles.vehicleBtnDisabled : ''}`}
                     onClick={() => handleVehicleChange('BUSINESS')}
                     type="button"
+                    disabled={!businessAllowed}
+                    aria-disabled={!businessAllowed}
                   >
                     <span className={styles.vehicleEmoji}>🚗</span>
                     <span>Business</span>
@@ -562,6 +582,9 @@ export default function ReservationPage() {
                     <span>Van</span>
                   </button>
                 </div>
+                {!businessAllowed && (
+                  <p className={styles.vanRequiredNote}>{t('van_required_note')}</p>
+                )}
 
                 <button className={styles.formBtn} onClick={handleCalculateMAD}>
                   {t('form_calculate')}

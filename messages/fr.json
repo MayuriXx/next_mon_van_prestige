@@ -247,7 +247,8 @@
     "client_notes_placeholder": "Instructions particulières (optionnel)",
     "pay_cta": "Procéder au paiement →",
     "redirecting": "Redirection vers le paiement...",
-    "stripe_note": "Paiement sécurisé par Stripe — vos données bancaires ne nous sont jamais transmises."
+    "stripe_note": "Paiement sécurisé par Stripe — vos données bancaires ne nous sont jamais transmises.",
+    "van_required_note": "Berline (Business) limitée à 3 passagers — Van requis au-delà."
   },
   "reservationSuccess": {
     "title": "Réservation confirmée !",

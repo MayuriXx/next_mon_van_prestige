@@ -207,7 +207,26 @@
   color: #000;
 }
 
+.vehicleBtnDisabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #f0f0f0;
+  color: #aaa;
+}
+
+.vehicleBtnDisabled:hover { border-color: #ddd; background: #f0f0f0; }
+
 .vehicleEmoji { font-size: 1rem; }
+
+.vanRequiredNote {
+  font-size: 0.78rem;
+  color: #a37b1c;
+  background: #fff8ec;
+  border: 1px solid #f0dfae;
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem;
+  margin: -0.3rem 0 0.4rem;
+}
 
 /* ── Buttons ── */
 .formBtn {

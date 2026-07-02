@@ -247,7 +247,8 @@
     "client_notes_placeholder": "Special instructions (optional)",
     "pay_cta": "Proceed to payment →",
     "redirecting": "Redirecting to payment...",
-    "stripe_note": "Secure payment by Stripe — your banking details are never shared with us."
+    "stripe_note": "Secure payment by Stripe — your banking details are never shared with us.",
+    "van_required_note": "Sedan (Business) is limited to 3 passengers — Van required beyond that."
   },
   "reservationSuccess": {
     "title": "Booking confirmed!",
