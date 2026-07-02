@@ -31,8 +31,8 @@ import { useContenus } from '@/lib/hooks/useContenus';
 // ─── Static fallback values ─────────────────────────────────────────────────
 // These are used when the Firestore document has no override for the field.
 // Update them here if the real contact details change before Firestore is seeded.
-const DEFAULT_PHONE   = '+33 6 00 00 00 00';
-const DEFAULT_EMAIL   = 'contact@monvanprestige.fr';
+const DEFAULT_PHONE   = '+33 7 83 69 84 60';
+const DEFAULT_EMAIL   = 'contact@msprestigedriver.fr';
 const DEFAULT_ADDRESS = 'Valenciennes, Hauts-de-France';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
