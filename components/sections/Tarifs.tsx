@@ -18,8 +18,16 @@
  *   a raw `href="/reservation"` instead of `localePath('/reservation',
  *   locale)`.
  *
- *   Price (`320`, `260`, ...) stays as static display data — same rationale
- *   as Vehicles.tsx.
+ *   Prices are the "from" (à partir de) teaser figures shown on the cards.
+ *   They are intentionally static display data (not fetched from Firestore),
+ *   but as of the 2026 tariff-consistency pass they are aligned to the
+ *   BUSINESS minimum of each airport package in the official grid
+ *   (lib/data/tariffs.ts → AIRPORT_PRICES[dest].BUSINESS.min). Business is the
+ *   cheapest vehicle tier for every destination, so this is a truthful floor:
+ *   a visitor will never be quoted less than the advertised "from" price in
+ *   the calculator. Keep these in sync whenever AIRPORT_PRICES changes.
+ *
+ *     CDG 300 · ORLY 360 · ZAVENTEM 190 · CHARLEROI 145 · LESQUIN 90 · GARES 90
  */
 
 import Link from 'next/link';
@@ -29,12 +37,12 @@ import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import styles from './Tarifs.module.css';
 
 const TARIFS = [
-  { id: 'orly', icon: '✈', price: '320', popular: false },
-  { id: 'cdg', icon: '✈', price: '260', popular: true },
-  { id: 'zaventem', icon: '✈', price: '160', popular: false },
-  { id: 'charleroi', icon: '✈', price: '125', popular: false },
-  { id: 'lesquin', icon: '✈', price: '80', popular: false },
-  { id: 'gares', icon: '🚉', price: '80', popular: true },
+  { id: 'orly', icon: '✈', price: '360', popular: false },
+  { id: 'cdg', icon: '✈', price: '300', popular: true },
+  { id: 'zaventem', icon: '✈', price: '190', popular: false },
+  { id: 'charleroi', icon: '✈', price: '145', popular: false },
+  { id: 'lesquin', icon: '✈', price: '90', popular: false },
+  { id: 'gares', icon: '🚉', price: '90', popular: true },
 ];
 
 export default function Tarifs() {
