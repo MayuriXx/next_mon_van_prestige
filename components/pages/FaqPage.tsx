@@ -22,22 +22,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import { useFaq } from '@/lib/hooks/useFaq';
+// Static fallback keys — single source of truth shared with FaqJsonLd.tsx
+// so the visible page and the Schema.org structured data cannot drift
+// apart (see issue #91).
+import { STATIC_FAQ_KEYS } from '@/lib/data/faq';
 import styles from './FaqPage.module.css';
-
-// Static fallback keys (original behaviour pre-#25)
-const STATIC_FAQ_KEYS = [
-  'how_to_book',
-  'payment_methods',
-  'where_to_meet',
-  'animals_allowed',
-  'no_driver_rental',
-  'chauffeur_disposal',
-  'child_seats',
-  'private_and_pro',
-  'delay_policy',
-  'invoice_payment',
-  'how_to_book_2',
-] as const;
 
 export default function FaqPage() {
   const t        = useTranslations('faq');
