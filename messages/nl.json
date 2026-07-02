@@ -333,6 +333,28 @@
     }
   },
   "hero": {
-    "cta": "Nu reserveren"
+    "cta": "Nu reserveren",
+    "slides": {
+      "chauffeur-prive": {
+        "title": "PRIVECHAUFFEUR",
+        "tagline": "VALENCIENNES EN OMGEVING",
+        "subtitle": "Uitmuntendheid en raffinement sinds 2022"
+      },
+      "transfert-aeroport": {
+        "title": "LUCHTHAVENTRANSFER",
+        "tagline": "24/7 BESCHIKBAAR",
+        "subtitle": "Parijs CDG - Brussel - Rijsel"
+      },
+      "deplacements-pro": {
+        "title": "ZAKELIJKE VERPLAATSINGEN",
+        "tagline": "PREMIUM SERVICE",
+        "subtitle": "Stiptheid en discretie gegarandeerd"
+      },
+      "evenements-speciaux": {
+        "title": "SPECIALE EVENEMENTEN",
+        "tagline": "ONVERGETELIJKE MOMENTEN",
+        "subtitle": "Bruiloften - Feestavonden - Ceremonies"
+      }
+    }
   }
 }
