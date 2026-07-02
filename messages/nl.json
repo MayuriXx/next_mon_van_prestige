@@ -122,7 +122,8 @@
     "error_addresses": "Voer een vertrek- en aankomstadres in.",
     "error_geocode": "Adres niet gevonden. Verfijn uw zoekopdracht.",
     "error_route": "Route kan niet worden berekend.",
-    "error_generic": "Er is een fout opgetreden. Probeer opnieuw."
+    "error_generic": "Er is een fout opgetreden. Probeer opnieuw.",
+    "hero_note": "Minimale duur van terbeschikkingstelling: 2 uur (20 km per uur inbegrepen)"
   },
   "escapadesLoisirs": {
     "tag": "VRIJETIJDSUITSTAPPEN",

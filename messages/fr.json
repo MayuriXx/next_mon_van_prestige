@@ -122,7 +122,8 @@
     "error_addresses": "Veuillez saisir un point de départ et d'arrivée.",
     "error_geocode": "Adresse introuvable. Veuillez préciser votre saisie.",
     "error_route": "Impossible de calculer l'itinéraire.",
-    "error_generic": "Une erreur est survenue. Veuillez réessayer."
+    "error_generic": "Une erreur est survenue. Veuillez réessayer.",
+    "hero_note": "Durée minimum de mise à disposition : 2 heures (20 km par heure inclus)"
   },
   "escapadesLoisirs": {
     "tag": "ESCAPADES LOISIRS",
