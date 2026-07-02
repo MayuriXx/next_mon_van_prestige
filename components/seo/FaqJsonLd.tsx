@@ -32,7 +32,7 @@ const faqItems = [
   {
     question: 'Acceptez-vous les animaux dans vos véhicules ?',
     answer:
-      "Oui, nous acceptons les animaux de compagnie sous certaines conditions (animal dans une cage de transport adaptée ou tenu en laisse). Merci de nous informer lors de la réservation.",
+      "Oui, nous acceptons les animaux de compagnie à condition qu'ils soient placés dans une cage ou un panier de transport adapté. Merci de nous en informer lors de la réservation.",
   },
   {
     question: 'Peut-on louer vos véhicules sans chauffeur ?',
