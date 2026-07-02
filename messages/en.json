@@ -443,5 +443,23 @@
       "title": "Leisure getaways",
       "description": "Theme parks, family outings, Disneyland Paris... Enjoy comfortable transport for the whole family. We drop you off and pick you up for unforgettable days out."
     }
+  },
+  "about": {
+    "title": "ABOUT",
+    "whoTitle": "WHO AM I?",
+    "whoText1": "Passionate about cars and service excellence, I created MS PRESTIGE DRIVER to offer far more than a simple ride. My goal is to give you complete peace of mind during your journeys.",
+    "whoText2": "Drawing on significant experience in passenger transport, I personally commit to ensuring your satisfaction through smooth driving, absolute discretion and unfailing availability.",
+    "values": {
+      "title": "OUR VALUES",
+      "text": "We put people at the heart of our service. Every journey rests on essential principles: integrity, discretion, a sense of service and complete respect for our clients. We are committed to delivering an experience built on trust, attention to detail and responsible driving, so that every trip is made with total peace of mind."
+    },
+    "mission": {
+      "title": "OUR MISSION",
+      "text": "Our goal is simple: to transport you safely, comfortably and punctually, whatever your destination. On every ride, we do everything possible to guarantee a reliable, polished service, so that your journeys become a pleasant moment, free of stress and surprises."
+    },
+    "vision": {
+      "title": "OUR VISION",
+      "text": "To embody excellence in passenger transport in Valenciennes and the Hauts-de-France region. Through MS Prestige Driver, we are reinventing premium chauffeur service as a truly superior alternative to taxis: a promise of distinguished service, unrivalled comfort and impeccable professionalism."
+    }
   }
 }

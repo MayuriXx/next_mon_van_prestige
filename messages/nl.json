@@ -443,5 +443,23 @@
       "title": "Vrijetijdsuitstapjes",
       "description": "Pretparken, familie-uitjes, Disneyland Parijs... Geniet van comfortabel vervoer voor het hele gezin. Wij brengen en halen u op voor onvergetelijke dagen."
     }
+  },
+  "about": {
+    "title": "OVER ONS",
+    "whoTitle": "WIE BEN IK?",
+    "whoText1": "Gepassioneerd door auto's en uitmuntende service heb ik MS PRESTIGE DRIVER opgericht om veel meer te bieden dan zomaar een rit. Mijn doel is u volledige rust te bieden tijdens uw verplaatsingen.",
+    "whoText2": "Met ruime ervaring in personenvervoer verbind ik mij er persoonlijk toe uw tevredenheid te garanderen door soepel rijden, absolute discretie en onberispelijke beschikbaarheid.",
+    "values": {
+      "title": "ONZE WAARDEN",
+      "text": "Wij plaatsen de mens centraal in onze service. Elke rit steunt op essentiële principes: integriteit, discretie, servicegerichtheid en volledig respect voor onze klanten. Wij verbinden ons ertoe een ervaring te bieden gebaseerd op vertrouwen, oog voor detail en verantwoord rijden, zodat elke verplaatsing in alle rust verloopt."
+    },
+    "mission": {
+      "title": "ONZE MISSIE",
+      "text": "Ons doel is eenvoudig: u veilig, comfortabel en stipt vervoeren, ongeacht uw bestemming. Bij elke rit doen wij er alles aan om een betrouwbare en verzorgde service te garanderen, zodat uw verplaatsingen een aangenaam moment worden, zonder stress of verrassingen."
+    },
+    "vision": {
+      "title": "ONZE VISIE",
+      "text": "De uitmuntendheid van personenvervoer belichamen in Valenciennes en de regio Hauts-de-France. Met MS Prestige Driver heruitvinden wij de premium chauffeurservice als een werkelijk superieur alternatief voor taxi's: een belofte van voorname service, ongeëvenaard comfort en onberispelijk professionalisme."
+    }
   }
 }
