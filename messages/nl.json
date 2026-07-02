@@ -420,5 +420,28 @@
         "to": "Lille Stations"
       }
     }
+  },
+  "homeSections": {
+    "learnMore": "Meer weten",
+    "transfert-aeroport": {
+      "title": "Luchthaven- en stationstransfers",
+      "description": "Reis zorgeloos met onze transferservice van en naar luchthavens en stations. Wij nemen uw bagage over en zorgen voor een persoonlijk onthaal voor een serene vertrek of aankomst."
+    },
+    "transfert-simple": {
+      "title": "Eenvoudige transfer",
+      "description": "Geniet van een vlotte en comfortabele rit voor uw dagelijkse verplaatsingen, met professionele chauffeurs die u in alle rust naar uw bestemming brengen."
+    },
+    "mise-a-disposition": {
+      "title": "Chauffeur ter beschikking",
+      "description": "Heeft u een chauffeur nodig voor enkele uren, een halve dag of een volledige dag? Wij stellen een voertuig met chauffeur ter beschikking, afgestemd op uw behoeften."
+    },
+    "evenements-speciaux": {
+      "title": "Speciale evenementen",
+      "description": "Bruiloften, feesten, verjaardagen... Wij verzorgen al uw speciale evenementen met elegantie en professionaliteit voor onvergetelijke momenten."
+    },
+    "escapades-loisirs": {
+      "title": "Vrijetijdsuitstapjes",
+      "description": "Pretparken, familie-uitjes, Disneyland Parijs... Geniet van comfortabel vervoer voor het hele gezin. Wij brengen en halen u op voor onvergetelijke dagen."
+    }
   }
 }
