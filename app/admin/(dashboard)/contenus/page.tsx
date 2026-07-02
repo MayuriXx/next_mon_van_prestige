@@ -47,6 +47,21 @@
  *     title:    { fr, en, nl }
  *     subtitle: { fr, en, nl }
  *
+ *   contenus/homeSections   (issue #102)
+ *     Homepage service teasers (ServiceSection.tsx), DIFFERENT content from
+ *     the per-service-page docs above (which hold each service *page's* own
+ *     title/subtitle). One flat doc for all 5 teasers, using compound keys
+ *     `${sectionId}_title` / `${sectionId}_description` per section, e.g.:
+ *       'transfert-aeroport_title':        { fr, en, nl }
+ *       'transfert-aeroport_description':  { fr, en, nl }
+ *       'transfert-simple_title':          { fr, en, nl }
+ *       ... (transfert-simple, mise-a-disposition, evenements-speciaux,
+ *            escapades-loisirs — deplacements-professionnels excluded, it
+ *            isn't rendered on the homepage)
+ *     Compound keys keep this doc compatible with the existing flat
+ *     `useContenus(sectionId, locale).get(field)` hook and this page's
+ *     generic per-field form below, with no changes to either.
+ *
  *   contenus/contact
  *     phone:   string           — phone number (no i18n needed)
  *     email:   string
@@ -143,6 +158,26 @@ const SECTIONS: SectionDef[] = [
     fields: [
       { key: 'title',    label: 'Titre',       multiline: false, i18n: true },
       { key: 'subtitle', label: 'Sous-titre',  multiline: true,  i18n: true },
+    ],
+  },
+  {
+    // Issue #102: homepage teasers (ServiceSection.tsx). Distinct from the
+    // per-service-page docs above — same field-per-key engine, just with
+    // compound `${sectionId}_title` / `${sectionId}_description` keys so one
+    // Firestore doc can hold all 5 teasers. See useContenus.ts / page.tsx
+    // header comment for the full rationale.
+    id: 'homeSections', label: 'Page d\'accueil — Blocs services', icon: '🧩',
+    fields: [
+      { key: 'transfert-aeroport_title',        label: 'Transfert Aéroport — Titre',        multiline: false, i18n: true },
+      { key: 'transfert-aeroport_description',  label: 'Transfert Aéroport — Description',  multiline: true,  i18n: true },
+      { key: 'transfert-simple_title',          label: 'Transfert Simple — Titre',          multiline: false, i18n: true },
+      { key: 'transfert-simple_description',    label: 'Transfert Simple — Description',    multiline: true,  i18n: true },
+      { key: 'mise-a-disposition_title',        label: 'Mise à Disposition — Titre',        multiline: false, i18n: true },
+      { key: 'mise-a-disposition_description',  label: 'Mise à Disposition — Description',  multiline: true,  i18n: true },
+      { key: 'evenements-speciaux_title',       label: 'Événements Spéciaux — Titre',       multiline: false, i18n: true },
+      { key: 'evenements-speciaux_description', label: 'Événements Spéciaux — Description', multiline: true,  i18n: true },
+      { key: 'escapades-loisirs_title',         label: 'Escapades Loisirs — Titre',         multiline: false, i18n: true },
+      { key: 'escapades-loisirs_description',   label: 'Escapades Loisirs — Description',   multiline: true,  i18n: true },
     ],
   },
   {
