@@ -80,9 +80,14 @@ function applyBracket(km: number, bracket: KmBracket): number {
   return 0;
 }
 
-/** Round a price to 2 decimal places. */
+/** Round a price to 2 decimal places (used for intermediate calculations). */
 function round2(value: number): number {
   return Math.round(value * 100) / 100;
+}
+
+/** Round up to the next whole euro (e.g. 47.01 → 48, 47.00 → 47). */
+function ceilEuro(value: number): number {
+  return Math.ceil(value);
 }
 
 // ---------------------------------------------------------------------------
@@ -142,7 +147,7 @@ export function calculatePrice(
       throw new Error('[pricing] MAD service requires durationHours > 0');
     }
     const rate = tariffs.mad[vehicleType];
-    const price = round2(rate * request.durationHours);
+    const price = ceilEuro(rate * request.durationHours);
     breakdown.push(
       `Mise à disposition (${vehicleType}) : ${rate} €/h × ${request.durationHours} h = ${price} €`
     );
@@ -179,7 +184,7 @@ export function calculatePrice(
       );
     }
 
-    basePrice = round2(basePrice);
+    basePrice = ceilEuro(basePrice);
 
     // ── Hors-base surcharge ────────────────────────────────────────────────
     let surcharge: number | undefined;
@@ -204,7 +209,7 @@ export function calculatePrice(
       }
     }
 
-    const totalPrice = surcharge ? round2(basePrice + surcharge) : basePrice;
+    const totalPrice = ceilEuro(surcharge ? basePrice + surcharge : basePrice);
     if (surcharge) breakdown.push(`Total estimé : ${totalPrice} €`);
 
     return {
