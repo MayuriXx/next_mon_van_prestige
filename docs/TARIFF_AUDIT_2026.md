@@ -117,6 +117,11 @@ It fetches the live collection, diffs it against the canonical grid, reports any
 `MISMATCH` / `MISSING` / `EXTRA` document, prints `_meta` for traceability, and
 **never writes anything**. Exit code `0` means production is in sync.
 
+> **Verified 2026-07-02 (by Evan, locally):** all six documents returned `OK`,
+> no `EXTRA`/`MISMATCH`, `_meta.version = 2026` (`updatedBy = seed-tariffs.ts`).
+> **Live production Firestore is in sync with the canonical grid — no re-seed
+> needed.** No legacy `_structure` document was present either.
+
 To re-synchronise production **if** the verify script reports mismatches (this is
 **destructive** — it deletes and recreates the documents):
 
