@@ -81,6 +81,10 @@ export default function Navbar() {
             sizes="52px"
             className={styles.logoImg}
           />
+          {/* Brand slogan — kept in French across all locales (client decision, US-01). */}
+          <span className={styles.tagline}>
+            {"L'excellence au service de votre mobilité"}
+          </span>
         </Link>
 
         <nav className={styles.nav} aria-label="Navigation principale">
