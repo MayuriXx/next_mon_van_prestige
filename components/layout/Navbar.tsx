@@ -83,10 +83,10 @@ export default function Navbar() {
           />
           <div className={styles.brandText}>
             {/* Brand name displayed next to the logo (design update, requested by Evan 2026-07-02). */}
-            <span className={styles.brandName}>Mon Van Prestige</span>
+            <span className={styles.brandName}>MS Prestige Driver</span>
             {/* Brand slogan — kept in French across all locales (client decision, US-01). */}
             <span className={styles.tagline}>
-              {"L'excellence au service de votre mobilité"}
+              {"Excellence et raffinement depuis 2022"}
             </span>
           </div>
         </Link>
