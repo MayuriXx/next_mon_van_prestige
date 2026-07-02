@@ -86,7 +86,7 @@ export default function Navbar() {
             <span className={styles.brandName}>MS Prestige Driver</span>
             {/* Brand slogan — kept in French across all locales (client decision, US-01). */}
             <span className={styles.tagline}>
-              {"Excellence et raffinement depuis 2022"}
+              {"L'excellence au service de votre mobilité"}
             </span>
           </div>
         </Link>
