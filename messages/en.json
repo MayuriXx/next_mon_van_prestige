@@ -122,7 +122,8 @@
     "error_addresses": "Please enter a pickup and destination address.",
     "error_geocode": "Address not found. Please refine your search.",
     "error_route": "Unable to calculate the route.",
-    "error_generic": "An error occurred. Please try again."
+    "error_generic": "An error occurred. Please try again.",
+    "hero_note": "Minimum booking duration: 2 hours (20 km per hour included)"
   },
   "escapadesLoisirs": {
     "tag": "LEISURE ESCAPES",
