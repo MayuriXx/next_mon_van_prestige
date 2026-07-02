@@ -19,9 +19,9 @@ const SERVICES = [
 ] as const;
 
 const LANGUAGES = [
-  { code: 'fr', label: 'FR', flag: '🇫🇷' },
-  { code: 'en', label: 'EN', flag: '🇬🇧' },
-  { code: 'nl', label: 'NL', flag: '🇳🇱' },
+  { code: 'fr', label: 'FR', flag: '/images/flags/flag-fr.webp' },
+  { code: 'en', label: 'EN', flag: '/images/flags/flag-en.webp' },
+  { code: 'nl', label: 'NL', flag: '/images/flags/flag-nl.webp' },
 ];
 
 export default function Navbar() {
@@ -145,8 +145,14 @@ export default function Navbar() {
                 onClick={() => handleLangChange(l.code)}
                 aria-label={`Langue : ${l.label}`}
               >
-                <span>{l.flag}</span>
-                <span>{l.label}</span>
+                <Image
+                  src={l.flag}
+                  alt={l.label}
+                  width={28}
+                  height={28}
+                  className={styles.flagImg}
+                  sizes="28px"
+                />
               </button>
             ))}
           </div>
@@ -183,7 +189,14 @@ export default function Navbar() {
                 className={`${styles.langBtn} ${locale === l.code ? styles.langActive : ''}`}
                 onClick={() => handleLangChange(l.code)}
               >
-                {l.flag} {l.label}
+                <Image
+                  src={l.flag}
+                  alt={l.label}
+                  width={28}
+                  height={28}
+                  className={styles.flagImg}
+                  sizes="28px"
+                />
               </button>
             ))}
           </div>
