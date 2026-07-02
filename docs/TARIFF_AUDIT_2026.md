@@ -124,18 +124,30 @@ To re-synchronise production **if** the verify script reports mismatches (this i
 npx ts-node --project tsconfig.json scripts/seed-tariffs.ts
 ```
 
-### 4.3 Dead code noticed (not changed here)
+### 4.3 Dead code removed
 
-The following are **not imported anywhere** in the app and have no runtime
-effect, but are worth cleaning up in a later pass:
+Two modules were **not imported anywhere** in the app (verified across the whole
+`*.ts` / `*.tsx` tree — zero references to their paths or exported symbols) and
+had no runtime effect. They duplicated, in an older string-based shape, the
+canonical data now held in `lib/data/tariffs.ts`. Both were deleted in this pass:
 
-- `lib/data/tarifs.ts` (`tarifsData`, string-formatted display grid)
-- `lib/firebase/tarifs.ts` (`getAllTarifs` / `getTarifsByCategory`)
-- `scripts/init-firestore.ts` writes a legacy `tarifs/_structure` sample
-  document. `seed-tariffs.ts` deletes all docs before seeding, so `_structure`
-  only survives if `init-firestore.ts` is run afterwards. The `verify-tariffs.ts`
-  script flags it as an `EXTRA` document if present. The live app ignores it
-  (`useTariffs` only reads known document IDs).
+- `lib/data/tarifs.ts` — `tarifsData`, a string-formatted display grid
+  (e.g. `'300-390€'`). Superseded by the typed `lib/data/tariffs.ts`
+  (`AIRPORT_PRICES`, `LEISURE_PRICES`, …). **Note the single vs double "f":** the
+  live file is `tariffs.ts`; only the dead `tarifs.ts` was removed.
+- `lib/firebase/tarifs.ts` — `getAllTarifs` / `getTarifsByCategory`, an unused
+  Firestore reader. The live reader is `lib/hooks/useTariffs.ts`.
+
+### 4.4 Legacy init script (left in place, flagged)
+
+`scripts/init-firestore.ts` writes a legacy `tarifs/_structure` sample document
+(plus `_structure` scaffolding in `reservations`, `faq`, `vehicules`,
+`contenus`). It is a manual one-off setup script, not import-graph dead code, so
+it was **not** deleted. `seed-tariffs.ts` deletes all `tarifs` docs before
+seeding, so `_structure` only survives if `init-firestore.ts` is run afterwards.
+The live app ignores `tarifs/_structure` (`useTariffs` only reads known document
+IDs), and `verify-tariffs.ts` flags it as an `EXTRA` document if present.
+Consider retiring this script once every collection has real data.
 
 ---
 
@@ -145,5 +157,7 @@ effect, but are worth cleaning up in a later pass:
 - `components/sections/Vehicles.tsx` — Business teaser price aligned to grid.
 - `scripts/verify-tariffs.ts` — **new** read-only Firestore verification script.
 - `docs/TARIFF_AUDIT_2026.md` — this document.
+- `lib/data/tarifs.ts` — **removed** (dead code, single-"f" duplicate).
+- `lib/firebase/tarifs.ts` — **removed** (dead code, unused Firestore reader).
 
 No change to the contractual pricing grid, the calculator, or the admin panel.
