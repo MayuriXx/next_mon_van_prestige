@@ -34,8 +34,7 @@
 }
 
 .phone {
-  background-color: var(--color-gold);
-  color: #0a0a0a;
+  background-color: #25d366;
 }
 
 .whatsapp {
@@ -43,8 +42,7 @@
 }
 
 .email {
-  background-color: var(--color-gold);
-  color: #0a0a0a;
+  background-color: #1a73e8;
 }
 
 @media (max-width: 480px) {
