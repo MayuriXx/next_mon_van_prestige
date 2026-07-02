@@ -420,5 +420,28 @@
         "to": "Lille Stations"
       }
     }
+  },
+  "homeSections": {
+    "learnMore": "Learn more",
+    "transfert-aeroport": {
+      "title": "Airport & station transfers",
+      "description": "Travel stress-free with our airport and station transfer service. We handle your luggage and provide a personalised welcome for a serene departure or arrival."
+    },
+    "transfert-simple": {
+      "title": "Simple transfer",
+      "description": "Enjoy a smooth, comfortable ride for your everyday journeys, with professional drivers at your service to take you wherever you wish, in complete peace of mind."
+    },
+    "mise-a-disposition": {
+      "title": "Chauffeur at your disposal",
+      "description": "Need a driver for a few hours, half a day or a full day? We provide a vehicle with a chauffeur tailored to your needs."
+    },
+    "evenements-speciaux": {
+      "title": "Special events",
+      "description": "Weddings, parties, birthdays... We take care of all your special events with elegance and professionalism for unforgettable moments."
+    },
+    "escapades-loisirs": {
+      "title": "Leisure getaways",
+      "description": "Theme parks, family outings, Disneyland Paris... Enjoy comfortable transport for the whole family. We drop you off and pick you up for unforgettable days out."
+    }
   }
 }
