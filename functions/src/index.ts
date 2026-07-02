@@ -123,18 +123,14 @@ function buildServiceLabel(data: BookingData, depositRatio: number): string {
 export const createCheckoutSession = onRequest(
   {
     region: 'europe-west1',
+    invoker: 'public',
     secrets: [STRIPE_SECRET_KEY],
     cors: ['https://mon-van-prestige.web.app', 'http://localhost:3000'],
   },
   async (req, res) => {
-    // Handle CORS preflight
-    res.set('Access-Control-Allow-Origin', 'https://mon-van-prestige.web.app');
-    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.set('Access-Control-Allow-Headers', 'Content-Type');
-    if (req.method === 'OPTIONS') {
-      res.status(204).send('');
-      return;
-    }
+    // CORS is handled automatically by the "cors" option in onRequest above.
+    // Do NOT set Access-Control-Allow-Origin manually — it conflicts with the
+    // built-in handler and breaks localhost during development.
 
     const body = req.body as { data?: BookingData } | BookingData;
     const data: BookingData = ('data' in body && body.data) ? body.data : body as BookingData;
@@ -238,6 +234,8 @@ export const createCheckoutSession = onRequest(
 
 export const stripeWebhook = onRequest(
   {
+    region: 'europe-west1',
+    invoker: 'public',
     secrets: [STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY, RESEND_FROM_EMAIL, ADMIN_EMAIL],
   },
   async (req, res) => {
