@@ -168,7 +168,10 @@ async function verify(): Promise<void> {
   // _meta (informational)
   if (live['_meta']) {
     const meta = live['_meta'] as Record<string, unknown>
-    console.log(`_meta: version=${String(meta.version)} updatedBy=${String(meta.updatedBy)} updatedAt=${String(meta.updatedAt)}`)
+    const ts = meta.updatedAt as { toDate?: () => Date } | undefined
+    const updatedAt =
+      ts && typeof ts.toDate === 'function' ? ts.toDate().toISOString() : String(ts)
+    console.log(`_meta: version=${String(meta.version)} updatedBy=${String(meta.updatedBy)} updatedAt=${updatedAt}`)
     console.log('')
   } else {
     console.log('_meta: (missing — collection may never have been seeded)\n')
