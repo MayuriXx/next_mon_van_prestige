@@ -40,6 +40,9 @@
   /* --- Shadows --- */
   --shadow-gold: 0 0 20px rgba(201, 168, 76, 0.25);
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+
+  /* --- Layout --- */
+  --nav-height: 92px;
 }
 
 /* ============================================================
@@ -57,6 +60,9 @@
 html {
   height: 100%;
   scroll-behavior: smooth;
+  /* Offset anchored sections (#services, #vehicules, …) by the fixed
+     header height so their headings are not hidden behind the Navbar. */
+  scroll-padding-top: var(--nav-height);
 }
 
 html,
