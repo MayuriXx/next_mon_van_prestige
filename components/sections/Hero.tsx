@@ -11,14 +11,20 @@
  *   transfer, business travel, special events). Each slide shows a title,
  *   a tagline, a subtitle, and a CTA button that links to the relevant page.
  *
+ * i18n (issue #87 / US-08, sub-task 08a):
+ *   Slide title/tagline/subtitle used to be hardcoded in French directly in
+ *   this file. They are now read from messages/{locale}.json under
+ *   `hero.slides.{slideId}.*`, so switching locale (FR/EN/NL) actually
+ *   translates the hero content instead of always showing French.
+ *
  * Firestore integration (issue #62):
  *   Mohammed can override the tagline of the FIRST slide (the "chauffeur-prive"
  *   slide) via the admin panel (/admin/contenus -> "Page d'accueil - Hero").
  *   The override is stored as a multilingual field:
  *     { tagline: { fr: string; en: string; nl: string } }
- *   If the field is empty or the document does not exist, the hardcoded
- *   static string is used as fallback. Slide images and titles are NOT
- *   editable via the admin panel at this stage.
+ *   If the field is empty or the document does not exist, the i18n string
+ *   (hero.slides.chauffeur-prive.tagline) is used as fallback. Slide images
+ *   and titles are NOT editable via the admin panel at this stage.
  *
  *   Only the FIRST slide's tagline is wired to Firestore because:
  *   - The admin form only exposes one tagline field (designed in #25)
@@ -37,40 +43,30 @@ import styles from './Hero.module.css';
 
 // ---------------------------------------------------------------------------
 // Static slide data
-// Titles and subtitles are hardcoded; only slide[0].tagline can be overridden
-// via Firestore (see Firestore integration notes above).
+// Only the id, image and href are static here. The visible title/tagline/
+// subtitle come from i18n (messages/{locale}.json -> hero.slides.{id}.*),
+// with slide[0].tagline additionally overridable via Firestore (see notes
+// above).
 // ---------------------------------------------------------------------------
 const SLIDES = [
   {
     id: 'chauffeur-prive',
     image: '/images/hero/chauffeur-prive.webp',
-    title: 'CHAUFFEUR PRIVE',
-    tagline: 'VALENCIENNES ET SES ALENTOURS',
-    subtitle: 'Excellence et raffinement depuis 2022',
     href: '/reservation',
   },
   {
     id: 'transfert-aeroport',
     image: '/images/hero/transfert-aeroport.webp',
-    title: 'TRANSFERT AEROPORT',
-    tagline: 'DISPONIBLE 24/7',
-    subtitle: 'Paris CDG - Bruxelles - Lille',
     href: '/services/transfert-aeroport',
   },
   {
     id: 'deplacements-pro',
     image: '/images/hero/deplacements-pro.webp',
-    title: 'DEPLACEMENTS PROFESSIONNELS',
-    tagline: 'SERVICE PREMIUM',
-    subtitle: 'Ponctualite et discretion garanties',
     href: '/services/deplacements-professionnels',
   },
   {
     id: 'evenements-speciaux',
     image: '/images/hero/evenements-speciaux.webp',
-    title: 'EVENEMENTS SPECIAUX',
-    tagline: 'MOMENTS INOUBLIABLES',
-    subtitle: 'Mariages - Soirees - Ceremonies',
     href: '/services/evenements-speciaux',
   },
 ];
@@ -115,15 +111,18 @@ export default function Hero() {
   }, [current, goTo]);
 
   const slide = SLIDES[current];
+  const title = t(`slides.${slide.id}.title`);
+  const subtitle = t(`slides.${slide.id}.subtitle`);
+  const i18nTagline = t(`slides.${slide.id}.tagline`);
 
   /**
    * For the first slide, prefer the Firestore override if non-empty.
-   * For all other slides, use the hardcoded static tagline.
+   * For all other slides, use the i18n tagline.
    */
   const tagline =
     current === FIRESTORE_TAGLINE_SLIDE_INDEX
-      ? getContenu('tagline') || slide.tagline
-      : slide.tagline;
+      ? getContenu('tagline') || i18nTagline
+      : i18nTagline;
 
   return (
     <section className={styles.hero}>
@@ -134,7 +133,7 @@ export default function Hero() {
         >
           <Image
             src={s.image}
-            alt={s.title}
+            alt={t(`slides.${s.id}.title`)}
             fill
             priority={i === 0}
             sizes="100vw"
@@ -148,9 +147,9 @@ export default function Hero() {
 
       <div className={`${styles.content}${isTransitioning ? ` ${styles.fadeOut}` : ` ${styles.fadeIn}`}`}>
         <div className={styles.inner}>
-          <h1 className={styles.title}>{slide.title}</h1>
+          <h1 className={styles.title}>{title}</h1>
           <p className={styles.tagline}>{tagline}</p>
-          <p className={styles.subtitle}>{slide.subtitle}</p>
+          <p className={styles.subtitle}>{subtitle}</p>
           <Link href={localePath(slide.href, locale)} className={styles.cta}>
             {t('cta')}
           </Link>

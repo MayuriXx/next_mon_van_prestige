@@ -333,6 +333,28 @@
     }
   },
   "hero": {
-    "cta": "Réserver maintenant"
+    "cta": "Réserver maintenant",
+    "slides": {
+      "chauffeur-prive": {
+        "title": "CHAUFFEUR PRIVE",
+        "tagline": "VALENCIENNES ET SES ALENTOURS",
+        "subtitle": "Excellence et raffinement depuis 2022"
+      },
+      "transfert-aeroport": {
+        "title": "TRANSFERT AEROPORT",
+        "tagline": "DISPONIBLE 24/7",
+        "subtitle": "Paris CDG - Bruxelles - Lille"
+      },
+      "deplacements-pro": {
+        "title": "DEPLACEMENTS PROFESSIONNELS",
+        "tagline": "SERVICE PREMIUM",
+        "subtitle": "Ponctualite et discretion garanties"
+      },
+      "evenements-speciaux": {
+        "title": "EVENEMENTS SPECIAUX",
+        "tagline": "MOMENTS INOUBLIABLES",
+        "subtitle": "Mariages - Soirees - Ceremonies"
+      }
+    }
   }
 }
