@@ -356,5 +356,69 @@
         "subtitle": "Bruiloften - Feestavonden - Ceremonies"
       }
     }
+  },
+  "vehicles": {
+    "title": "ONZE VOERTUIGEN",
+    "cta": "Reserveren",
+    "priceFrom": "Vanaf",
+    "items": {
+      "business": {
+        "name": "BUSINESS",
+        "models": [
+          "Tesla Model S",
+          "Mercedes E-Klasse",
+          "of gelijkwaardig"
+        ],
+        "badges": [
+          "3 zitplaatsen",
+          "3 bagagestukken",
+          "WiFi"
+        ]
+      },
+      "van": {
+        "name": "VAN",
+        "models": [
+          "Mercedes V-Klasse",
+          "Mercedes Vito",
+          "of gelijkwaardig"
+        ],
+        "badges": [
+          "7 zitplaatsen",
+          "7 bagagestukken",
+          "WiFi"
+        ]
+      }
+    }
+  },
+  "tarifs": {
+    "title": "MEEST GEVRAAGDE TRANSFERS",
+    "cta": "Reserveren",
+    "priceLabel": "VANAF",
+    "routes": {
+      "orly": {
+        "from": "Valenciennes",
+        "to": "Parijs Orly"
+      },
+      "cdg": {
+        "from": "Valenciennes",
+        "to": "Parijs Charles de Gaulle"
+      },
+      "zaventem": {
+        "from": "Valenciennes",
+        "to": "Brussel Zaventem"
+      },
+      "charleroi": {
+        "from": "Valenciennes",
+        "to": "Charleroi"
+      },
+      "lesquin": {
+        "from": "Valenciennes",
+        "to": "Lille Lesquin"
+      },
+      "gares": {
+        "from": "Valenciennes",
+        "to": "Lille Stations"
+      }
+    }
   }
 }
