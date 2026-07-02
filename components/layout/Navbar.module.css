@@ -54,12 +54,11 @@
 /* Brand slogan under the brand name. Playfair italic for an elegant, premium feel.
    Kept in French on every locale (brand signature). */
 .tagline {
-  font-family: var(--font-body);
-  font-style: normal;
-  font-size: 11px;
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: 12px;
   font-weight: 400;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.03em;
   line-height: 1.1;
   color: var(--color-gold);
   white-space: nowrap;
