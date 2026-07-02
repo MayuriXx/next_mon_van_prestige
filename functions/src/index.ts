@@ -128,14 +128,9 @@ export const createCheckoutSession = onRequest(
     cors: ['https://mon-van-prestige.web.app', 'http://localhost:3000'],
   },
   async (req, res) => {
-    // Handle CORS preflight
-    res.set('Access-Control-Allow-Origin', 'https://mon-van-prestige.web.app');
-    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.set('Access-Control-Allow-Headers', 'Content-Type');
-    if (req.method === 'OPTIONS') {
-      res.status(204).send('');
-      return;
-    }
+    // CORS is handled automatically by the "cors" option in onRequest above.
+    // Do NOT set Access-Control-Allow-Origin manually — it conflicts with the
+    // built-in handler and breaks localhost during development.
 
     const body = req.body as { data?: BookingData } | BookingData;
     const data: BookingData = ('data' in body && body.data) ? body.data : body as BookingData;
