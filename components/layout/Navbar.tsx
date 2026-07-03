@@ -16,6 +16,7 @@ const SERVICES = [
   { key: 'events',       href: '/services/evenements-speciaux' },
   { key: 'leisure',      href: '/services/escapades-loisirs' },
   { key: 'professional', href: '/services/deplacements-professionnels' },
+  { key: 'women',        href: '/services/transport-feminin' },
 ] as const;
 
 const LANGUAGES = [
