@@ -166,6 +166,7 @@
   margin-left: var(--spacing-sm);
   padding-left: var(--spacing-sm);
   border-left: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 .langBtn {
@@ -178,6 +179,7 @@
   cursor: pointer;
   border-radius: 50%;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .langBtn:hover {
@@ -193,6 +195,8 @@
 .flagImg {
   width: 28px;
   height: 28px;
+  min-width: 28px;
+  min-height: 28px;
   border-radius: 50%;
   object-fit: cover;
   display: block;
@@ -200,6 +204,7 @@
 
 /* ── CTA Réserver ── */
 .ctaBtn {
+  flex-shrink: 0;
   margin-left: var(--spacing-sm);
   padding: 8px 20px;
   font-family: var(--font-body);
@@ -320,7 +325,7 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .nav { display: none; }
   .burger { display: flex; }
   .mobileMenu { display: flex; }
