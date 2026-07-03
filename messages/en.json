@@ -490,18 +490,18 @@
     "form_calculate": "Calculate journey",
     "calculating": "Calculating...",
     "section_title": "Excellence in Every Journey",
-    "adv_comfort_title": "Comfort and elegance",
-    "adv_comfort_desc": "A reassuring and refined setting, designed so that every journey is a moment of well-being and tranquillity.",
-    "adv_secure_title": "Total safety",
-    "adv_secure_desc": "Trained professional female chauffeurs, fully insured vehicles, for journeys in complete confidence.",
-    "adv_driver_title": "Dedicated female chauffeurs",
-    "adv_driver_desc": "An exclusively female service, provided by experienced chauffeurs attentive to your needs.",
     "result_distance": "DISTANCE",
     "result_duration": "DURATION",
     "price_from": "from",
     "error_addresses": "Please enter a departure and arrival address.",
     "error_geocode": "Address not found. Please refine your search.",
     "error_route": "Unable to calculate the route.",
-    "error_generic": "An error occurred. Please try again."
+    "error_generic": "An error occurred. Please try again.",
+    "adv_custom_title": "Tailored service",
+    "adv_custom_desc": "Your wishes, your journey. Enjoy an unmatched transport experience designed around your preferences.",
+    "adv_secure_title": "Maximum safety",
+    "adv_secure_desc": "Vehicles kept in perfect condition and fully insured to guarantee your comfort and safety.",
+    "adv_support_title": "24/7 assistance",
+    "adv_support_desc": "Your peace of mind is our commitment. Our team is at your service 24 hours a day, 7 days a week."
   }
 }
