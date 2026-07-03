@@ -71,6 +71,7 @@ const SERVICES_LINKS = [
   { label: 'Événements Spéciaux',  href: '/services/evenements-speciaux' },
   { label: 'Escapades & Loisirs',  href: '/services/escapades-loisirs' },
   { label: 'Déplacements Pro',     href: '/services/deplacements-professionnels' },
+  { label: 'Transport au Féminin', href: '/services/transport-feminin' },
 ];
 
 const SITE_LINKS = [
