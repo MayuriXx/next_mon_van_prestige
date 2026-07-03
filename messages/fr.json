@@ -480,7 +480,6 @@
     "title": "Un transport entre femmes, en toute sérénité",
     "subtitle": "MS Prestige Driver, c'est le choix d'un transport entre femmes, assuré par des chauffeuses professionnelles. Profitez d'un trajet en toute sécurité, dans un cadre rassurant et élégant, pensé pour votre confort et votre tranquillité.",
     "badge_security": "Sécurité",
-    "badge_comfort": "Confort",
     "form_title": "Réservez votre trajet",
     "form_departure_placeholder": "Adresse de départ",
     "form_arrival_placeholder": "Adresse d'arrivée",
@@ -502,6 +501,7 @@
     "adv_secure_title": "Sécurité maximale",
     "adv_secure_desc": "Véhicules maintenus en parfait état et assurés tous risques pour garantir votre confort et votre sécurité.",
     "adv_support_title": "Assistance 24/7",
-    "adv_support_desc": "Votre tranquillité d'esprit est notre engagement. Notre équipe est à votre service 24h/24 et 7j/7."
+    "adv_support_desc": "Votre tranquillité d'esprit est notre engagement. Notre équipe est à votre service 24h/24 et 7j/7.",
+    "badge_punctuality": "Ponctualité"
   }
 }
