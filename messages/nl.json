@@ -332,6 +332,13 @@
       "ogTitle": "Online VTC Reservering — MS Prestige Driver",
       "ogDescription": "Boek uw privéchauffeur in een paar klikken. Veilige betaling via Stripe, directe bevestiging.",
       "ogImageAlt": "VTC reservering MS Prestige Driver"
+    },
+    "transportFeminin": {
+      "title": "Vrouwenchauffeurservice — Vrouwelijke Privéchauffeur | MS Prestige Driver",
+      "description": "Vrouwelijk VTC-vervoer met professionele vrouwelijke chauffeurs. Veiligheid, comfort en elegantie voor uw ritten vanuit Valenciennes.",
+      "ogTitle": "Vrouwenchauffeurservice — Vrouwelijke Privé VTC-chauffeur",
+      "ogDescription": "Een exclusief vrouwelijke vervoerservice: professionele vrouwelijke chauffeurs, premium voertuigen, veiligheid en comfort.",
+      "ogImageAlt": "Vrouwenchauffeurservice MS Prestige Driver"
     }
   },
   "hero": {
@@ -467,5 +474,34 @@
       "title": "ONZE VISIE",
       "text": "De uitmuntendheid van personenvervoer belichamen in Valenciennes en de regio Hauts-de-France. Met MS Prestige Driver heruitvinden wij de premium chauffeurservice als een werkelijk superieur alternatief voor taxi's: een belofte van voorname service, ongeëvenaard comfort en onberispelijk professionalisme."
     }
+  },
+  "transportFeminin": {
+    "tag": "VROUWENCHAUFFEURSERVICE",
+    "title": "Vrouwelijk transport in alle sereniteit",
+    "subtitle": "MS Prestige Driver biedt een vrouwelijk vervoer aan, verzorgd door professionele vrouwelijke chauffeurs. Geniet van een veilige rit in een geruststellende en elegante omgeving, ontworpen voor uw comfort en gemoedsrust.",
+    "badge_security": "Veiligheid",
+    "badge_comfort": "Comfort",
+    "form_title": "Reserveer uw rit",
+    "form_departure_placeholder": "Vertrekadres",
+    "form_arrival_placeholder": "Aankomstadres",
+    "trip_one_way": "Enkele reis",
+    "trip_round_trip": "Heen en terug",
+    "passengers_label": "Passagiers",
+    "form_calculate": "Rit berekenen",
+    "calculating": "Berekenen...",
+    "section_title": "Een Service Voor U Ontworpen",
+    "adv_comfort_title": "Comfort en elegantie",
+    "adv_comfort_desc": "Een geruststellende en verfijnde omgeving, ontworpen zodat elke rit een moment van welzijn en rust is.",
+    "adv_secure_title": "Totale veiligheid",
+    "adv_secure_desc": "Opgeleide professionele vrouwelijke chauffeurs, volledig verzekerde voertuigen, voor ritten in alle vertrouwen.",
+    "adv_driver_title": "Toegewijde vrouwelijke chauffeurs",
+    "adv_driver_desc": "Een exclusief vrouwelijke service, verzorgd door ervaren chauffeurs die aandacht hebben voor uw behoeften.",
+    "result_distance": "AFSTAND",
+    "result_duration": "DUUR",
+    "price_from": "vanaf",
+    "error_addresses": "Voer een vertrek- en aankomstadres in.",
+    "error_geocode": "Adres niet gevonden. Verfijn uw zoekopdracht.",
+    "error_route": "Kan de route niet berekenen.",
+    "error_generic": "Er is een fout opgetreden. Probeer het opnieuw."
   }
 }
