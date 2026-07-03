@@ -490,18 +490,18 @@
     "form_calculate": "Calculer le trajet",
     "calculating": "Calcul en cours...",
     "section_title": "L'Excellence du Voyage",
-    "adv_comfort_title": "Confort et élégance",
-    "adv_comfort_desc": "Un cadre rassurant et raffiné, pensé pour que chaque trajet soit un moment de bien-être et de tranquillité.",
-    "adv_secure_title": "Sécurité totale",
-    "adv_secure_desc": "Des chauffeuses professionnelles formées, des véhicules assurés tous risques, pour des trajets en toute confiance.",
-    "adv_driver_title": "Chauffeuses dédiées",
-    "adv_driver_desc": "Un service exclusivement féminin, assuré par des chauffeuses expérimentées et à l'écoute de vos besoins.",
     "result_distance": "DISTANCE",
     "result_duration": "DURÉE",
     "price_from": "à partir de",
     "error_addresses": "Veuillez saisir un point de départ et d'arrivée.",
     "error_geocode": "Adresse introuvable. Veuillez préciser votre saisie.",
     "error_route": "Impossible de calculer l'itinéraire.",
-    "error_generic": "Une erreur est survenue. Veuillez réessayer."
+    "error_generic": "Une erreur est survenue. Veuillez réessayer.",
+    "adv_custom_title": "Service sur-mesure",
+    "adv_custom_desc": "Vos envies, votre trajet. Profitez d'une expérience de transport inégalée conçue selon vos préférences.",
+    "adv_secure_title": "Sécurité maximale",
+    "adv_secure_desc": "Véhicules maintenus en parfait état et assurés tous risques pour garantir votre confort et votre sécurité.",
+    "adv_support_title": "Assistance 24/7",
+    "adv_support_desc": "Votre tranquillité d'esprit est notre engagement. Notre équipe est à votre service 24h/24 et 7j/7."
   }
 }
