@@ -118,6 +118,20 @@ function buildServiceLabel(data: BookingData, depositRatio: number): string {
   return `Acompte ${pct}% — ${serviceLabels[data.serviceType] ?? data.serviceType} (${vehicle})`;
 }
 
+// ── Human-readable labels for confirmation emails ─────────────────────────────
+
+const SERVICE_LABELS: Record<string, string> = {
+  TRANSFER : 'Transfert',
+  MAD      : 'Mise à Disposition',
+  AIRPORT  : 'Transfert Aéroport',
+  LEISURE  : 'Escapade & Loisirs',
+};
+
+const VEHICLE_LABELS: Record<string, string> = {
+  BUSINESS : 'Berline Business',
+  VAN      : 'Van de Luxe',
+};
+
 // ── Cloud Function: createCheckoutSession ─────────────────────────────────────
 
 export const createCheckoutSession = onRequest(
@@ -292,42 +306,83 @@ export const stripeWebhook = onRequest(
       const depositAmt  = parseFloat(meta.depositAmount ?? '0');
       const remaining   = totalPrice - depositAmt;
 
+      const serviceLabel  = SERVICE_LABELS[meta.serviceType] ?? meta.serviceType;
+      const vehicleLabel  = VEHICLE_LABELS[meta.vehicleType] ?? meta.vehicleType;
+
       // ── Email to client ────────────────────────────────────────────────────
       await resend.emails.send({
         from   : `MS Prestige Driver <${fromEmail}>`,
         to     : [session.customer_email ?? meta.clientName],
         subject: '✅ Confirmation de votre réservation — MS Prestige Driver',
         html   : `
-          <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#fff;border-radius:12px;overflow:hidden">
-            <div style="background:#C9A84C;padding:24px 32px">
-              <h1 style="margin:0;font-size:22px;color:#0a0a0a">MS Prestige Driver</h1>
-              <p style="margin:4px 0 0;font-size:13px;color:rgba(0,0,0,0.7)">Votre réservation est confirmée</p>
-            </div>
-            <div style="padding:32px">
-              <p style="font-size:16px">Bonjour <strong>${meta.clientName}</strong>,</p>
-              <p>Votre réservation a bien été enregistrée et votre acompte de <strong>${depositPct}%</strong> reçu. Voici le récapitulatif :</p>
+          <div style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e0e0e0">
 
-              <table style="width:100%;border-collapse:collapse;margin:24px 0">
-                <tr style="background:#1a1a1a"><td style="padding:10px 16px;color:#C9A84C;font-size:12px;text-transform:uppercase;letter-spacing:.08em">Service</td><td style="padding:10px 16px">${meta.serviceType}</td></tr>
-                <tr><td style="padding:10px 16px;color:#C9A84C;font-size:12px;text-transform:uppercase;letter-spacing:.08em">Véhicule</td><td style="padding:10px 16px">${meta.vehicleType}</td></tr>
-                <tr style="background:#1a1a1a"><td style="padding:10px 16px;color:#C9A84C;font-size:12px;text-transform:uppercase;letter-spacing:.08em">Date</td><td style="padding:10px 16px">${departureDate} à ${departureTime}</td></tr>
-                <tr><td style="padding:10px 16px;color:#C9A84C;font-size:12px;text-transform:uppercase;letter-spacing:.08em">Départ</td><td style="padding:10px 16px">${meta.departureAddress}</td></tr>
-                ${meta.arrivalAddress ? `<tr style="background:#1a1a1a"><td style="padding:10px 16px;color:#C9A84C;font-size:12px;text-transform:uppercase;letter-spacing:.08em">Arrivée</td><td style="padding:10px 16px">${meta.arrivalAddress}</td></tr>` : ''}
-                <tr style="background:#1a1a1a"><td style="padding:10px 16px;color:#C9A84C;font-size:12px;text-transform:uppercase;letter-spacing:.08em">Prix total estimé</td><td style="padding:10px 16px"><strong>${totalPrice} €</strong></td></tr>
-                <tr><td style="padding:10px 16px;color:#C9A84C;font-size:12px;text-transform:uppercase;letter-spacing:.08em">Acompte réglé (${depositPct}%)</td><td style="padding:10px 16px;color:#4caf50"><strong>${depositAmt.toFixed(2)} €</strong></td></tr>
-                <tr style="background:#1a1a1a"><td style="padding:10px 16px;color:#C9A84C;font-size:12px;text-transform:uppercase;letter-spacing:.08em">Solde restant dû</td><td style="padding:10px 16px">${remaining.toFixed(2)} €</td></tr>
+            <!-- Header -->
+            <div style="background:#1a1a1a;padding:28px 32px">
+              <h1 style="margin:0;font-size:22px;color:#C9A84C;font-weight:700">MS Prestige Driver</h1>
+              <p style="margin:6px 0 0;font-size:13px;color:rgba(255,255,255,0.7)">Votre réservation est confirmée</p>
+            </div>
+
+            <!-- Body -->
+            <div style="padding:32px">
+              <p style="font-size:16px;color:#333;margin:0 0 8px">Bonjour <strong>${meta.clientName}</strong>,</p>
+              <p style="font-size:14px;color:#555;margin:0 0 24px;line-height:1.5">Votre réservation a bien été enregistrée et votre acompte de <strong style="color:#333">${depositPct}%</strong> reçu. Voici le récapitulatif :</p>
+
+              <!-- Summary table -->
+              <table style="width:100%;border-collapse:collapse;margin:0 0 24px;font-size:14px">
+                <tr>
+                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee;width:40%">Service</td>
+                  <td style="padding:12px 16px;color:#333;border-bottom:1px solid #eee">${serviceLabel}</td>
+                </tr>
+                <tr style="background:#f9f9f9">
+                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Véhicule</td>
+                  <td style="padding:12px 16px;color:#333;border-bottom:1px solid #eee">${vehicleLabel}</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Date</td>
+                  <td style="padding:12px 16px;color:#333;border-bottom:1px solid #eee">${departureDate} à ${departureTime}</td>
+                </tr>
+                <tr style="background:#f9f9f9">
+                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Départ</td>
+                  <td style="padding:12px 16px;color:#333;border-bottom:1px solid #eee">${meta.departureAddress}</td>
+                </tr>
+                ${meta.arrivalAddress ? `<tr>
+                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Arrivée</td>
+                  <td style="padding:12px 16px;color:#333;border-bottom:1px solid #eee">${meta.arrivalAddress}</td>
+                </tr>` : ''}
+                <tr style="background:#f9f9f9">
+                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Prix total estimé</td>
+                  <td style="padding:12px 16px;color:#333;font-weight:700;font-size:16px;border-bottom:1px solid #eee">${totalPrice} €</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Acompte réglé (${depositPct}%)</td>
+                  <td style="padding:12px 16px;color:#2e7d32;font-weight:700;font-size:16px;border-bottom:1px solid #eee">${depositAmt.toFixed(2)} €</td>
+                </tr>
+                <tr style="background:#f9f9f9">
+                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700">Solde restant dû</td>
+                  <td style="padding:12px 16px;color:#333;font-weight:700;font-size:16px">${remaining.toFixed(2)} €</td>
+                </tr>
               </table>
 
-              <p style="font-size:13px;color:rgba(255,255,255,0.6);background:#1a1a1a;padding:16px;border-left:3px solid #C9A84C;border-radius:4px">
-                Le solde restant (<strong>${remaining.toFixed(2)} €</strong>) sera à régler avant le départ, à bord du véhicule par carte bancaire ou espèces.
+              <!-- Remaining balance notice -->
+              <div style="background:#faf6eb;padding:16px 20px;border-left:4px solid #C9A84C;border-radius:4px;margin:0 0 24px">
+                <p style="margin:0;font-size:13px;color:#555;line-height:1.5">
+                  Le solde restant (<strong style="color:#333">${remaining.toFixed(2)} €</strong>) sera à régler avant le départ, à bord du véhicule par carte bancaire ou espèces.
+                </p>
+              </div>
+
+              <!-- Contact -->
+              <p style="font-size:14px;color:#555;margin:0 0 32px">
+                Pour toute question ou modification : <a href="tel:+33783698460" style="color:#C9A84C;text-decoration:none;font-weight:600">07 83 69 84 60</a> ou WhatsApp <a href="https://wa.me/33783698460" style="color:#C9A84C;text-decoration:none;font-weight:600">+33 7 83 69 84 60</a>
               </p>
 
-              <p>Pour toute question ou modification : <a href="tel:+33783698460" style="color:#C9A84C">07 83 69 84 60</a> ou WhatsApp <a href="https://wa.me/33783698460" style="color:#C9A84C">+33 7 83 69 84 60</a></p>
-
-              <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:32px;border-top:1px solid #333;padding-top:16px">
-                MS Prestige Driver — 92 rue Destreux, 59171 Onnaing<br>
-                En cas d'annulation plus de 72h avant la prestation, l'acompte est restitué à hauteur de 30% du montant total.
-              </p>
+              <!-- Footer -->
+              <div style="border-top:1px solid #eee;padding-top:20px">
+                <p style="font-size:12px;color:#999;margin:0;line-height:1.6">
+                  MS Prestige Driver — 92 rue Destreux, 59171 Onnaing<br>
+                  En cas d'annulation plus de 72h avant la prestation, l'acompte est restitué à hauteur de 30% du montant total.
+                </p>
+              </div>
             </div>
           </div>
         `,
@@ -339,7 +394,7 @@ export const stripeWebhook = onRequest(
         to     : [adminEmail],
         subject: `🚗 Nouvelle réservation — ${meta.clientName} — ${departureDate}`,
         html   : `
-          <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
+          <div style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:600px;margin:0 auto">
             <h2 style="color:#C9A84C">Nouvelle réservation confirmée</h2>
             <p>Un acompte de <strong>${depositAmt.toFixed(2)} € (${depositPct}%)</strong> a été reçu via Stripe.</p>
 
@@ -352,8 +407,8 @@ export const stripeWebhook = onRequest(
 
             <h3>Course</h3>
             <ul>
-              <li><strong>Service :</strong> ${meta.serviceType}</li>
-              <li><strong>Véhicule :</strong> ${meta.vehicleType}</li>
+              <li><strong>Service :</strong> ${serviceLabel}</li>
+              <li><strong>Véhicule :</strong> ${vehicleLabel}</li>
               <li><strong>Date :</strong> ${departureDate} à ${departureTime}</li>
               <li><strong>Départ :</strong> ${meta.departureAddress}</li>
               ${meta.arrivalAddress ? `<li><strong>Arrivée :</strong> ${meta.arrivalAddress}</li>` : ''}
@@ -371,8 +426,3 @@ export const stripeWebhook = onRequest(
     res.sendStatus(200);
   }
 );
-
-
-
-
-
