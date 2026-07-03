@@ -7,6 +7,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useContenus } from '@/lib/hooks/useContenus';
 import { getLocaleFromPath } from '@/lib/utils/locale';
+import { useWomenSurcharge } from '@/lib/hooks/useWomenSurcharge';
 import styles from './TransportFemininPage.module.css';
 
 const LeafletMap = dynamic(() => import('@/components/map/LeafletMap'), { ssr: false });
@@ -148,6 +149,7 @@ export default function TransportFemininPage() {
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname);
   const contenus = useContenus('transportFeminin', locale as 'fr' | 'en' | 'nl');
+  const surchargePercent = useWomenSurcharge();
 
   const [departure, setDeparture] = useState('');
   const [arrival, setArrival]     = useState('');
@@ -200,11 +202,12 @@ export default function TransportFemininPage() {
       const multiplier = tripType === 'round_trip' ? 2 : 1;
       const km = route.distanceKm * multiplier;
       setRouteCoords(route.coords);
+      const surchargeMultiplier = 1 + surchargePercent / 100;
       setResult({
         distanceKm: route.distanceKm,
         durationMin: route.durationMin,
-        businessPrice: calcPrice(km, PRICE_PER_KM_BUSINESS, MIN_BUSINESS),
-        vanPrice: calcPrice(km, PRICE_PER_KM_VAN, MIN_VAN),
+        businessPrice: Math.ceil(calcPrice(km, PRICE_PER_KM_BUSINESS, MIN_BUSINESS) * surchargeMultiplier),
+        vanPrice: Math.ceil(calcPrice(km, PRICE_PER_KM_VAN, MIN_VAN) * surchargeMultiplier),
       });
       setTimeout(() => {
         mapColRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -214,7 +217,7 @@ export default function TransportFemininPage() {
     } finally {
       setLoading(false);
     }
-  }, [departure, arrival, fromPoint, toPoint, tripType, t]);
+  }, [departure, arrival, fromPoint, toPoint, tripType, surchargePercent, t]);
 
   return (
     <>
