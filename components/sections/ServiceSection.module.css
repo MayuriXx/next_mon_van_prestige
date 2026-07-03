@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   min-height: 400px;
+  background-color: #0a0a0a;
 }
 
 /* Image à gauche */
@@ -20,6 +21,7 @@
   position: relative;
   min-height: 400px;
   overflow: hidden;
+  background-color: #0a0a0a;
 }
 
 .image {

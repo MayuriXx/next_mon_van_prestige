@@ -443,6 +443,10 @@
     "escapades-loisirs": {
       "title": "Vrijetijdsuitstapjes",
       "description": "Pretparken, familie-uitjes, Disneyland Parijs... Geniet van comfortabel vervoer voor het hele gezin. Wij brengen en halen u op voor onvergetelijke dagen."
+    },
+    "transport-feminin": {
+      "title": "Vrouwenchauffeurservice",
+      "description": "Een privéchauffeurservice voor vrouwen. Door een vrouw gereden worden is nog nooit zo geruststellend geweest."
     }
   },
   "about": {

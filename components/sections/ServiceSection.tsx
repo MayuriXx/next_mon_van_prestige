@@ -78,6 +78,7 @@ const SERVICE_HREFS: Record<string, string> = {
   'evenements-speciaux':         '/services/evenements-speciaux',
   'escapades-loisirs':           '/services/escapades-loisirs',
   'deplacements-professionnels': '/services/deplacements-professionnels',
+  'transport-feminin':           '/services/transport-feminin',
 };
 
 /**
@@ -91,6 +92,7 @@ const IMAGE_POSITION: Record<string, 'left' | 'right'> = {
   'evenements-speciaux':         'right',
   'escapades-loisirs':           'left',
   'deplacements-professionnels': 'right',
+  'transport-feminin':           'right',
 };
 
 interface ServiceSectionProps {

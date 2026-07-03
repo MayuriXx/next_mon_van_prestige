@@ -443,6 +443,10 @@
     "escapades-loisirs": {
       "title": "Escapades Loisirs",
       "description": "Parcs d'attractions, sorties familiales, Disneyland Paris... Profitez d'un transport confortable pour toute la famille. Nous vous déposons et venons vous chercher pour des journées inoubliables."
+    },
+    "transport-feminin": {
+      "title": "Transport au Féminin",
+      "description": "Service de chauffeurs privé dédié aux femmes. Être conduite par une femme n'a jamais été aussi rassurant."
     }
   },
   "about": {
