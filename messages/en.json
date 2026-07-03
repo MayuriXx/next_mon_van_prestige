@@ -332,6 +332,13 @@
       "ogTitle": "Online VTC Booking — MS Prestige Driver",
       "ogDescription": "Book your private chauffeur in a few clicks. Secure payment via Stripe, instant confirmation.",
       "ogImageAlt": "VTC booking MS Prestige Driver"
+    },
+    "transportFeminin": {
+      "title": "Women's Chauffeur Service — Female Private Driver | MS Prestige Driver",
+      "description": "Women-only VTC transport service with professional female chauffeurs. Safety, comfort and elegance for your journeys from Valenciennes.",
+      "ogTitle": "Women's Chauffeur Service — Female Private VTC Driver",
+      "ogDescription": "An exclusively female transport service: professional female chauffeurs, premium vehicles, safety and comfort.",
+      "ogImageAlt": "Women's chauffeur service MS Prestige Driver"
     }
   },
   "hero": {
@@ -467,5 +474,34 @@
       "title": "OUR VISION",
       "text": "To embody excellence in passenger transport in Valenciennes and the Hauts-de-France region. Through MS Prestige Driver, we are reinventing premium chauffeur service as a truly superior alternative to taxis: a promise of distinguished service, unrivalled comfort and impeccable professionalism."
     }
+  },
+  "transportFeminin": {
+    "tag": "WOMEN'S CHAUFFEUR SERVICE",
+    "title": "A women-only transport in complete serenity",
+    "subtitle": "MS Prestige Driver offers a women-only transport service, provided by professional female chauffeurs. Enjoy a safe journey in a reassuring and elegant setting, designed for your comfort and peace of mind.",
+    "badge_security": "Safety",
+    "badge_comfort": "Comfort",
+    "form_title": "Book your journey",
+    "form_departure_placeholder": "Departure address",
+    "form_arrival_placeholder": "Arrival address",
+    "trip_one_way": "One way",
+    "trip_round_trip": "Round trip",
+    "passengers_label": "Passengers",
+    "form_calculate": "Calculate journey",
+    "calculating": "Calculating...",
+    "section_title": "A Service Designed For You",
+    "adv_comfort_title": "Comfort and elegance",
+    "adv_comfort_desc": "A reassuring and refined setting, designed so that every journey is a moment of well-being and tranquillity.",
+    "adv_secure_title": "Total safety",
+    "adv_secure_desc": "Trained professional female chauffeurs, fully insured vehicles, for journeys in complete confidence.",
+    "adv_driver_title": "Dedicated female chauffeurs",
+    "adv_driver_desc": "An exclusively female service, provided by experienced chauffeurs attentive to your needs.",
+    "result_distance": "DISTANCE",
+    "result_duration": "DURATION",
+    "price_from": "from",
+    "error_addresses": "Please enter a departure and arrival address.",
+    "error_geocode": "Address not found. Please refine your search.",
+    "error_route": "Unable to calculate the route.",
+    "error_generic": "An error occurred. Please try again."
   }
 }
