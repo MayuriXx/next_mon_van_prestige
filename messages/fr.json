@@ -332,6 +332,13 @@
       "ogTitle": "Réservation VTC en ligne — MS Prestige Driver",
       "ogDescription": "Réservez votre chauffeur privé en quelques clics. Paiement sécurisé par Stripe, confirmation instantanée.",
       "ogImageAlt": "Réservation VTC MS Prestige Driver"
+    },
+    "transportFeminin": {
+      "title": "Transport au Féminin — Chauffeuse Privée | MS Prestige Driver",
+      "description": "Service de transport VTC entre femmes avec chauffeuses professionnelles. Sécurité, confort et élégance pour vos trajets depuis Valenciennes.",
+      "ogTitle": "Transport au Féminin — Chauffeuse Privée VTC",
+      "ogDescription": "Un service de transport exclusivement féminin : chauffeuses professionnelles, véhicules haut de gamme, sécurité et confort.",
+      "ogImageAlt": "Transport au féminin MS Prestige Driver"
     }
   },
   "hero": {
@@ -467,5 +474,34 @@
       "title": "NOTRE VISION",
       "text": "Incarner l'excellence du transport de personnes à Valenciennes et dans les Hauts-de-France. Par MS Prestige Driver, nous réinventons le VTC premium en tant que véritable alternative supérieure aux taxis : une promesse de service distingué, de confort inégalé, et de professionnalisme irréprochable."
     }
+  },
+  "transportFeminin": {
+    "tag": "TRANSPORT AU FÉMININ",
+    "title": "Un transport entre femmes, en toute sérénité",
+    "subtitle": "MS Prestige Driver, c'est le choix d'un transport entre femmes, assuré par des chauffeuses professionnelles. Profitez d'un trajet en toute sécurité, dans un cadre rassurant et élégant, pensé pour votre confort et votre tranquillité.",
+    "badge_security": "Sécurité",
+    "form_title": "Réservez votre trajet",
+    "form_departure_placeholder": "Adresse de départ",
+    "form_arrival_placeholder": "Adresse d'arrivée",
+    "trip_one_way": "Aller simple",
+    "trip_round_trip": "Aller-retour",
+    "passengers_label": "Passagères",
+    "form_calculate": "Calculer le trajet",
+    "calculating": "Calcul en cours...",
+    "section_title": "L'Excellence du Voyage",
+    "result_distance": "DISTANCE",
+    "result_duration": "DURÉE",
+    "price_from": "à partir de",
+    "error_addresses": "Veuillez saisir un point de départ et d'arrivée.",
+    "error_geocode": "Adresse introuvable. Veuillez préciser votre saisie.",
+    "error_route": "Impossible de calculer l'itinéraire.",
+    "error_generic": "Une erreur est survenue. Veuillez réessayer.",
+    "adv_custom_title": "Service sur-mesure",
+    "adv_custom_desc": "Vos envies, votre trajet. Profitez d'une expérience de transport inégalée conçue selon vos préférences.",
+    "adv_secure_title": "Sécurité maximale",
+    "adv_secure_desc": "Véhicules maintenus en parfait état et assurés tous risques pour garantir votre confort et votre sécurité.",
+    "adv_support_title": "Assistance 24/7",
+    "adv_support_desc": "Votre tranquillité d'esprit est notre engagement. Notre équipe est à votre service 24h/24 et 7j/7.",
+    "badge_punctuality": "Ponctualité"
   }
 }
