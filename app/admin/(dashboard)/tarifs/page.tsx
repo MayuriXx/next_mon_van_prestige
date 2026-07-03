@@ -35,7 +35,7 @@
 
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase/client';
 import { useTariffs } from '@/lib/hooks/useTariffs';
 import type { TariffData } from '@/lib/hooks/useTariffs';
@@ -71,6 +71,7 @@ const TABS = [
   { id: 'mad',         label: '⏱️ MAD' },
   { id: 'transfer',    label: '🚗 Tranches km Transfer' },
   { id: 'out_of_base', label: '📍 Hors-base' },
+  { id: 'women',       label: '👩 Transport Féminin' },
 ] as const;
 
 type TabId = (typeof TABS)[number]['id'];
@@ -100,6 +101,8 @@ export default function TarifsPage() {
   const [outOfBaseB,     setOutOfBaseB]      = useState<TariffData['outOfBaseBrackets'] | null>(null);
   const [minimumFares,   setMinimumFares]    = useState<TariffData['minimumFares']  | null>(null);
 
+  const [womenSurcharge, setWomenSurcharge] = useState<number>(20);
+
   const [activeTab,   setActiveTab]   = useState<TabId>('airports');
   const [saving,      setSaving]      = useState<string | null>(null); // doc id being saved
   const [savedMsg,    setSavedMsg]    = useState<string | null>(null);
@@ -116,6 +119,18 @@ export default function TarifsPage() {
       setOutOfBaseB(JSON.parse(JSON.stringify(tariffs.outOfBaseBrackets)));
     }
   }, [loading]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Fetch women surcharge from Firestore
+  useEffect(() => {
+    const ref = doc(db, 'tarifs', 'women_surcharge');
+    const unsub = onSnapshot(ref, (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        if (typeof data.percentage === 'number') setWomenSurcharge(data.percentage);
+      }
+    });
+    return () => unsub();
+  }, []);
 
   // ── Save helpers ────────────────────────────────────────────────────────────
 
@@ -323,6 +338,44 @@ export default function TarifsPage() {
             brackets={outOfBaseB.VAN}
             onChange={(brackets) => setOutOfBaseB((prev) => prev ? { ...prev, VAN: brackets } : prev)}
           />
+        </Section>
+      )}
+
+      {/* ── Tab: Women's transport surcharge ───────────────────────────── */}
+      {activeTab === 'women' && (
+        <Section
+          title="Majoration Transport au Féminin"
+          description={
+            'Pourcentage de majoration appliqué aux tarifs de la page Transport au Féminin. ' +
+            'Par exemple, 20 signifie +20% sur le prix de base du transfert.'
+          }
+          onSave={() => save('women_surcharge', { percentage: womenSurcharge })}
+          saving={saving === 'women_surcharge'}
+        >
+          <div style={s.madGrid}>
+            <div style={s.madCard}>
+              <div style={s.madLabel}>Majoration (%)</div>
+              <div style={s.madRow}>
+                <span style={s.fieldLabel}>Pourcentage appliqué</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="1"
+                    value={womenSurcharge}
+                    onChange={(e) => setWomenSurcharge(num(e.target.value))}
+                    style={s.input}
+                  />
+                  <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>%</span>
+                </div>
+              </div>
+              <p style={{ margin: '8px 0 0', fontSize: '12px', color: 'rgba(255,255,255,0.3)' }}>
+                Exemple : un transfert à 50 € avec une majoration de {womenSurcharge}% sera facturé{' '}
+                <strong style={{ color: '#C9A84C' }}>{Math.ceil(50 * (1 + womenSurcharge / 100))} €</strong>
+              </p>
+            </div>
+          </div>
         </Section>
       )}
     </div>
