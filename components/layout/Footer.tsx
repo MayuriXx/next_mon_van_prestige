@@ -202,8 +202,6 @@ export default function Footer() {
         <div className={styles.payments}>
           <span className={styles.payLabel}>Paiements acceptés</span>
           <span className={styles.payBadge}>CB</span>
-          <span className={styles.payBadge}>Visa</span>
-          <span className={styles.payBadge}>MC</span>
           <span className={styles.payBadge}>Virement</span>
         </div>
       </div>
