@@ -443,6 +443,10 @@
     "escapades-loisirs": {
       "title": "Leisure getaways",
       "description": "Theme parks, family outings, Disneyland Paris... Enjoy comfortable transport for the whole family. We drop you off and pick you up for unforgettable days out."
+    },
+    "transport-feminin": {
+      "title": "Private chauffeur service dedicated to women",
+      "description": "Being driven by a woman has never been so reassuring"
     }
   },
   "about": {
