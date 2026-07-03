@@ -26,6 +26,11 @@
  *   All internal links use localePath() to prefix the current locale,
  *   ensuring correct navigation under the /[locale]/... URL structure
  *   (required by static export with no middleware).
+ *
+ * Brand layout:
+ *   The brand section mirrors the header (Navbar) design: logo displayed
+ *   inline next to "MS Prestige Driver" with the tagline below the brand
+ *   name. This ensures visual consistency between header and footer.
  */
 
 import Link from 'next/link';
@@ -105,9 +110,9 @@ export default function Footer() {
     // `scroll-padding-top: var(--nav-height)` in app/globals.css.
     <footer id="contact" className={styles.footer}>
       <div className={`container ${styles.inner}`}>
-        {/* Colonne 1 — Marque */}
+        {/* Colonne 1 — Marque (layout matches header: logo + brand name inline) */}
         <div className={styles.brand}>
-          <Link href={localePath('/', locale)} className={styles.logoWrap}>
+          <Link href={localePath('/', locale)} className={styles.brandHeader}>
             <Image
               src="/images/ms_prestige_driver_logo.jpg"
               alt="MS Prestige Driver"
@@ -116,10 +121,13 @@ export default function Footer() {
               sizes="72px"
               className={styles.logoImg}
             />
+            <div className={styles.brandText}>
+              <span className={styles.brandName}>MS Prestige Driver</span>
+              <span className={styles.tagline}>
+                {"L'excellence au service de votre mobilité"}
+              </span>
+            </div>
           </Link>
-          <p className={styles.tagline}>
-            <em>L&apos;excellence au service de votre mobilité</em>
-          </p>
           <p className={styles.description}>
             Service VTC premium à Valenciennes et dans toute la région Hauts-de-France.
             Disponible 7j/7, 24h/24.

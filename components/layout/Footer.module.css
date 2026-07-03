@@ -12,13 +12,19 @@
   padding-bottom: var(--spacing-2xl);
 }
 
-/* ── Brand ── */
+/* ── Brand (mirrors header layout) ── */
 .brand {}
 
-.logoWrap {
-  display: inline-block;
-  margin-bottom: var(--spacing-md);
+.brandHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
   text-decoration: none;
+  margin-bottom: var(--spacing-md);
+}
+
+.brandHeader:hover .logoImg {
+  filter: drop-shadow(0 0 10px rgba(201, 168, 76, 0.5));
 }
 
 .logoImg {
@@ -26,18 +32,29 @@
   height: 72px;
   object-fit: contain;
   border-radius: 50%;
+  flex-shrink: 0;
   transition: filter var(--transition-base);
 }
 
-.logoWrap:hover .logoImg {
-  filter: drop-shadow(0 0 10px rgba(201, 168, 76, 0.5));
+.brandText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brandName {
+  font-family: var(--font-title);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-white);
+  letter-spacing: 0.02em;
 }
 
 .tagline {
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 12px;
+  font-style: italic;
   color: var(--color-gold);
-  margin-bottom: var(--spacing-md);
 }
 
 .description {
@@ -208,6 +225,10 @@
   .inner {
     grid-template-columns: 1fr;
     gap: var(--spacing-lg);
+  }
+
+  .brandHeader {
+    justify-content: center;
   }
 
   .bottom {
