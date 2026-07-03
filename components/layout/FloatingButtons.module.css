@@ -1,14 +1,13 @@
 /*
  * Floating contact buttons.
- * The wrapper is position:fixed so it stays visible while the page scrolls,
- * and vertically centered (top:50% + translateY(-50%)) so the stack always
- * sits in the middle of the viewport on the right-hand side.
+ * The wrapper is position:fixed so it stays visible while the page scrolls.
+ * Positioned near the bottom-right of the viewport so the buttons don't
+ * interfere with page content while remaining easily accessible.
  */
 .wrapper {
   position: fixed;
   right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: 24px;
   z-index: 900;
   display: flex;
   flex-direction: column;
@@ -48,9 +47,7 @@
 @media (max-width: 480px) {
   .wrapper {
     right: 12px;
-    /* Stay vertically centered on mobile as well. */
-    top: 50%;
-    transform: translateY(-50%);
+    bottom: 16px;
     gap: 10px;
   }
 
