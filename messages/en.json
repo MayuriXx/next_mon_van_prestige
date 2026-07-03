@@ -480,7 +480,6 @@
     "title": "A women-only transport in complete serenity",
     "subtitle": "MS Prestige Driver offers a women-only transport service, provided by professional female chauffeurs. Enjoy a safe journey in a reassuring and elegant setting, designed for your comfort and peace of mind.",
     "badge_security": "Safety",
-    "badge_comfort": "Comfort",
     "form_title": "Book your journey",
     "form_departure_placeholder": "Departure address",
     "form_arrival_placeholder": "Arrival address",
@@ -502,6 +501,7 @@
     "adv_secure_title": "Maximum safety",
     "adv_secure_desc": "Vehicles kept in perfect condition and fully insured to guarantee your comfort and safety.",
     "adv_support_title": "24/7 assistance",
-    "adv_support_desc": "Your peace of mind is our commitment. Our team is at your service 24 hours a day, 7 days a week."
+    "adv_support_desc": "Your peace of mind is our commitment. Our team is at your service 24 hours a day, 7 days a week.",
+    "badge_punctuality": "Punctuality"
   }
 }
