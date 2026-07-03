@@ -92,7 +92,7 @@ const IMAGE_POSITION: Record<string, 'left' | 'right'> = {
   'evenements-speciaux':         'right',
   'escapades-loisirs':           'left',
   'deplacements-professionnels': 'right',
-  'transport-feminin':           'left',
+  'transport-feminin':           'right',
 };
 
 interface ServiceSectionProps {
