@@ -1,0 +1,228 @@
+/* ── LegalPage.module.css ─────────────────────────────────────────────────── */
+/* Shared styles for legal pages (Mentions Légales, CGV).                     */
+/* Design aligned with FaqPage: background overlay, hero title, card layout.  */
+
+.wrapper {
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  overflow: hidden;
+}
+
+/* ── Background ── */
+.bgOverlay {
+  position: fixed;
+  inset: 0;
+  background-image: url('/images/sections/deplacements-pro.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  opacity: 0.12;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 80px var(--spacing-xl) 16px;
+}
+
+.heroTitle {
+  font-family: var(--font-title);
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 700;
+  color: var(--color-white);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.heroSubtitle {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+  font-style: italic;
+}
+
+.separator {
+  width: 60px;
+  height: 3px;
+  background: var(--color-gold);
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+/* ── Content section ── */
+.contentSection {
+  position: relative;
+  z-index: 1;
+  padding: 40px var(--spacing-xl) 60px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* ── Card ── */
+.card {
+  background-color: rgba(26, 26, 26, 0.92);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-md);
+  padding: 28px 28px 24px;
+  margin-bottom: 16px;
+  transition: border-color var(--transition-base);
+}
+
+.card:hover {
+  border-color: rgba(201, 168, 76, 0.25);
+}
+
+.cardTitle {
+  font-family: var(--font-title);
+  font-size: clamp(16px, 2.5vw, 20px);
+  font-weight: 600;
+  color: var(--color-gold);
+  margin-bottom: 16px;
+  letter-spacing: 0.03em;
+}
+
+.cardIcon {
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+/* ── Text ── */
+.text {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.75;
+  margin-bottom: 8px;
+}
+
+.bold {
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.list {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 12px;
+}
+
+.list li {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.75;
+  margin-bottom: 4px;
+  padding-left: 18px;
+  position: relative;
+}
+
+.list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 11px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-gold);
+}
+
+.address {
+  font-style: normal;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--color-text-muted);
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.link {
+  color: var(--color-gold);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.link:hover {
+  color: #b8962e;
+  text-decoration: underline;
+}
+
+/* ── Info grid (for key-value pairs like SIRET, TVA) ── */
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
+}
+
+.infoItem {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.75;
+}
+
+/* ── CTA bottom ── */
+.ctaSection {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 0 var(--spacing-xl) 80px;
+}
+
+.ctaText {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+}
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 40px;
+  background-color: var(--color-gold);
+  color: var(--color-bg);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-base), transform var(--transition-fast);
+}
+
+.ctaBtn:hover {
+  background-color: #b8962e;
+  transform: translateY(-2px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .hero {
+    padding: 60px var(--spacing-md) 16px;
+  }
+
+  .contentSection {
+    padding: 32px var(--spacing-md) 48px;
+  }
+
+  .card {
+    padding: 20px 18px 18px;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -69,6 +69,21 @@
  *     `useContenus(sectionId, locale).get(field)` hook and this page's
  *     generic per-field form below, with no changes to either.
  *
+ *   contenus/mentionsLegales
+ *     hebergeur_nom:     string   — hosting provider company name
+ *     hebergeur_adresse: string   — hosting provider address
+ *     hebergeur_contact: string   — hosting provider contact URL
+ *     editeur_nom:       string   — publisher full name
+ *     editeur_forme:     string   — legal form (EI, SARL, etc.)
+ *     editeur_enseigne:  string   — trade name
+ *     editeur_adresse:   string   — publisher address
+ *     editeur_tel:       string   — publisher phone
+ *     editeur_email:     string   — publisher email
+ *     editeur_directeur: string   — publication director
+ *     editeur_siren:     string   — SIREN number
+ *     editeur_siret:     string   — SIRET number
+ *     editeur_tva:       string   — intra-community VAT number
+ *
  *   contenus/contact
  *     phone:   string           — phone number (no i18n needed)
  *     email:   string
@@ -195,6 +210,24 @@ const SECTIONS: SectionDef[] = [
       { key: 'evenements-speciaux_description', label: 'Événements Spéciaux — Description', multiline: true,  i18n: true },
       { key: 'escapades-loisirs_title',         label: 'Escapades Loisirs — Titre',         multiline: false, i18n: true },
       { key: 'escapades-loisirs_description',   label: 'Escapades Loisirs — Description',   multiline: true,  i18n: true },
+    ],
+  },
+  {
+    id: 'mentionsLegales', label: 'Mentions Légales', icon: '⚖️',
+    fields: [
+      { key: 'hebergeur_nom',      label: 'Hébergeur — Nom',          multiline: false, i18n: false },
+      { key: 'hebergeur_adresse',  label: 'Hébergeur — Adresse',      multiline: false, i18n: false },
+      { key: 'hebergeur_contact',  label: 'Hébergeur — URL contact',  multiline: false, i18n: false },
+      { key: 'editeur_nom',        label: 'Éditeur — Nom Prénom',     multiline: false, i18n: false },
+      { key: 'editeur_forme',      label: 'Éditeur — Forme juridique', multiline: false, i18n: false },
+      { key: 'editeur_enseigne',   label: 'Éditeur — Enseigne',       multiline: false, i18n: false },
+      { key: 'editeur_adresse',    label: 'Éditeur — Adresse',        multiline: false, i18n: false },
+      { key: 'editeur_tel',        label: 'Éditeur — Téléphone',      multiline: false, i18n: false },
+      { key: 'editeur_email',      label: 'Éditeur — E-mail',         multiline: false, i18n: false },
+      { key: 'editeur_directeur',  label: 'Directeur de publication', multiline: false, i18n: false },
+      { key: 'editeur_siren',      label: 'SIREN',                    multiline: false, i18n: false },
+      { key: 'editeur_siret',      label: 'SIRET',                    multiline: false, i18n: false },
+      { key: 'editeur_tva',        label: 'N° TVA intracommunautaire', multiline: false, i18n: false },
     ],
   },
   {
