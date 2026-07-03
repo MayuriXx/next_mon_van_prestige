@@ -480,7 +480,6 @@
     "title": "Vrouwelijk transport in alle sereniteit",
     "subtitle": "MS Prestige Driver biedt een vrouwelijk vervoer aan, verzorgd door professionele vrouwelijke chauffeurs. Geniet van een veilige rit in een geruststellende en elegante omgeving, ontworpen voor uw comfort en gemoedsrust.",
     "badge_security": "Veiligheid",
-    "badge_comfort": "Comfort",
     "form_title": "Reserveer uw rit",
     "form_departure_placeholder": "Vertrekadres",
     "form_arrival_placeholder": "Aankomstadres",
@@ -502,6 +501,7 @@
     "adv_secure_title": "Maximale veiligheid",
     "adv_secure_desc": "Voertuigen in perfecte staat onderhouden en allriskverzekerd voor uw comfort en veiligheid.",
     "adv_support_title": "24/7 ondersteuning",
-    "adv_support_desc": "Uw gemoedsrust is onze belofte. Ons team staat 24 uur per dag, 7 dagen per week voor u klaar."
+    "adv_support_desc": "Uw gemoedsrust is onze belofte. Ons team staat 24 uur per dag, 7 dagen per week voor u klaar.",
+    "badge_punctuality": "Stiptheid"
   }
 }
