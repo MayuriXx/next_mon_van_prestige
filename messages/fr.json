@@ -332,6 +332,13 @@
       "ogTitle": "Réservation VTC en ligne — MS Prestige Driver",
       "ogDescription": "Réservez votre chauffeur privé en quelques clics. Paiement sécurisé par Stripe, confirmation instantanée.",
       "ogImageAlt": "Réservation VTC MS Prestige Driver"
+    },
+    "transportFeminin": {
+      "title": "Transport au Féminin — Chauffeuse Privée | MS Prestige Driver",
+      "description": "Service de transport VTC entre femmes avec chauffeuses professionnelles. Sécurité, confort et élégance pour vos trajets depuis Valenciennes.",
+      "ogTitle": "Transport au Féminin — Chauffeuse Privée VTC",
+      "ogDescription": "Un service de transport exclusivement féminin : chauffeuses professionnelles, véhicules haut de gamme, sécurité et confort.",
+      "ogImageAlt": "Transport au féminin MS Prestige Driver"
     }
   },
   "hero": {
@@ -467,5 +474,34 @@
       "title": "NOTRE VISION",
       "text": "Incarner l'excellence du transport de personnes à Valenciennes et dans les Hauts-de-France. Par MS Prestige Driver, nous réinventons le VTC premium en tant que véritable alternative supérieure aux taxis : une promesse de service distingué, de confort inégalé, et de professionnalisme irréprochable."
     }
+  },
+  "transportFeminin": {
+    "tag": "TRANSPORT AU FÉMININ",
+    "title": "Un transport entre femmes, en toute sérénité",
+    "subtitle": "MS Prestige Driver, c'est le choix d'un transport entre femmes, assuré par des chauffeuses professionnelles. Profitez d'un trajet en toute sécurité, dans un cadre rassurant et élégant, pensé pour votre confort et votre tranquillité.",
+    "badge_security": "Sécurité",
+    "badge_comfort": "Confort",
+    "form_title": "Réservez votre trajet",
+    "form_departure_placeholder": "Adresse de départ",
+    "form_arrival_placeholder": "Adresse d'arrivée",
+    "trip_one_way": "Aller simple",
+    "trip_round_trip": "Aller-retour",
+    "passengers_label": "Passagères",
+    "form_calculate": "Calculer le trajet",
+    "calculating": "Calcul en cours...",
+    "section_title": "Un Service Pensé Pour Vous",
+    "adv_comfort_title": "Confort et élégance",
+    "adv_comfort_desc": "Un cadre rassurant et raffiné, pensé pour que chaque trajet soit un moment de bien-être et de tranquillité.",
+    "adv_secure_title": "Sécurité totale",
+    "adv_secure_desc": "Des chauffeuses professionnelles formées, des véhicules assurés tous risques, pour des trajets en toute confiance.",
+    "adv_driver_title": "Chauffeuses dédiées",
+    "adv_driver_desc": "Un service exclusivement féminin, assuré par des chauffeuses expérimentées et à l'écoute de vos besoins.",
+    "result_distance": "DISTANCE",
+    "result_duration": "DURÉE",
+    "price_from": "à partir de",
+    "error_addresses": "Veuillez saisir un point de départ et d'arrivée.",
+    "error_geocode": "Adresse introuvable. Veuillez préciser votre saisie.",
+    "error_route": "Impossible de calculer l'itinéraire.",
+    "error_generic": "Une erreur est survenue. Veuillez réessayer."
   }
 }
