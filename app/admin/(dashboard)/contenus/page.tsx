@@ -84,6 +84,12 @@
  *     editeur_siret:     string   — SIRET number
  *     editeur_tva:       string   — intra-community VAT number
  *
+ *   contenus/cgv
+ *     intro:            string   — introductory paragraph
+ *     article1_title:   string   — Article 1 heading
+ *     article1_body:    string   — Article 1 body (supports "- " list items)
+ *     article2_title … article6_body: same pattern for all 6 articles
+ *
  *   contenus/contact
  *     phone:   string           — phone number (no i18n needed)
  *     email:   string
@@ -228,6 +234,24 @@ const SECTIONS: SectionDef[] = [
       { key: 'editeur_siren',      label: 'SIREN',                    multiline: false, i18n: false },
       { key: 'editeur_siret',      label: 'SIRET',                    multiline: false, i18n: false },
       { key: 'editeur_tva',        label: 'N° TVA intracommunautaire', multiline: false, i18n: false },
+    ],
+  },
+  {
+    id: 'cgv', label: 'CGV', icon: '📜',
+    fields: [
+      { key: 'intro',           label: 'Introduction',                          multiline: true,  i18n: false },
+      { key: 'article1_title',  label: 'Article 1 — Titre',                     multiline: false, i18n: false },
+      { key: 'article1_body',   label: 'Article 1 — Contenu',                   multiline: true,  i18n: false },
+      { key: 'article2_title',  label: 'Article 2 — Titre',                     multiline: false, i18n: false },
+      { key: 'article2_body',   label: 'Article 2 — Contenu',                   multiline: true,  i18n: false },
+      { key: 'article3_title',  label: 'Article 3 — Titre',                     multiline: false, i18n: false },
+      { key: 'article3_body',   label: 'Article 3 — Contenu',                   multiline: true,  i18n: false },
+      { key: 'article4_title',  label: 'Article 4 — Titre',                     multiline: false, i18n: false },
+      { key: 'article4_body',   label: 'Article 4 — Contenu',                   multiline: true,  i18n: false },
+      { key: 'article5_title',  label: 'Article 5 — Titre',                     multiline: false, i18n: false },
+      { key: 'article5_body',   label: 'Article 5 — Contenu',                   multiline: true,  i18n: false },
+      { key: 'article6_title',  label: 'Article 6 — Titre',                     multiline: false, i18n: false },
+      { key: 'article6_body',   label: 'Article 6 — Contenu',                   multiline: true,  i18n: false },
     ],
   },
   {
