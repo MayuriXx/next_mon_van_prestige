@@ -22,15 +22,9 @@
  *       The site will be migrated to Hostinger hosting in the future.
  */
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import styles from './LegalPage.module.css';
 
 export default function MentionsLegalesPage() {
-  const pathname = usePathname();
-  const locale = getLocaleFromPath(pathname);
-
   return (
     <div className={styles.wrapper}>
       {/* ── Background image overlay ── */}
@@ -145,15 +139,6 @@ export default function MentionsLegalesPage() {
         </div>
       </section>
 
-      {/* ── CTA bottom ── */}
-      <section className={styles.ctaSection}>
-        <p className={styles.ctaText}>
-          Une question ? N&apos;hésitez pas à nous contacter.
-        </p>
-        <Link href={localePath('/#contact', locale)} className={styles.ctaBtn}>
-          Nous contacter
-        </Link>
-      </section>
     </div>
   );
 }
