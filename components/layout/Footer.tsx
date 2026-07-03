@@ -21,12 +21,19 @@
  *   Derived automatically from the phone field by stripping every non-digit
  *   character and prepending the international dialling prefix when missing
  *   (French numbers starting with 0 → replace leading 0 with 33).
+ *
+ * Routing:
+ *   All internal links use localePath() to prefix the current locale,
+ *   ensuring correct navigation under the /[locale]/... URL structure
+ *   (required by static export with no middleware).
  */
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useLocale } from 'next-intl';
 import styles from './Footer.module.css';
 import { useContenus } from '@/lib/hooks/useContenus';
+import { localePath } from '@/lib/utils/locale';
 
 // ─── Static fallback values ─────────────────────────────────────────────────
 // These are used when the Firestore document has no override for the field.
@@ -44,7 +51,7 @@ const DEFAULT_ADDRESS = 'Valenciennes, Hauts-de-France';
  * Examples:
  *   '+33 6 12 34 56 78'  →  '33612345678'
  *   '06 12 34 56 78'     →  '33612345678'
- *   '+32 478 12 34 56'   →  '3247812345 6'  (Belgian number — left as-is)
+ *   '+32 478 12 34 56'   →  '32478123456'  (Belgian number — left as-is)
  */
 function phoneToWa(phone: string): string {
   // Remove all non-digit characters except the leading +
@@ -78,6 +85,7 @@ const SITE_LINKS = [
 // ─── Component ──────────────────────────────────────────────────────────────
 export default function Footer() {
   const year = new Date().getFullYear();
+  const locale = useLocale();
 
   // Fetch contact overrides from Firestore.
   // Locale is irrelevant for contact fields (plain strings, not i18n objects).
@@ -98,7 +106,7 @@ export default function Footer() {
       <div className={`container ${styles.inner}`}>
         {/* Colonne 1 — Marque */}
         <div className={styles.brand}>
-          <Link href="/" className={styles.logoWrap}>
+          <Link href={localePath('/', locale)} className={styles.logoWrap}>
             <Image
               src="/images/ms_prestige_driver_logo.jpg"
               alt="MS Prestige Driver"
@@ -159,7 +167,7 @@ export default function Footer() {
           <ul className={styles.linkList}>
             {SERVICES_LINKS.map((l) => (
               <li key={l.href}>
-                <Link href={l.href} className={styles.footerLink}>{l.label}</Link>
+                <Link href={localePath(l.href, locale)} className={styles.footerLink}>{l.label}</Link>
               </li>
             ))}
           </ul>
@@ -171,7 +179,7 @@ export default function Footer() {
           <ul className={styles.linkList}>
             {SITE_LINKS.map((l) => (
               <li key={l.href}>
-                <Link href={l.href} className={styles.footerLink}>{l.label}</Link>
+                <Link href={localePath(l.href, locale)} className={styles.footerLink}>{l.label}</Link>
               </li>
             ))}
           </ul>
@@ -187,9 +195,9 @@ export default function Footer() {
           © {year} MS Prestige Driver. Tous droits réservés.
         </p>
         <div className={styles.legal}>
-          <Link href="/mentions-legales" className={styles.legalLink}>Mentions légales</Link>
+          <Link href={localePath('/mentions-legales', locale)} className={styles.legalLink}>Mentions légales</Link>
           <span className={styles.legalSep}>·</span>
-          <Link href="/cgv" className={styles.legalLink}>CGV</Link>
+          <Link href={localePath('/cgv', locale)} className={styles.legalLink}>CGV</Link>
         </div>
         <div className={styles.payments}>
           <span className={styles.payLabel}>Paiements acceptés</span>
