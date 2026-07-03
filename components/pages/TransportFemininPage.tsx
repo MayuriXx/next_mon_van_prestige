@@ -125,9 +125,9 @@ const ICON_SHIELD = (
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
   </svg>
 );
-const ICON_HEART = (
+const ICON_MAP = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    <circle cx="12" cy="11" r="3"/><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z"/>
   </svg>
 );
 const ICON_USER = (
@@ -137,9 +137,9 @@ const ICON_USER = (
 );
 
 const ADV_KEYS = [
-  { id: 'comfort',  icon: ICON_HEART,  titleKey: 'adv_comfort_title',  descKey: 'adv_comfort_desc'  },
-  { id: 'secure',   icon: ICON_SHIELD, titleKey: 'adv_secure_title',   descKey: 'adv_secure_desc'   },
-  { id: 'driver',   icon: ICON_USER,   titleKey: 'adv_driver_title',   descKey: 'adv_driver_desc'   },
+  { id: 'custom',  icon: ICON_MAP,    titleKey: 'adv_custom_title',  descKey: 'adv_custom_desc'  },
+  { id: 'secure',  icon: ICON_SHIELD, titleKey: 'adv_secure_title',  descKey: 'adv_secure_desc'  },
+  { id: 'support', icon: ICON_USER,   titleKey: 'adv_support_title', descKey: 'adv_support_desc' },
 ];
 
 /* ── Page ── */
@@ -247,9 +247,9 @@ export default function TransportFemininPage() {
               </span>
               <span className={styles.heroBadge}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.badgeIcon}>
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                 </svg>
-                {t('badge_comfort')}
+                {t('badge_punctuality')}
               </span>
             </div>
           </div>
