@@ -49,5 +49,9 @@ export const imagesData = {
       url: '/images/sections/deplacements-professionnels.jpg',
       alt: 'Déplacements Professionnels',
     },
+    'transport-feminin': {
+      url: '/images/sections/transport-feminin.webp',
+      alt: 'Transport au Féminin',
+    },
   },
 };
