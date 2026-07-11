@@ -24,6 +24,7 @@
  * Checkout session through the existing createCheckoutSession Cloud Function.
  */
 
+import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
@@ -67,9 +68,9 @@ async function getRouteDistanceKm(from: GeoPoint, to: GeoPoint): Promise<number 
 
 /* ── Fleet definition — the business only operates two vehicle tiers ── */
 const MAX_PASSENGERS = 7;
-const FLEET: { type: VehicleType; maxPax: number; modelKey: string }[] = [
-  { type: 'BUSINESS', maxPax: 3, modelKey: 'business' },
-  { type: 'VAN',      maxPax: 7, modelKey: 'van' },
+const FLEET: { type: VehicleType; maxPax: number; modelKey: string; image: string }[] = [
+  { type: 'BUSINESS', maxPax: 3, modelKey: 'business', image: '/images/vehicles/business.webp' },
+  { type: 'VAN',      maxPax: 7, modelKey: 'van',      image: '/images/vehicles/van.webp' },
 ];
 
 const ICON_USER = (
@@ -100,6 +101,7 @@ type Params = {
 
 export default function VehicleSelectionPage() {
   const t = useTranslations('vehicleSelection');
+  const tv = useTranslations('vehicles');
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname);
   const router = useRouter();
@@ -245,16 +247,22 @@ export default function VehicleSelectionPage() {
           <div className={styles.vehicles}>
             {geoError && <p className={styles.error}>{t('error_route')}</p>}
 
-            {FLEET.map(({ type, maxPax, modelKey }) => {
+            {FLEET.map(({ type, maxPax, modelKey, image }) => {
               const disabled = (params?.passengers ?? 1) > maxPax;
               const price = priceFor(type);
+              const name = tv(`items.${modelKey}.name`);
+              const models = tv.raw(`items.${modelKey}.models`) as string[];
+              const badges = tv.raw(`items.${modelKey}.badges`) as string[];
               return (
                 <div key={type} className={`${styles.card} ${disabled ? styles.cardDisabled : ''}`}>
-                  <div className={styles.cardImage} aria-hidden />
+                  <div className={styles.cardImage}>
+                    <Image src={image} alt={name} fill sizes="240px" className={styles.cardImageImg} />
+                  </div>
                   <div className={styles.cardBody}>
-                    <h3 className={styles.cardName}>
-                      {modelKey === 'van' ? 'Mercedes Classe V' : 'Mercedes Classe E'} {t('or_equivalent')}
-                    </h3>
+                    <h3 className={styles.cardName}>{name}</h3>
+                    <ul className={styles.models}>
+                      {models.map((m, i) => <li key={i} className={styles.model}>{m}</li>)}
+                    </ul>
 
                     {disabled ? (
                       <span className={styles.unavailable}>
@@ -267,10 +275,7 @@ export default function VehicleSelectionPage() {
                     )}
 
                     <div className={styles.badges}>
-                      <Badge icon={ICON_USER} label={`${maxPax} ${t('places')}`} />
-                      <Badge icon={ICON_BAG} label={`${maxPax} ${t('bags')}`} />
-                      <Badge icon={ICON_WIFI} label="Wifi" />
-                      <Badge icon={ICON_CLIM} label="Clim" />
+                      {badges.map((b, i) => <span key={i} className={styles.badge}>{b}</span>)}
                     </div>
                   </div>
 
@@ -318,11 +323,3 @@ function SummaryRow({ label, value, last }: { label: string; value: string; last
   );
 }
 
-function Badge({ icon, label }: { icon: React.ReactNode; label: string }) {
-  return (
-    <span className={styles.badge}>
-      <span className={styles.badgeIcon}>{icon}</span>
-      <span className={styles.badgeLabel}>{label}</span>
-    </span>
-  );
-}
