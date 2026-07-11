@@ -68,9 +68,9 @@ async function getRouteDistanceKm(from: GeoPoint, to: GeoPoint): Promise<number 
 
 /* ── Fleet definition — the business only operates two vehicle tiers ── */
 const MAX_PASSENGERS = 7;
-const FLEET: { type: VehicleType; maxPax: number; modelKey: string; image: string }[] = [
-  { type: 'BUSINESS', maxPax: 3, modelKey: 'business', image: '/images/vehicles/business.webp' },
-  { type: 'VAN',      maxPax: 7, modelKey: 'van',      image: '/images/vehicles/van.webp' },
+const FLEET: { type: VehicleType; maxPax: number; modelKey: string; image: string; model: string }[] = [
+  { type: 'BUSINESS', maxPax: 3, modelKey: 'business', image: '/images/vehicles/business.webp', model: 'Mercedes Classe E' },
+  { type: 'VAN',      maxPax: 7, modelKey: 'van',      image: '/images/vehicles/van.webp',      model: 'Mercedes Classe V' },
 ];
 
 const ICON_USER = (
@@ -247,11 +247,10 @@ export default function VehicleSelectionPage() {
           <div className={styles.vehicles}>
             {geoError && <p className={styles.error}>{t('error_route')}</p>}
 
-            {FLEET.map(({ type, maxPax, modelKey, image }) => {
+            {FLEET.map(({ type, maxPax, modelKey, image, model }) => {
               const disabled = (params?.passengers ?? 1) > maxPax;
               const price = priceFor(type);
               const name = tv(`items.${modelKey}.name`);
-              const models = tv.raw(`items.${modelKey}.models`) as string[];
               const badges = tv.raw(`items.${modelKey}.badges`) as string[];
               return (
                 <div key={type} className={`${styles.card} ${disabled ? styles.cardDisabled : ''}`}>
@@ -259,10 +258,7 @@ export default function VehicleSelectionPage() {
                     <Image src={image} alt={name} fill sizes="240px" className={styles.cardImageImg} />
                   </div>
                   <div className={styles.cardBody}>
-                    <h3 className={styles.cardName}>{name}</h3>
-                    <ul className={styles.models}>
-                      {models.map((m, i) => <li key={i} className={styles.model}>{m}</li>)}
-                    </ul>
+                    <h3 className={styles.cardName}>{model} {t('or_equivalent')}</h3>
 
                     {disabled ? (
                       <span className={styles.unavailable}>
