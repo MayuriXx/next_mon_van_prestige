@@ -25,7 +25,7 @@
  */
 
 import Image from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
@@ -51,6 +51,29 @@ async function geocode(address: string): Promise<GeoPoint | null> {
     if (typeof data.lat !== 'number' || typeof data.lng !== 'number') return null;
     return { lat: data.lat, lng: data.lng, label: data.formattedAddress ?? address };
   } catch { return null; }
+}
+
+interface Suggestion { placeId: string; description: string; }
+
+function newSessionToken(): string {
+  return typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+
+/** Google Places autocomplete (proxied via the placesAutocomplete Cloud Function). */
+async function fetchSuggestions(query: string, sessionToken: string): Promise<Suggestion[]> {
+  if (query.length < 3) return [];
+  try {
+    const res = await fetch(`${FUNCTIONS_BASE}/placesAutocomplete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ input: query, sessionToken, language: 'fr' }),
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.suggestions ?? []) as Suggestion[];
+  } catch { return []; }
 }
 
 /** OSRM driving route → distance in km. */
@@ -372,7 +395,7 @@ export default function VehicleSelectionPage() {
 
             <label className={styles.formField}>
               <span className={styles.formLabel}>{t('pickup_address')}</span>
-              <input className={styles.input} placeholder={t('pickup_address_ph')} value={pickupAddress} onChange={(e) => setPickupAddress(e.target.value)} />
+              <AutocompleteInput value={pickupAddress} onChange={setPickupAddress} placeholder={t('pickup_address_ph')} />
             </label>
 
             <label className={styles.formField}>
@@ -502,3 +525,53 @@ function RecapRow({ label, value }: { label: string; value: string }) {
   );
 }
 
+/* ── Google Places autocomplete input (self-contained, session-billed) ── */
+function AutocompleteInput({
+  value, onChange, placeholder,
+}: { value: string; onChange: (v: string) => void; placeholder: string }) {
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [open, setOpen] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sessionTokenRef = useRef<string>(newSessionToken());
+
+  function handleChange(val: string) {
+    onChange(val);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      const results = await fetchSuggestions(val, sessionTokenRef.current);
+      setSuggestions(results);
+      setOpen(results.length > 0);
+    }, 350);
+  }
+
+  function handleSelect(sug: Suggestion) {
+    onChange(sug.description);
+    setSuggestions([]);
+    setOpen(false);
+    // End the billing session; next keystrokes start a fresh token.
+    sessionTokenRef.current = newSessionToken();
+  }
+
+  return (
+    <div className={styles.autocompleteWrap}>
+      <input
+        className={styles.input}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => handleChange(e.target.value)}
+        onFocus={() => suggestions.length > 0 && setOpen(true)}
+        onBlur={() => setTimeout(() => setOpen(false), 200)}
+        autoComplete="off"
+      />
+      {open && (
+        <ul className={styles.suggestions}>
+          {suggestions.map((sug, i) => (
+            <li key={sug.placeId || i} className={styles.suggestionItem} onMouseDown={() => handleSelect(sug)}>
+              {sug.description}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}

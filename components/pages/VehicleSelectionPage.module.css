@@ -468,3 +468,31 @@
   font-family: var(--font-body);
   color: var(--color-white);
 }
+
+/* ── Address autocomplete dropdown ── */
+.autocompleteWrap { position: relative; }
+.suggestions {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--color-card);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+.suggestionItem {
+  padding: 10px var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--color-text);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.suggestionItem:hover { background: rgba(201, 168, 76, 0.12); color: var(--color-white); }
