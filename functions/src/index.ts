@@ -426,3 +426,260 @@ export const stripeWebhook = onRequest(
     res.sendStatus(200);
   }
 );
+
+// ═════════════════════════════════════════════════════════════════════════════
+// Google Places — address search proxy (server-side, key hidden)
+// ═════════════════════════════════════════════════════════════════════════════
+//
+// Why proxy through Cloud Functions instead of calling Google from the browser?
+//  - The site is a static export (next.config.ts → output: 'export'), so Next.js
+//    API routes are NOT available at runtime.
+//  - Keeping the Google Maps API key in a Firebase secret prevents key theft and
+//    protects the billing account. The browser never sees the key.
+//
+// Endpoints used (Places API — New):
+//  - Autocomplete : POST https://places.googleapis.com/v1/places:autocomplete
+//  - Place Details: GET  https://places.googleapis.com/v1/places/{placeId}
+//  - Geocoding    : GET  https://maps.googleapis.com/maps/api/geocode/json
+//
+// Billing note: Autocomplete + Place Details calls should share a session token
+// (a UUID generated per user typing session). Google then bills them as a single
+// "Autocomplete (per session)" unit instead of per keystroke. The frontend
+// generates the token and passes it through on both calls.
+//
+// Setup (one-time):
+//   1. Google Cloud console → enable "Places API (New)" and "Geocoding API".
+//   2. Create an API key; restrict it to those two APIs (no HTTP-referrer
+//      restriction needed — it is only ever used server-side).
+//   3. firebase functions:secrets:set GOOGLE_MAPS_API_KEY
+
+const GOOGLE_MAPS_API_KEY = defineSecret('GOOGLE_MAPS_API_KEY');
+
+/** Regions the address search is restricted to (France + Belgium). */
+const PLACES_REGION_CODES = ['fr', 'be'];
+
+const PLACES_CORS = ['https://mon-van-prestige.web.app', 'http://localhost:3000'];
+
+interface AutocompleteSuggestion {
+  /** Google place_id, used to fetch coordinates via placeDetails */
+  placeId: string;
+  /** Full human-readable suggestion text */
+  description: string;
+}
+
+/**
+ * placesAutocomplete — returns address suggestions for a free-text input.
+ *
+ * Request body: { input: string, sessionToken?: string, language?: string }
+ * Response:     { suggestions: AutocompleteSuggestion[] }
+ */
+export const placesAutocomplete = onRequest(
+  {
+    region: 'europe-west1',
+    invoker: 'public',
+    secrets: [GOOGLE_MAPS_API_KEY],
+    cors: PLACES_CORS,
+  },
+  async (req, res) => {
+    const body = req.body as {
+      input?: string;
+      sessionToken?: string;
+      language?: string;
+    };
+    const input = (body.input ?? '').trim();
+
+    if (input.length < 3) {
+      res.status(200).json({ suggestions: [] });
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        'https://places.googleapis.com/v1/places:autocomplete',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Goog-Api-Key': GOOGLE_MAPS_API_KEY.value(),
+          },
+          body: JSON.stringify({
+            input,
+            languageCode: body.language ?? 'fr',
+            includedRegionCodes: PLACES_REGION_CODES,
+            sessionToken: body.sessionToken,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const detail = await response.text();
+        console.error('[placesAutocomplete] Google error:', response.status, detail);
+        res.status(502).json({ error: 'Places autocomplete failed', suggestions: [] });
+        return;
+      }
+
+      const data = (await response.json()) as {
+        suggestions?: Array<{
+          placePrediction?: {
+            placeId?: string;
+            text?: { text?: string };
+          };
+        }>;
+      };
+
+      const suggestions: AutocompleteSuggestion[] = (data.suggestions ?? [])
+        .map((s) => s.placePrediction)
+        .filter((p): p is NonNullable<typeof p> => Boolean(p?.placeId))
+        .map((p) => ({
+          placeId: p.placeId as string,
+          description: p.text?.text ?? '',
+        }));
+
+      res.status(200).json({ suggestions });
+    } catch (error) {
+      console.error('[placesAutocomplete] request failed:', error);
+      res.status(500).json({ error: 'Internal error', suggestions: [] });
+    }
+  }
+);
+
+/**
+ * placeDetails — resolves a place_id to precise coordinates.
+ *
+ * Request body: { placeId: string, sessionToken?: string, language?: string }
+ * Response:     { lat: number, lng: number, formattedAddress: string }
+ */
+export const placeDetails = onRequest(
+  {
+    region: 'europe-west1',
+    invoker: 'public',
+    secrets: [GOOGLE_MAPS_API_KEY],
+    cors: PLACES_CORS,
+  },
+  async (req, res) => {
+    const body = req.body as {
+      placeId?: string;
+      sessionToken?: string;
+      language?: string;
+    };
+    const placeId = (body.placeId ?? '').trim();
+
+    if (!placeId) {
+      res.status(400).json({ error: 'placeId is required' });
+      return;
+    }
+
+    try {
+      const url =
+        `https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}` +
+        `?languageCode=${encodeURIComponent(body.language ?? 'fr')}` +
+        (body.sessionToken ? `&sessionToken=${encodeURIComponent(body.sessionToken)}` : '');
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'X-Goog-Api-Key': GOOGLE_MAPS_API_KEY.value(),
+          // Field mask — only bill for and fetch what we need.
+          'X-Goog-FieldMask': 'location,formattedAddress',
+        },
+      });
+
+      if (!response.ok) {
+        const detail = await response.text();
+        console.error('[placeDetails] Google error:', response.status, detail);
+        res.status(502).json({ error: 'Place details failed' });
+        return;
+      }
+
+      const data = (await response.json()) as {
+        location?: { latitude?: number; longitude?: number };
+        formattedAddress?: string;
+      };
+
+      if (
+        typeof data.location?.latitude !== 'number' ||
+        typeof data.location?.longitude !== 'number'
+      ) {
+        res.status(404).json({ error: 'No location for this place' });
+        return;
+      }
+
+      res.status(200).json({
+        lat: data.location.latitude,
+        lng: data.location.longitude,
+        formattedAddress: data.formattedAddress ?? '',
+      });
+    } catch (error) {
+      console.error('[placeDetails] request failed:', error);
+      res.status(500).json({ error: 'Internal error' });
+    }
+  }
+);
+
+/**
+ * geocode — free-text address → coordinates (Geocoding API).
+ *
+ * Used by server-side utilities (e.g. out-of-base distance) where there is no
+ * interactive autocomplete session. For the booking form, prefer the
+ * placesAutocomplete → placeDetails flow, which is more precise.
+ *
+ * Request body: { address: string, language?: string }
+ * Response:     { lat, lng, formattedAddress } or 404
+ */
+export const geocode = onRequest(
+  {
+    region: 'europe-west1',
+    invoker: 'public',
+    secrets: [GOOGLE_MAPS_API_KEY],
+    cors: PLACES_CORS,
+  },
+  async (req, res) => {
+    const body = req.body as { address?: string; language?: string };
+    const address = (body.address ?? '').trim();
+
+    if (!address) {
+      res.status(400).json({ error: 'address is required' });
+      return;
+    }
+
+    try {
+      const url =
+        'https://maps.googleapis.com/maps/api/geocode/json' +
+        `?address=${encodeURIComponent(address)}` +
+        `&language=${encodeURIComponent(body.language ?? 'fr')}` +
+        `&region=fr&components=country:FR|country:BE` +
+        `&key=${GOOGLE_MAPS_API_KEY.value()}`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        console.error('[geocode] Google error:', response.status);
+        res.status(502).json({ error: 'Geocoding failed' });
+        return;
+      }
+
+      const data = (await response.json()) as {
+        status?: string;
+        results?: Array<{
+          geometry?: { location?: { lat?: number; lng?: number } };
+          formatted_address?: string;
+        }>;
+      };
+
+      const first = data.results?.[0];
+      if (data.status !== 'OK' || !first?.geometry?.location) {
+        res.status(404).json({ error: 'Address not found' });
+        return;
+      }
+
+      res.status(200).json({
+        lat: first.geometry.location.lat,
+        lng: first.geometry.location.lng,
+        formattedAddress: first.formatted_address ?? '',
+      });
+    } catch (error) {
+      console.error('[geocode] request failed:', error);
+      res.status(500).json({ error: 'Internal error' });
+    }
+  }
+);

@@ -133,7 +133,7 @@ export async function getRouteDistance(
 }
 
 // ---------------------------------------------------------------------------
-// Nominatim geocoding (address → coordinates)
+// Google geocoding (address → coordinates)
 // ---------------------------------------------------------------------------
 
 export interface GeocodingResult {
@@ -143,10 +143,21 @@ export interface GeocodingResult {
 }
 
 /**
- * Geocode a free-text address using the Nominatim API (OpenStreetMap).
+ * Base URL of the Firebase Cloud Functions that proxy the Google Maps APIs.
+ * The Google Maps API key is held server-side as a Firebase secret and is never
+ * exposed to the browser. See functions/src/index.ts (geocode).
+ */
+const FUNCTIONS_BASE =
+  process.env.NEXT_PUBLIC_FUNCTIONS_BASE ??
+  'https://europe-west1-mon-van-prestige.cloudfunctions.net';
+
+/**
+ * Geocode a free-text address using the Google Geocoding API, proxied through
+ * the `geocode` Cloud Function so the API key stays server-side.
  *
- * No API key required. Rate-limited to 1 request/second by Nominatim ToS.
- * For production use, consider self-hosting Nominatim or using a paid tier.
+ * For interactive address entry, prefer the placesAutocomplete → placeDetails
+ * flow (see the reservation form), which is more precise and cheaper per
+ * session. This helper is for non-interactive server-side geocoding.
  *
  * @param address - Free-text address to geocode
  * @returns The first matching result with coordinates and display name
@@ -154,37 +165,30 @@ export interface GeocodingResult {
 export async function geocodeAddress(
   address: string
 ): Promise<GeocodingResult | null> {
-  const encoded = encodeURIComponent(address);
-  const url =
-    `https://nominatim.openstreetmap.org/search` +
-    `?q=${encoded}&format=json&limit=1&countrycodes=fr,be`;
-
   try {
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'MSPrestigeDriver/1.0 (mon-van-prestige.web.app)',
-        'Accept-Language': 'fr',
-      },
+    const response = await fetch(`${FUNCTIONS_BASE}/geocode`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ address, language: 'fr' }),
     });
 
     if (!response.ok) {
-      throw new Error(`Nominatim error: ${response.status}`);
+      throw new Error(`geocode function error: ${response.status}`);
     }
 
-    const results = await response.json();
+    const data = await response.json();
 
-    if (!results || results.length === 0) {
+    if (typeof data.lat !== 'number' || typeof data.lng !== 'number') {
       return null;
     }
 
-    const first = results[0];
     return {
-      lat: parseFloat(first.lat),
-      lng: parseFloat(first.lon),
-      displayName: first.display_name,
+      lat: data.lat,
+      lng: data.lng,
+      displayName: data.formattedAddress ?? '',
     };
   } catch (error) {
-    console.warn('[routing] Nominatim geocoding failed:', error);
+    console.warn('[routing] Google geocoding failed:', error);
     return null;
   }
 }
