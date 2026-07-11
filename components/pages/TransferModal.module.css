@@ -1,0 +1,174 @@
+/* TransferModal — "Planifiez votre transfert" popup (airport cards CTA) */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(3px);
+  animation: fadeIn var(--transition-base);
+}
+
+.panel {
+  position: relative;
+  width: 100%;
+  max-width: 532px;
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-xl);
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  animation: slideUp var(--transition-base);
+}
+
+.close {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+.close:hover { color: var(--color-white); }
+
+.title {
+  font-family: var(--font-title);
+  font-size: 1.6rem;
+  text-align: center;
+  color: var(--color-white);
+  margin: 0 0 var(--spacing-sm);
+}
+
+.route {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  text-align: center;
+  color: var(--color-gold);
+  margin: 0 0 var(--spacing-lg);
+}
+.routeArrow { color: var(--color-gold); }
+
+.separator {
+  height: 1px;
+  background: var(--color-border-card);
+  margin: 0 0 var(--spacing-lg);
+}
+
+.field {
+  display: block;
+  margin-bottom: var(--spacing-lg);
+}
+
+.label {
+  display: block;
+  font-family: var(--font-montserrat, var(--font-body));
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-white);
+  margin-bottom: var(--spacing-sm);
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 14px var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-white);
+  background: var(--color-card);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+.input:focus,
+.select:focus { border-color: var(--color-gold); }
+.select { appearance: auto; cursor: pointer; }
+
+/* color-scheme dark makes native date/time pickers readable on dark bg */
+.input { color-scheme: dark; }
+
+.returnBox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  text-align: left;
+  background: var(--color-card);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+.returnBoxActive { border-color: var(--color-gold); }
+
+.checkbox {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--color-bg);
+  background: var(--color-white);
+  border-radius: var(--radius-sm);
+}
+.checkboxChecked { background: var(--color-gold); }
+
+.returnLabel {
+  font-family: var(--font-body);
+  color: var(--color-text-muted);
+}
+
+.returnBadge {
+  font-family: var(--font-montserrat, var(--font-body));
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-bg);
+  background: var(--color-gold);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.submit {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  font-family: var(--font-montserrat, var(--font-body));
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-bg);
+  background: var(--color-gold);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.submit:hover { background: var(--color-gold-light); }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}

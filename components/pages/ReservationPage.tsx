@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import { calculatePrice, formatPrice } from '@/lib/utils/pricing';
@@ -253,6 +253,23 @@ export default function ReservationPage() {
   const [bookingError, setBookingError] = useState('');
 
   const mapColRef = useRef<HTMLDivElement>(null);
+
+  /* ── Prefill from airport-package modal (TransferModal → /reservation?…) ──
+     Reads query params on mount and pre-populates the transfer form so the
+     visitor lands on the calculator with their route/date already filled.
+     Uses window.location.search (not useSearchParams) to avoid forcing a
+     Suspense boundary on this force-static page. ── */
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const p = new URLSearchParams(window.location.search);
+    if (p.get('departure')) setDeparture(p.get('departure') as string);
+    if (p.get('arrival')) setArrival(p.get('arrival') as string);
+    if (p.get('date')) setDate(p.get('date') as string);
+    if (p.get('hour')) setHour(p.get('hour') as string);
+    if (p.get('passengers')) handlePassengersChange(p.get('passengers') as string);
+    if (p.get('trip')) setTripType(p.get('trip') as string);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /* ── Field change handlers ── */
   function handleDepartureChange(val: string) { setDeparture(val); setFromPoint(null); setResult(null); }
