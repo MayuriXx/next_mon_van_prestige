@@ -78,7 +78,7 @@ export default function TransferModal({
     if (passengers) params.set('passengers', passengers);
     if (addReturn && returnDate) params.set('returnDate', returnDate);
     if (addReturn && returnHour) params.set('returnHour', returnHour);
-    router.push(`${localePath('/reservation', locale)}?${params.toString()}`);
+    router.push(`${localePath('/reservation/vehicules', locale)}?${params.toString()}`);
   }
 
   return (
