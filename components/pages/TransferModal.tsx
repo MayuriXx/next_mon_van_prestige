@@ -49,6 +49,8 @@ export default function TransferModal({
   const [hour, setHour] = useState('');
   const [passengers, setPassengers] = useState('');
   const [addReturn, setAddReturn] = useState(false);
+  const [returnDate, setReturnDate] = useState('');
+  const [returnHour, setReturnHour] = useState('');
 
   /* Lock background scroll + close on Escape while open. */
   useEffect(() => {
@@ -74,6 +76,8 @@ export default function TransferModal({
     if (date) params.set('date', date);
     if (hour) params.set('hour', hour);
     if (passengers) params.set('passengers', passengers);
+    if (addReturn && returnDate) params.set('returnDate', returnDate);
+    if (addReturn && returnHour) params.set('returnHour', returnHour);
     router.push(`${localePath('/reservation', locale)}?${params.toString()}`);
   }
 
@@ -151,6 +155,33 @@ export default function TransferModal({
           <span className={styles.returnLabel}>{t('modal_return_label')}</span>
           <span className={styles.returnBadge}>{t('modal_return_badge')}</span>
         </button>
+
+        {addReturn && (
+          <div className={styles.returnSection}>
+            <div className={styles.separator} />
+            <p className={styles.returnSectionTitle}>{t('modal_return_section')}</p>
+
+            <label className={styles.field}>
+              <span className={styles.label}>{t('modal_return_date_label')}</span>
+              <input
+                type="date"
+                className={styles.input}
+                value={returnDate}
+                onChange={(e) => setReturnDate(e.target.value)}
+              />
+            </label>
+
+            <label className={styles.field}>
+              <span className={styles.label}>{t('modal_return_time_label')}</span>
+              <input
+                type="time"
+                className={styles.input}
+                value={returnHour}
+                onChange={(e) => setReturnHour(e.target.value)}
+              />
+            </label>
+          </div>
+        )}
 
         <button type="button" className={styles.submit} onClick={handleSubmit}>
           {t('modal_submit')}
