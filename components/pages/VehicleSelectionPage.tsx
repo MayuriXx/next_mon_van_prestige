@@ -69,6 +69,7 @@ async function getRouteDistanceKm(from: GeoPoint, to: GeoPoint): Promise<number 
 /* ── Fleet definition — the business only operates two vehicle tiers ── */
 const MAX_PASSENGERS = 7;
 const PET_SURCHARGE = 15;
+const DEPOSIT_RATE = 0.30;
 const FLEET: { type: VehicleType; maxPax: number; modelKey: string; image: string; model: string }[] = [
   { type: 'BUSINESS', maxPax: 3, modelKey: 'business', image: '/images/vehicles/business.webp', model: 'Mercedes Classe E' },
   { type: 'VAN',      maxPax: 7, modelKey: 'van',      image: '/images/vehicles/van.webp',      model: 'Mercedes Classe V' },
@@ -114,6 +115,7 @@ export default function VehicleSelectionPage() {
 
   /* Client-info form (opens on SÉLECTIONNER) */
   const [selected, setSelected] = useState<VehicleType | null>(null);
+  const [step, setStep] = useState<'form' | 'recap'>('form');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
@@ -170,7 +172,35 @@ export default function VehicleSelectionPage() {
     return `${day}/${m}/${y}`;
   }
 
-  async function handleSubmitBooking() {
+  const SELECTED_MODEL: Record<string, string> = { BUSINESS: 'Mercedes Classe E', VAN: 'Mercedes Classe V' };
+
+  function fmtLongDate(d: string): string {
+    if (!d) return '—';
+    const dt = new Date(`${d}T00:00:00`);
+    if (isNaN(dt.getTime())) return d;
+    return dt.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  /* Price breakdown for the recap step. */
+  function priceBreakdown() {
+    const base = selected ? priceFor(selected) : null;
+    if (base == null) return null;
+    const petFee = addPet ? PET_SURCHARGE : 0;
+    const total = base + petFee;
+    const deposit = Math.round(total * DEPOSIT_RATE);
+    return { base, petFee, total, deposit, rest: total - deposit };
+  }
+
+  /* Step 1 → validate, then reveal recap. */
+  function handleGoToRecap() {
+    if (!firstName.trim() || !lastName.trim() || !phone.trim() || !email.trim()) {
+      setBookingError(t('error_client_info')); return;
+    }
+    setBookingError('');
+    setStep('recap');
+  }
+
+    async function handleSubmitBooking() {
     if (!params || !selected) return;
     if (!firstName.trim() || !lastName.trim() || !phone.trim() || !email.trim()) {
       setBookingError(t('error_client_info')); return;
@@ -300,7 +330,7 @@ export default function VehicleSelectionPage() {
                     type="button"
                     className={styles.selectBtn}
                     disabled={disabled || loading || price == null}
-                    onClick={() => { setSelected(type); setBookingError(''); }}
+                    onClick={() => { setSelected(type); setStep('form'); setBookingError(''); }}
                   >
                     {t('select')}
                   </button>
@@ -316,8 +346,9 @@ export default function VehicleSelectionPage() {
         <div className={styles.overlay} onClick={() => setSelected(null)} role="presentation">
           <div className={`${styles.modal} ${styles.modalLarge}`} role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
             <button type="button" className={styles.close} onClick={() => setSelected(null)} aria-label={t('close')}>×</button>
-            <h3 className={styles.modalTitle}>{t('client_title')}</h3>
+            <h3 className={styles.modalTitle}>{step === 'recap' ? t('recap_title') : t('client_title')}</h3>
 
+            {step === 'form' && (<>
             <div className={styles.formGrid}>
               <label className={styles.formField}>
                 <span className={styles.formLabel}>{t('first_name')} *</span>
@@ -368,14 +399,84 @@ export default function VehicleSelectionPage() {
               </button>
             </div>
 
-            {bookingError && <p className={styles.error}>{bookingError}</p>}
+            {bookingError && step === 'form' && <p className={styles.error}>{bookingError}</p>}
 
-            <button type="button" className={styles.submit} disabled={bookingLoading} onClick={handleSubmitBooking}>
-              {bookingLoading ? t('processing') : t('view_summary')}
+            <button type="button" className={styles.submit} onClick={handleGoToRecap}>
+              {t('view_summary')}
             </button>
             <button type="button" className={styles.backBtn} onClick={() => setSelected(null)}>
               {t('back_btn')}
             </button>
+            </>)}
+
+            {step === 'recap' && params && (() => {
+              const b = priceBreakdown();
+              return (
+                <div className={styles.recap}>
+                  <p className={styles.recapSection}>{t('recap_trip')}</p>
+                  <RecapRow label={t('recap_service')} value={params.roundTrip ? t('service_roundtrip') : t('service_oneway')} />
+                  <RecapRow label={t('recap_departure')} value={params.departure} />
+                  <RecapRow label={t('recap_destination')} value={params.arrival} />
+                  <RecapRow label={t('recap_distance')} value={distanceKm != null ? `${Math.round(params.roundTrip ? distanceKm * 2 : distanceKm)} km` : '—'} />
+                  <RecapRow label={t('recap_date')} value={fmtLongDate(params.date)} />
+                  <RecapRow label={t('recap_time')} value={params.hour || '—'} />
+                  <RecapRow label={t('recap_passengers')} value={String(params.passengers)} />
+
+                  <div className={styles.recapDivider} />
+                  <p className={styles.recapSection}>{t('recap_vehicle_section')}</p>
+                  <RecapRow label={t('recap_vehicle')} value={`${selected ? SELECTED_MODEL[selected] : ''} ${t('or_equivalent')}`} />
+
+                  <div className={styles.recapDivider} />
+                  <p className={styles.recapSection}>{t('recap_client')}</p>
+                  <RecapRow label={t('recap_name')} value={`${firstName} ${lastName}`} />
+                  <RecapRow label={t('phone')} value={phone} />
+                  <RecapRow label={t('email')} value={email} />
+                  {pickupAddress.trim() && <RecapRow label={t('recap_address')} value={pickupAddress} />}
+                  {flightNumber.trim() && <RecapRow label={t('recap_flight')} value={flightNumber} />}
+                  {instructions.trim() && <RecapRow label={t('recap_instructions')} value={instructions} />}
+
+                  <div className={styles.recapDivider} />
+                  <p className={styles.recapSection}>{t('recap_pricing')}</p>
+                  <RecapRow label={params.roundTrip ? t('recap_trip_roundtrip') : t('recap_trip_oneway')} value={b ? `${b.base}€` : '—'} />
+                  {b && b.petFee > 0 && <RecapRow label={t('extra_pet')} value={`+${b.petFee}€`} />}
+
+                  {b && (
+                    <div className={styles.totalBox}>
+                      <div className={styles.totalRow}>
+                        <span className={styles.totalLabel}>{t('recap_total')}</span>
+                        <span className={styles.totalValue}>{b.total}€</span>
+                      </div>
+                      <div className={styles.totalDivider} />
+                      <div className={styles.totalRow}>
+                        <span className={styles.depositLabel}>{t('recap_deposit')}</span>
+                        <span className={styles.depositValue}>{b.deposit}€</span>
+                      </div>
+                      <div className={styles.totalRow}>
+                        <span className={styles.depositLabel}>{t('recap_rest')}</span>
+                        <span className={styles.depositValue}>{b.rest}€</span>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className={styles.payMethods}>
+                    <p className={styles.payTitle}>{t('recap_pay_methods')}</p>
+                    <div className={styles.payList}>
+                      <span className={styles.payItem}>💳 {t('recap_card')}</span>
+                      <span className={styles.payItem}>💶 {t('recap_cash')}</span>
+                    </div>
+                  </div>
+
+                  {bookingError && <p className={styles.error}>{bookingError}</p>}
+
+                  <button type="button" className={styles.submit} disabled={bookingLoading} onClick={handleSubmitBooking}>
+                    {bookingLoading ? t('processing') : t('recap_confirm')}
+                  </button>
+                  <button type="button" className={styles.backBtn} onClick={() => setStep('form')}>
+                    {t('recap_edit')}
+                  </button>
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}
@@ -388,6 +489,15 @@ function SummaryRow({ label, value, last }: { label: string; value: string; last
     <div className={last ? styles.summaryRowLast : styles.summaryRow}>
       <p className={styles.summaryLabel}>{label}</p>
       <p className={styles.summaryValue}>{value}</p>
+    </div>
+  );
+}
+
+function RecapRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className={styles.recapRow}>
+      <span className={styles.recapLabel}>{label}</span>
+      <span className={styles.recapValue}>{value}</span>
     </div>
   );
 }
