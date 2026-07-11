@@ -68,6 +68,7 @@ async function getRouteDistanceKm(from: GeoPoint, to: GeoPoint): Promise<number 
 
 /* ── Fleet definition — the business only operates two vehicle tiers ── */
 const MAX_PASSENGERS = 7;
+const PET_SURCHARGE = 15;
 const FLEET: { type: VehicleType; maxPax: number; modelKey: string; image: string; model: string }[] = [
   { type: 'BUSINESS', maxPax: 3, modelKey: 'business', image: '/images/vehicles/business.webp', model: 'Mercedes Classe E' },
   { type: 'VAN',      maxPax: 7, modelKey: 'van',      image: '/images/vehicles/van.webp',      model: 'Mercedes Classe V' },
@@ -113,9 +114,15 @@ export default function VehicleSelectionPage() {
 
   /* Client-info form (opens on SÉLECTIONNER) */
   const [selected, setSelected] = useState<VehicleType | null>(null);
-  const [clientName, setClientName] = useState('');
-  const [clientEmail, setClientEmail] = useState('');
-  const [clientPhone, setClientPhone] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [pickupAddress, setPickupAddress] = useState('');
+  const [flightNumber, setFlightNumber] = useState('');
+  const [instructions, setInstructions] = useState('');
+  const [addPet, setAddPet] = useState(false);
+  const [addChildSeat, setAddChildSeat] = useState(false);
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingError, setBookingError] = useState('');
 
@@ -165,18 +172,27 @@ export default function VehicleSelectionPage() {
 
   async function handleSubmitBooking() {
     if (!params || !selected) return;
-    if (!clientName.trim() || !clientEmail.trim() || !clientPhone.trim()) {
+    if (!firstName.trim() || !lastName.trim() || !phone.trim() || !email.trim()) {
       setBookingError(t('error_client_info')); return;
     }
-    const price = priceFor(selected);
-    if (price == null) { setBookingError(t('error_price')); return; }
+    const base = priceFor(selected);
+    if (base == null) { setBookingError(t('error_price')); return; }
+    const price = base + (addPet ? PET_SURCHARGE : 0);
+
+    /* Compose free-text notes from flight number, extras and instructions. */
+    const noteParts: string[] = [];
+    if (flightNumber.trim()) noteParts.push(`${t('flight_label')}: ${flightNumber.trim()}`);
+    if (addPet) noteParts.push(`${t('extra_pet')} (+${PET_SURCHARGE}€)`);
+    if (addChildSeat) noteParts.push(t('extra_child_seat'));
+    if (instructions.trim()) noteParts.push(instructions.trim());
+    const notes = noteParts.join(' — ') || undefined;
 
     setBookingLoading(true); setBookingError('');
     try {
       const payload: CheckoutPayload = {
         totalPrice: price,
         departureDateTime: `${params.date}T${params.hour || '00:00'}:00`,
-        departureAddress: params.departure,
+        departureAddress: pickupAddress.trim() || params.departure,
         arrivalAddress: params.arrival,
         vehicleType: selected,
         serviceType: 'TRANSFER',
@@ -184,11 +200,12 @@ export default function VehicleSelectionPage() {
         passengers: params.passengers,
         distanceKm: distanceKm ?? undefined,
         locale,
-        clientName: clientName.trim(),
-        clientEmail: clientEmail.trim(),
-        clientPhone: clientPhone.trim(),
+        clientName: `${firstName.trim()} ${lastName.trim()}`,
+        clientEmail: email.trim(),
+        clientPhone: phone.trim(),
+        notes,
       };
-      const res = await fetch(`${FUNCTIONS_BASE}/createCheckoutSession`, {
+            const res = await fetch(`${FUNCTIONS_BASE}/createCheckoutSession`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ data: payload }),
@@ -297,15 +314,67 @@ export default function VehicleSelectionPage() {
       {/* ── Client info modal ── */}
       {selected && (
         <div className={styles.overlay} onClick={() => setSelected(null)} role="presentation">
-          <div className={styles.modal} role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+          <div className={`${styles.modal} ${styles.modalLarge}`} role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
             <button type="button" className={styles.close} onClick={() => setSelected(null)} aria-label={t('close')}>×</button>
             <h3 className={styles.modalTitle}>{t('client_title')}</h3>
-            <input className={styles.input} placeholder={t('client_name')} value={clientName} onChange={(e) => setClientName(e.target.value)} />
-            <input className={styles.input} type="email" placeholder={t('client_email')} value={clientEmail} onChange={(e) => setClientEmail(e.target.value)} />
-            <input className={styles.input} type="tel" placeholder={t('client_phone')} value={clientPhone} onChange={(e) => setClientPhone(e.target.value)} />
+
+            <div className={styles.formGrid}>
+              <label className={styles.formField}>
+                <span className={styles.formLabel}>{t('first_name')} *</span>
+                <input className={styles.input} placeholder={t('first_name_ph')} value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+              </label>
+              <label className={styles.formField}>
+                <span className={styles.formLabel}>{t('last_name')} *</span>
+                <input className={styles.input} placeholder={t('last_name_ph')} value={lastName} onChange={(e) => setLastName(e.target.value)} />
+              </label>
+            </div>
+
+            <label className={styles.formField}>
+              <span className={styles.formLabel}>{t('phone')} *</span>
+              <input className={styles.input} type="tel" placeholder="06 12 34 56 78" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            </label>
+
+            <label className={styles.formField}>
+              <span className={styles.formLabel}>{t('email')} *</span>
+              <input className={styles.input} type="email" placeholder="votre@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+            </label>
+
+            <label className={styles.formField}>
+              <span className={styles.formLabel}>{t('pickup_address')}</span>
+              <input className={styles.input} placeholder={t('pickup_address_ph')} value={pickupAddress} onChange={(e) => setPickupAddress(e.target.value)} />
+            </label>
+
+            <label className={styles.formField}>
+              <span className={styles.formLabel}>{t('flight_number')}</span>
+              <input className={styles.input} placeholder={t('flight_number_ph')} value={flightNumber} onChange={(e) => setFlightNumber(e.target.value)} />
+            </label>
+
+            <label className={styles.formField}>
+              <span className={styles.formLabel}>{t('instructions')}</span>
+              <textarea className={styles.textarea} rows={2} placeholder={t('instructions_ph')} value={instructions} onChange={(e) => setInstructions(e.target.value)} />
+            </label>
+
+            <div className={styles.extras}>
+              <p className={styles.extrasTitle}>{t('extras_title')}</p>
+              <button type="button" className={styles.extraRow} onClick={() => setAddPet((v) => !v)}>
+                <span className={`${styles.extraCheck} ${addPet ? styles.extraCheckOn : ''}`}>{addPet ? '✓' : ''}</span>
+                <span className={styles.extraLabel}>{t('extra_pet')}</span>
+                <span className={styles.extraPrice}>+{PET_SURCHARGE}€</span>
+              </button>
+              <button type="button" className={styles.extraRow} onClick={() => setAddChildSeat((v) => !v)}>
+                <span className={`${styles.extraCheck} ${addChildSeat ? styles.extraCheckOn : ''}`}>{addChildSeat ? '✓' : ''}</span>
+                <span className={styles.extraLabel}>{t('extra_child_seat')}</span>
+                <span className={styles.extraFree}>{t('free')}</span>
+              </button>
+            </div>
+
             {bookingError && <p className={styles.error}>{bookingError}</p>}
+
             <button type="button" className={styles.submit} disabled={bookingLoading} onClick={handleSubmitBooking}>
-              {bookingLoading ? t('processing') : t('confirm')}
+              {bookingLoading ? t('processing') : t('view_summary')}
+            </button>
+            <button type="button" className={styles.backBtn} onClick={() => setSelected(null)}>
+              {t('back_btn')}
             </button>
           </div>
         </div>
