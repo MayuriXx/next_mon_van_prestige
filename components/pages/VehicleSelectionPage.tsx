@@ -188,7 +188,11 @@ export default function VehicleSelectionPage() {
   function priceFor(type: VehicleType): number | null {
     if (totalKm == null) return null;
     const r = calculatePrice({ serviceType: 'TRANSFER', vehicleType: type, distanceKm: totalKm }, tariffs);
-    return typeof r.price === 'number' ? r.price : r.price.min;
+    let p = typeof r.price === 'number' ? r.price : r.price.min;
+    // Round-trip discount: -20% on the return leg. For a symmetric round trip
+      // (outbound = return) this equals 10% off the doubled-distance total.
+    if (params?.roundTrip) p = Math.ceil(p * 0.9);
+    return p;
   }
 
   function fmtDate(d: string): string {
