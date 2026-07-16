@@ -5,16 +5,32 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useContenus } from '@/lib/hooks/useContenus';
+import { useTariffs } from '@/lib/hooks/useTariffs';
+import type { AirportDestination } from '@/lib/types/pricing';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import styles from './TransfertAeroportPage.module.css';
 
-const AIRPORTS = [
-  { id: 'cdg',       destination_fr: 'Aéroport Charles de Gaulle', destination_en: 'Charles de Gaulle Airport', destination_nl: 'Luchthaven Charles de Gaulle', businessMin: 260, icon: '✈' },
-  { id: 'orly',      destination_fr: "Aéroport d'Orly",            destination_en: 'Orly Airport',              destination_nl: 'Luchthaven Orly',              businessMin: 320, icon: '✈' },
-  { id: 'zaventem',  destination_fr: 'Aéroport Brussels Zaventem', destination_en: 'Brussels Zaventem Airport', destination_nl: 'Luchthaven Brussel Zaventem',  businessMin: 160, icon: '✈' },
-  { id: 'charleroi', destination_fr: 'Aéroport de Charleroi',      destination_en: 'Charleroi Airport',         destination_nl: 'Luchthaven Charleroi',         businessMin: 125, icon: '✈' },
-  { id: 'lesquin',   destination_fr: 'Aéroport de Lesquin',        destination_en: 'Lesquin Airport',           destination_nl: 'Luchthaven Lesquin',           businessMin: 80,  icon: '✈' },
-  { id: 'gares',     destination_fr: 'Gare de Lille',              destination_en: 'Lille Train Station',       destination_nl: 'Station Rijsel',               businessMin: 80,  icon: '🚉' },
+/**
+ * Airport cards. The "from" price is the BUSINESS minimum of each package,
+ * read live from Firestore via useTariffs() (see the `dest` key mapping to the
+ * AIRPORT_PRICES / Firestore `airports` document). No price is hardcoded here,
+ * so editing an airport tariff in the admin panel updates these cards
+ * automatically. Static labels/icons only.
+ */
+const AIRPORTS: {
+  id: string;
+  dest: AirportDestination;
+  destination_fr: string;
+  destination_en: string;
+  destination_nl: string;
+  icon: string;
+}[] = [
+  { id: 'cdg',       dest: 'CDG',       destination_fr: 'Aéroport Charles de Gaulle', destination_en: 'Charles de Gaulle Airport', destination_nl: 'Luchthaven Charles de Gaulle', icon: '✈' },
+  { id: 'orly',      dest: 'ORLY',      destination_fr: "Aéroport d'Orly",            destination_en: 'Orly Airport',              destination_nl: 'Luchthaven Orly',              icon: '✈' },
+  { id: 'zaventem',  dest: 'ZAVENTEM',  destination_fr: 'Aéroport Brussels Zaventem', destination_en: 'Brussels Zaventem Airport', destination_nl: 'Luchthaven Brussel Zaventem',  icon: '✈' },
+  { id: 'charleroi', dest: 'CHARLEROI', destination_fr: 'Aéroport de Charleroi',      destination_en: 'Charleroi Airport',         destination_nl: 'Luchthaven Charleroi',         icon: '✈' },
+  { id: 'lesquin',   dest: 'LESQUIN',   destination_fr: 'Aéroport de Lesquin',        destination_en: 'Lesquin Airport',           destination_nl: 'Luchthaven Lesquin',           icon: '✈' },
+  { id: 'gares',     dest: 'GARES',     destination_fr: 'Gare de Lille',              destination_en: 'Lille Train Station',       destination_nl: 'Station Rijsel',               icon: '🚉' },
 ];
 
 const ICON_EDIT = (
@@ -46,6 +62,7 @@ export default function TransfertAeroportPage() {
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname) as Locale;
   const contenus = useContenus('transfertAeroport', locale as 'fr' | 'en' | 'nl');
+  const { tariffs } = useTariffs();
 
   function getDestination(a: typeof AIRPORTS[0]): string {
     if (locale === 'en') return a.destination_en;
@@ -123,7 +140,7 @@ export default function TransfertAeroportPage() {
                   <p className={styles.cardDest}>{getDestination(airport)}</p>
                   <span className={styles.cardIcon}>{airport.icon}</span>
                   <p className={styles.cardFromLabel}>{t('from_label')}</p>
-                  <p className={styles.cardPrice}>{airport.businessMin}<span className={styles.cardCurrency}>€</span></p>
+                  <p className={styles.cardPrice}>{tariffs.airports[airport.dest].BUSINESS.min}<span className={styles.cardCurrency}>€</span></p>
                   <Link href={localePath('/reservation', locale)} className={styles.cardBtn}>{t('book_btn')}</Link>
                 </div>
               ))}
