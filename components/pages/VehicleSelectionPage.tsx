@@ -212,7 +212,7 @@ export default function VehicleSelectionPage() {
     if (base == null) return null;
     const petFee = addPet ? PET_SURCHARGE : 0;
     const total = base + petFee;
-    const deposit = Math.round(base * DEPOSIT_RATE);
+    const deposit = Math.round(total * DEPOSIT_RATE);
     return { base, petFee, total, deposit, rest: total - deposit };
   }
 
@@ -232,7 +232,7 @@ export default function VehicleSelectionPage() {
     }
     const base = priceFor(selected);
     if (base == null) { setBookingError(t('error_price')); return; }
-    const price = base; // server rebills the base fare; pet surcharge is collected on-site (kept in notes)
+    const price = base + (addPet ? PET_SURCHARGE : 0); // billed online; server re-adds the same surcharge
 
     /* Compose free-text notes from flight number, extras and instructions. */
     const noteParts: string[] = [];
@@ -254,6 +254,7 @@ export default function VehicleSelectionPage() {
         tripType: params.roundTrip ? 'round_trip' : 'one_way',
         passengers: params.passengers,
         distanceKm: distanceKm ?? undefined,
+        pet: addPet,
         locale,
         clientName: `${firstName.trim()} ${lastName.trim()}`,
         clientEmail: email.trim(),
