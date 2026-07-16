@@ -2,11 +2,11 @@
 
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useContenus } from '@/lib/hooks/useContenus';
-import { getLocaleFromPath } from '@/lib/utils/locale';
+import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import { useTariffs, type TariffData } from '@/lib/hooks/useTariffs';
 import { calculatePrice } from '@/lib/utils/pricing';
 import type { VehicleType } from '@/lib/types/pricing';
@@ -166,6 +166,18 @@ export default function DeplProPage() {
   const [result, setResult]       = useState<{ distanceKm: number; durationMin: number; businessPrice: number; vanPrice: number } | null>(null);
   const [routeCoords, setRouteCoords] = useState<[number, number][]>([]);
   const mapColRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  /* Route the entered trip into the vehicle-selection -> payment funnel (same
+     funnel as the airport packages). VehicleSelectionPage re-geocodes the
+     addresses and the price is recomputed server-side at checkout. */
+  function handleBook() {
+    if (!departure.trim() || !arrival.trim()) { setError(t('error_addresses')); return; }
+    const params = new URLSearchParams({ departure, arrival, trip: tripType, passengers });
+    if (date) params.set('date', date);
+    if (hour) params.set('hour', hour);
+    router.push(`${localePath('/reservation/vehicules', locale)}?${params.toString()}`);
+  }
 
   function handleDepartureChange(val: string) { setDeparture(val); setFromPoint(null); }
   function handleArrivalChange(val: string)   { setArrival(val);   setToPoint(null);   }
@@ -185,11 +197,13 @@ export default function DeplProPage() {
       const multiplier = tripType === 'round_trip' ? 2 : 1;
       const km = route.distanceKm * multiplier;
       setRouteCoords(route.coords);
+      // Round-trip discount: -20% on the return leg = 10% off the doubled-distance total.
+      const rt = (n: number) => tripType === 'round_trip' ? Math.ceil(n * 0.9) : n;
       setResult({
         distanceKm: route.distanceKm,
         durationMin: route.durationMin,
-        businessPrice: transferPrice(km, 'BUSINESS', tariffs),
-        vanPrice: transferPrice(km, 'VAN', tariffs),
+        businessPrice: rt(transferPrice(km, 'BUSINESS', tariffs)),
+        vanPrice: rt(transferPrice(km, 'VAN', tariffs)),
       });
       setTimeout(() => mapColRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     } catch { setError(t('error_generic')); }
@@ -390,18 +404,23 @@ export default function DeplProPage() {
               </div>
 
               {result && (
-                <div className={styles.priceRow}>
-                  <div className={styles.priceCard}>
-                    <p className={styles.priceLabel}>Business</p>
-                    <p className={styles.priceValue}>{result.businessPrice} €</p>
-                    <p className={styles.priceSub}>{t('price_from')}</p>
+                <>
+                  <div className={styles.priceRow}>
+                    <div className={styles.priceCard}>
+                      <p className={styles.priceLabel}>Business</p>
+                      <p className={styles.priceValue}>{result.businessPrice} €</p>
+                      <p className={styles.priceSub}>{t('price_from')}</p>
+                    </div>
+                    <div className={styles.priceCard}>
+                      <p className={styles.priceLabel}>Van</p>
+                      <p className={styles.priceValue}>{result.vanPrice} €</p>
+                      <p className={styles.priceSub}>{t('price_from')}</p>
+                    </div>
                   </div>
-                  <div className={styles.priceCard}>
-                    <p className={styles.priceLabel}>Van</p>
-                    <p className={styles.priceValue}>{result.vanPrice} €</p>
-                    <p className={styles.priceSub}>{t('price_from')}</p>
-                  </div>
-                </div>
+                  <button className={styles.formBtn} onClick={handleBook}>
+                    {t('book_cta')}
+                  </button>
+                </>
               )}
             </div>
           </div>
