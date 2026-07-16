@@ -30,6 +30,7 @@ import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import { calculatePrice } from '@/lib/utils/pricing';
+import { useTariffs } from '@/lib/hooks/useTariffs';
 import type { VehicleType } from '@/lib/types/pricing';
 import type { CheckoutPayload } from '@/lib/types/reservation';
 import styles from './VehicleSelectionPage.module.css';
@@ -130,6 +131,7 @@ export default function VehicleSelectionPage() {
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname);
   const router = useRouter();
+  const { tariffs } = useTariffs();
 
   const [params, setParams] = useState<Params | null>(null);
   const [distanceKm, setDistanceKm] = useState<number | null>(null);
@@ -185,7 +187,7 @@ export default function VehicleSelectionPage() {
 
   function priceFor(type: VehicleType): number | null {
     if (totalKm == null) return null;
-    const r = calculatePrice({ serviceType: 'TRANSFER', vehicleType: type, distanceKm: totalKm });
+    const r = calculatePrice({ serviceType: 'TRANSFER', vehicleType: type, distanceKm: totalKm }, tariffs);
     return typeof r.price === 'number' ? r.price : r.price.min;
   }
 
@@ -210,7 +212,7 @@ export default function VehicleSelectionPage() {
     if (base == null) return null;
     const petFee = addPet ? PET_SURCHARGE : 0;
     const total = base + petFee;
-    const deposit = Math.round(total * DEPOSIT_RATE);
+    const deposit = Math.round(base * DEPOSIT_RATE);
     return { base, petFee, total, deposit, rest: total - deposit };
   }
 
@@ -230,7 +232,7 @@ export default function VehicleSelectionPage() {
     }
     const base = priceFor(selected);
     if (base == null) { setBookingError(t('error_price')); return; }
-    const price = base + (addPet ? PET_SURCHARGE : 0);
+    const price = base; // server rebills the base fare; pet surcharge is collected on-site (kept in notes)
 
     /* Compose free-text notes from flight number, extras and instructions. */
     const noteParts: string[] = [];
