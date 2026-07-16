@@ -180,6 +180,9 @@ export const createCheckoutSession = onRequest(
       }
       const km = data.distanceKm * (data.tripType === 'round_trip' ? 2 : 1);
       serverTotal = transferPrice(km, data.vehicleType, tariffs);
+      // Round-trip discount: -20% on the return leg. For a symmetric round trip
+      // (outbound = return) this equals 10% off the doubled-distance total.
+      if (data.tripType === 'round_trip') serverTotal = Math.ceil(serverTotal * 0.9);
     } else if (data.serviceType === 'MAD') {
       if (typeof data.durationHours !== 'number' || data.durationHours <= 0) {
         res.status(400).json({ error: 'durationHours is required for a MAD' }); return;
