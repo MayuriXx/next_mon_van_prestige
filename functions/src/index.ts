@@ -43,6 +43,10 @@ const RESEND_API_KEY      = defineSecret('RESEND_API_KEY');
 const RESEND_FROM_EMAIL   = defineSecret('RESEND_FROM_EMAIL');
 const ADMIN_EMAIL         = defineSecret('ADMIN_EMAIL');
 
+// Flat surcharge (EUR) added when the client books with a pet. Must stay in
+// sync with PET_SURCHARGE in components/pages/VehicleSelectionPage.tsx.
+const PET_SURCHARGE = 15;
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 interface BookingData {
@@ -66,6 +70,8 @@ interface BookingData {
   durationHours?: number;
   /** Distance in km — TRANSFER only */
   distanceKm?: number;
+  /** Whether the client booked with a pet (adds a flat surcharge) */
+  pet?: boolean;
   /** UI locale: 'fr' | 'en' | 'nl' */
   locale: string;
   /** Client full name */
@@ -174,6 +180,9 @@ export const createCheckoutSession = onRequest(
       }
       const km = data.distanceKm * (data.tripType === 'round_trip' ? 2 : 1);
       serverTotal = transferPrice(km, data.vehicleType, tariffs);
+      // Round-trip discount: -20% on the return leg. For a symmetric round trip
+      // (outbound = return) this equals 10% off the doubled-distance total.
+      if (data.tripType === 'round_trip') serverTotal = Math.ceil(serverTotal * 0.9);
     } else if (data.serviceType === 'MAD') {
       if (typeof data.durationHours !== 'number' || data.durationHours <= 0) {
         res.status(400).json({ error: 'durationHours is required for a MAD' }); return;
@@ -185,6 +194,8 @@ export const createCheckoutSession = onRequest(
     // are fixed packages not booked through this flow, so they keep the client
     // value (they never reach here in practice).
     if (serverTotal !== null) {
+      // Server-authoritative extras: bill the pet surcharge online as well.
+      if (data.pet) serverTotal += PET_SURCHARGE;
       // Allow a 1 € rounding buffer; anything larger is treated as tampering.
       const drift = Math.abs(serverTotal - data.totalPrice);
       const tolerance = Math.max(1, serverTotal * 0.02);

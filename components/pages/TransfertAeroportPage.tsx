@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useContenus } from '@/lib/hooks/useContenus';
@@ -9,6 +9,7 @@ import { useTariffs } from '@/lib/hooks/useTariffs';
 import type { AirportDestination } from '@/lib/types/pricing';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import styles from './TransfertAeroportPage.module.css';
+import TransferModal from './TransferModal';
 
 /**
  * Airport cards. The "from" price is the BUSINESS minimum of each package,
@@ -63,6 +64,9 @@ export default function TransfertAeroportPage() {
   const locale = getLocaleFromPath(pathname) as Locale;
   const contenus = useContenus('transfertAeroport', locale as 'fr' | 'en' | 'nl');
   const { tariffs } = useTariffs();
+
+  /* ── Booking modal state: which airport card is open (null = closed) ── */
+  const [activeAirport, setActiveAirport] = useState<typeof AIRPORTS[0] | null>(null);
 
   function getDestination(a: typeof AIRPORTS[0]): string {
     if (locale === 'en') return a.destination_en;
@@ -141,13 +145,27 @@ export default function TransfertAeroportPage() {
                   <span className={styles.cardIcon}>{airport.icon}</span>
                   <p className={styles.cardFromLabel}>{t('from_label')}</p>
                   <p className={styles.cardPrice}>{tariffs.airports[airport.dest].BUSINESS.min}<span className={styles.cardCurrency}>€</span></p>
-                  <Link href={localePath('/reservation', locale)} className={styles.cardBtn}>{t('book_btn')}</Link>
+                  <button
+                    type="button"
+                    className={styles.cardBtn}
+                    onClick={() => setActiveAirport(airport)}
+                  >
+                    {t('book_btn')}
+                  </button>
                 </div>
               ))}
             </div>
           </div>
         </div>
       </section>
+
+      <TransferModal
+        open={activeAirport !== null}
+        onClose={() => setActiveAirport(null)}
+        departure={t('from')}
+        destination={activeAirport ? getDestination(activeAirport) : ''}
+        locale={locale}
+      />
     </>
   );
 }
