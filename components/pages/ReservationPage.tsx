@@ -296,14 +296,18 @@ export default function ReservationPage() {
       const businessResult = calculatePrice({ serviceType: 'TRANSFER', vehicleType: 'BUSINESS', distanceKm: km }, tariffs);
       const vanResult      = calculatePrice({ serviceType: 'TRANSFER', vehicleType: 'VAN',      distanceKm: km }, tariffs);
 
-      const rawB = typeof businessResult.price === 'number' ? businessResult.price : businessResult.price.min;
-      const rawV = typeof vanResult.price === 'number' ? vanResult.price : vanResult.price.min;
+      const bPrice = typeof businessResult.price === 'number' ? businessResult.price : businessResult.price.min;
+      const vPrice = typeof vanResult.price === 'number' ? vanResult.price : vanResult.price.min;
+      // Round-trip discount: -20% on the return leg. For a symmetric round trip
+      // (outbound = return) this equals 10% off the doubled-distance total.
+      const rawB = tripType === 'round_trip' ? Math.ceil(bPrice * 0.9) : bPrice;
+      const rawV = tripType === 'round_trip' ? Math.ceil(vPrice * 0.9) : vPrice;
 
       setResult({
         distanceKm: route.distanceKm,
         durationMin: route.durationMin,
-        businessPrice: formatPrice(businessResult.price),
-        vanPrice: formatPrice(vanResult.price),
+        businessPrice: formatPrice(rawB),
+        vanPrice: formatPrice(rawV),
         rawPrice: vehicleType === 'BUSINESS' ? rawB : rawV,
       });
       setTimeout(() => mapColRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
