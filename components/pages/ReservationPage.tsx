@@ -7,6 +7,7 @@ import { useState, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import { calculatePrice, formatPrice } from '@/lib/utils/pricing';
+import { useTariffs } from '@/lib/hooks/useTariffs';
 import type { VehicleType } from '@/lib/types/pricing';
 import type { CheckoutPayload } from '@/lib/types/reservation';
 import styles from './ReservationPage.module.css';
@@ -208,6 +209,7 @@ export default function ReservationPage() {
   const t = useTranslations('reservation');
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname);
+  const { tariffs } = useTariffs();
 
   /* ── Tab state ── */
   const [activeTab, setActiveTab] = useState<'simple' | 'mad'>('simple');
@@ -274,8 +276,8 @@ export default function ReservationPage() {
       const km = route.distanceKm * multiplier;
       setRouteCoords(route.coords);
 
-      const businessResult = calculatePrice({ serviceType: 'TRANSFER', vehicleType: 'BUSINESS', distanceKm: km });
-      const vanResult      = calculatePrice({ serviceType: 'TRANSFER', vehicleType: 'VAN',      distanceKm: km });
+      const businessResult = calculatePrice({ serviceType: 'TRANSFER', vehicleType: 'BUSINESS', distanceKm: km }, tariffs);
+      const vanResult      = calculatePrice({ serviceType: 'TRANSFER', vehicleType: 'VAN',      distanceKm: km }, tariffs);
 
       const rawB = typeof businessResult.price === 'number' ? businessResult.price : businessResult.price.min;
       const rawV = typeof vanResult.price === 'number' ? vanResult.price : vanResult.price.min;
@@ -290,13 +292,13 @@ export default function ReservationPage() {
       setTimeout(() => mapColRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     } catch { setError(t('error_generic')); }
     finally { setLoading(false); }
-  }, [departure, arrival, fromPoint, toPoint, tripType, vehicleType, t]);
+  }, [departure, arrival, fromPoint, toPoint, tripType, vehicleType, tariffs, t]);
 
   /* ── Calculate — MAD ── */
   const handleCalculateMAD = useCallback(() => {
     const hours = parseInt(duration, 10);
-    const businessResult = calculatePrice({ serviceType: 'MAD', vehicleType: 'BUSINESS', durationHours: hours });
-    const vanResult      = calculatePrice({ serviceType: 'MAD', vehicleType: 'VAN',      durationHours: hours });
+    const businessResult = calculatePrice({ serviceType: 'MAD', vehicleType: 'BUSINESS', durationHours: hours }, tariffs);
+    const vanResult      = calculatePrice({ serviceType: 'MAD', vehicleType: 'VAN',      durationHours: hours }, tariffs);
     const rawB = typeof businessResult.price === 'number' ? businessResult.price : businessResult.price.min;
     const rawV = typeof vanResult.price === 'number' ? vanResult.price : vanResult.price.min;
     setResult({
@@ -306,7 +308,7 @@ export default function ReservationPage() {
       vanPrice: formatPrice(vanResult.price),
       rawPrice: vehicleType === 'BUSINESS' ? rawB : rawV,
     });
-  }, [duration, vehicleType]);
+  }, [duration, vehicleType, tariffs]);
 
   /* ── Update rawPrice when vehicle type changes ── */
   function handleVehicleChange(v: VehicleType) {
@@ -661,7 +663,7 @@ export default function ReservationPage() {
                       </span>
                     </div>
                     <p className={styles.madRateNote}>
-                      {vehicleType === 'BUSINESS' ? '55 €/h · Business' : '90 €/h · Van'}
+                      {`${tariffs.mad[vehicleType]} €/h · ${vehicleType === 'BUSINESS' ? 'Business' : 'Van'}`}
                     </p>
                     <button className={styles.bookBtn} onClick={handleBook}>
                       {t('book_cta')}

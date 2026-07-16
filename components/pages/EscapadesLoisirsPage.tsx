@@ -5,32 +5,34 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useContenus } from '@/lib/hooks/useContenus';
+import { useTariffs } from '@/lib/hooks/useTariffs';
+import type { LeisureDestination } from '@/lib/types/pricing';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import styles from './EscapadesLoisirsPage.module.css';
 
 const PARKS = [
   {
     id: 'asterix',
+    dest: 'ASTERIX' as LeisureDestination,
     destination_fr: 'Parc Astérix',
     destination_en: 'Parc Astérix',
     destination_nl: 'Parc Astérix',
-    minPrice: 240,
     icon: '🎡',
   },
   {
     id: 'disney',
+    dest: 'DISNEY' as LeisureDestination,
     destination_fr: 'Disneyland Paris',
     destination_en: 'Disneyland Paris',
     destination_nl: 'Disneyland Paris',
-    minPrice: 330,
     icon: '🏰',
   },
   {
     id: 'walibi',
+    dest: 'WALIBI' as LeisureDestination,
     destination_fr: 'Walibi Belgium',
     destination_en: 'Walibi Belgium',
     destination_nl: 'Walibi Belgium',
-    minPrice: 140,
     icon: '🎢',
   },
 ];
@@ -38,18 +40,18 @@ const PARKS = [
 const SPORTS = [
   {
     id: 'lens',
+    dest: 'LENS' as LeisureDestination,
     destination_fr: 'Stade Bollaert-Delelis (Lens)',
     destination_en: 'Bollaert-Delelis Stadium (Lens)',
     destination_nl: 'Stadion Bollaert-Delelis (Lens)',
-    minPrice: 90,
     icon: '⚽',
   },
   {
     id: 'lille',
+    dest: 'LOSC' as LeisureDestination,
     destination_fr: 'Stade Pierre Mauroy (Lille)',
     destination_en: 'Pierre Mauroy Stadium (Lille)',
     destination_nl: 'Stadion Pierre Mauroy (Rijsel)',
-    minPrice: 80,
     icon: '⚽',
   },
 ];
@@ -89,6 +91,7 @@ export default function EscapadesLoisirsPage() {
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname) as Locale;
   const contenus = useContenus('escapadesLoisirs', locale as 'fr' | 'en' | 'nl');
+  const { tariffs } = useTariffs();
 
   function getDest(item: typeof PARKS[0] | typeof SPORTS[0]): string {
     if (locale === 'en') return item.destination_en;
@@ -175,7 +178,7 @@ export default function EscapadesLoisirsPage() {
                       <span className={styles.cardIcon}>{park.icon}</span>
                       <p className={styles.cardFromLabel}>{t('from_label')}</p>
                       <p className={styles.cardPrice}>
-                        {park.minPrice}<span className={styles.cardCurrency}>€</span>
+                        {tariffs.leisure[park.dest].BUSINESS.min}<span className={styles.cardCurrency}>€</span>
                       </p>
                       <Link href={localePath('/reservation', locale)} className={styles.cardBtn}>
                         {t('book_btn')}
@@ -197,7 +200,7 @@ export default function EscapadesLoisirsPage() {
                       <span className={styles.cardIcon}>{sport.icon}</span>
                       <p className={styles.cardFromLabel}>{t('from_label')}</p>
                       <p className={styles.cardPrice}>
-                        {sport.minPrice}<span className={styles.cardCurrency}>€</span>
+                        {tariffs.leisure[sport.dest].BUSINESS.min}<span className={styles.cardCurrency}>€</span>
                       </p>
                       <Link href={localePath('/reservation', locale)} className={styles.cardBtn}>
                         {t('book_btn')}

@@ -8,17 +8,25 @@ import dynamic from 'next/dynamic';
 import { useContenus } from '@/lib/hooks/useContenus';
 import { getLocaleFromPath } from '@/lib/utils/locale';
 import { useWomenSurcharge } from '@/lib/hooks/useWomenSurcharge';
+import { useTariffs, type TariffData } from '@/lib/hooks/useTariffs';
+import { calculatePrice } from '@/lib/utils/pricing';
+import type { VehicleType } from '@/lib/types/pricing';
 import styles from './TransportFemininPage.module.css';
 
 const LeafletMap = dynamic(() => import('@/components/map/LeafletMap'), { ssr: false });
 
-const PRICE_PER_KM_BUSINESS = 2.2;
-const PRICE_PER_KM_VAN = 3.5;
-const MIN_BUSINESS = 22;
-const MIN_VAN = 45;
-
-function calcPrice(km: number, perKm: number, min: number): number {
-  return Math.ceil(Math.max(min, km * perKm));
+/**
+ * Base transfer price (before the women surcharge) for a given distance,
+ * using the official grid brackets read live from Firestore (useTariffs).
+ * Delegates to the shared pricing engine so this page matches the grid and the
+ * /reservation calculator. The "Transport au Féminin" surcharge is applied on
+ * top by the caller. No hardcoded rate remains.
+ */
+function transferPrice(km: number, vehicleType: VehicleType, tariffs: TariffData): number {
+  return calculatePrice(
+    { serviceType: 'TRANSFER', vehicleType, distanceKm: km },
+    tariffs
+  ).price as number;
 }
 
 interface GeoPoint { lat: number; lng: number; label: string; }
@@ -149,6 +157,7 @@ export default function TransportFemininPage() {
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname);
   const contenus = useContenus('transportFeminin', locale as 'fr' | 'en' | 'nl');
+  const { tariffs } = useTariffs();
   const surchargePercent = useWomenSurcharge();
 
   const [departure, setDeparture] = useState('');
@@ -206,8 +215,8 @@ export default function TransportFemininPage() {
       setResult({
         distanceKm: route.distanceKm,
         durationMin: route.durationMin,
-        businessPrice: Math.ceil(calcPrice(km, PRICE_PER_KM_BUSINESS, MIN_BUSINESS) * surchargeMultiplier),
-        vanPrice: Math.ceil(calcPrice(km, PRICE_PER_KM_VAN, MIN_VAN) * surchargeMultiplier),
+        businessPrice: Math.ceil(transferPrice(km, 'BUSINESS', tariffs) * surchargeMultiplier),
+        vanPrice: Math.ceil(transferPrice(km, 'VAN', tariffs) * surchargeMultiplier),
       });
       setTimeout(() => {
         mapColRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -217,7 +226,7 @@ export default function TransportFemininPage() {
     } finally {
       setLoading(false);
     }
-  }, [departure, arrival, fromPoint, toPoint, tripType, surchargePercent, t]);
+  }, [departure, arrival, fromPoint, toPoint, tripType, surchargePercent, tariffs, t]);
 
   return (
     <>
