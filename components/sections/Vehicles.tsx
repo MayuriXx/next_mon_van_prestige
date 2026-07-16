@@ -17,12 +17,12 @@
  *   active locale.
  *
  *   Prices are the "from" (à partir de) teaser figures on each vehicle card.
- *   They stay static display data (not fetched from Firestore), but as of the
- *   2026 tariff-consistency pass they are aligned to the guaranteed minimum
- *   fare of each vehicle tier in the official grid
- *   (lib/data/tariffs.ts → MINIMUM_FARES): BUSINESS 22 €, VAN 45 €.
+ *   They are the guaranteed minimum fare of each vehicle tier, read live from
+ *   Firestore via useTariffs() (falls back to the static grid in
+ *   lib/data/tariffs.ts → MINIMUM_FARES when Firestore is unavailable).
  *   This is the lowest amount the calculator can ever return for that vehicle,
- *   so the "from" figure is truthful. Keep in sync with MINIMUM_FARES.
+ *   so the "from" figure is truthful. Editing a minimum fare in the admin panel
+ *   updates this card automatically — no hardcoded price remains to keep in sync.
  */
 
 import Image from 'next/image';
@@ -30,18 +30,20 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
+import { useTariffs } from '@/lib/hooks/useTariffs';
+import type { VehicleType } from '@/lib/types/pricing';
 import styles from './Vehicles.module.css';
 
-const VEHICLES = [
+const VEHICLES: { id: string; vehicleType: VehicleType; image: string; popular: boolean }[] = [
   {
     id: 'business',
-    price: '22',
+    vehicleType: 'BUSINESS',
     image: '/images/vehicles/business.webp',
     popular: false,
   },
   {
     id: 'van',
-    price: '45',
+    vehicleType: 'VAN',
     image: '/images/vehicles/van.webp',
     popular: false,
   },
@@ -51,6 +53,7 @@ export default function Vehicles() {
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname);
   const t = useTranslations('vehicles');
+  const { tariffs } = useTariffs();
 
   return (
     <section className={styles.section} id="vehicules">
@@ -107,7 +110,7 @@ export default function Vehicles() {
                   </div>
 
                   <p className={styles.price}>
-                    {t('priceFrom')} <strong>{vehicle.price}€</strong>
+                    {t('priceFrom')} <strong>{tariffs.minimumFares[vehicle.vehicleType]}€</strong>
                   </p>
 
                   <Link href={localePath('/reservation', locale)} className={styles.cta}>

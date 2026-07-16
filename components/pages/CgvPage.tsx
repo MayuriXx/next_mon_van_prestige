@@ -29,6 +29,7 @@
  */
 
 import { useContenus } from '@/lib/hooks/useContenus';
+import { useTariffs } from '@/lib/hooks/useTariffs';
 import styles from './LegalPage.module.css';
 
 // ─── Static fallback values ─────────────────────────────────────────────────
@@ -48,7 +49,7 @@ Compris dans la prestation :
 - Attente de 60 minutes aux aéroports, 20 minutes pour les gares, hôtels et adresses
 
 Ne sont pas inclus dans la prestation :
-- Les frais d'attente supplémentaires au-delà de 20 minutes de retard : 55 €/heure pour la catégorie berline, 90 €/heure pour la catégorie van (facturés par paliers de 30 minutes)
+- Les frais d'attente supplémentaires au-delà de 20 minutes de retard : {{madBusiness}} €/heure pour la catégorie berline, {{madVan}} €/heure pour la catégorie van (facturés par paliers de 30 minutes)
 - Les frais additionnels non prévus dans le devis initial`,
 
   article2_title: 'Article 2 – Réservation et acompte',
@@ -175,9 +176,16 @@ import React from 'react';
 
 export default function CgvPage() {
   const { get } = useContenus('cgv');
+  const { tariffs } = useTariffs();
 
   function field(key: string): string {
-    return get(key) || DEFAULTS[key] || '';
+    const raw = get(key) || DEFAULTS[key] || '';
+    // Inject live MAD hourly rates so the CGV waiting-fee clause always matches
+    // the grid (and any admin edit), whether the text comes from the default or
+    // a Firestore override that keeps the {{madBusiness}}/{{madVan}} tokens.
+    return raw
+      .replace(/\{\{madBusiness\}\}/g, String(tariffs.mad.BUSINESS))
+      .replace(/\{\{madVan\}\}/g, String(tariffs.mad.VAN));
   }
 
   return (

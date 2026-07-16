@@ -7,17 +7,24 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useContenus } from '@/lib/hooks/useContenus';
 import { getLocaleFromPath } from '@/lib/utils/locale';
+import { useTariffs, type TariffData } from '@/lib/hooks/useTariffs';
+import { calculatePrice } from '@/lib/utils/pricing';
+import type { VehicleType } from '@/lib/types/pricing';
 import styles from './TransfertSimplePage.module.css';
 
 const LeafletMap = dynamic(() => import('@/components/map/LeafletMap'), { ssr: false });
 
-const PRICE_PER_KM_BUSINESS = 2.2;
-const PRICE_PER_KM_VAN = 3.5;
-const MIN_BUSINESS = 22;
-const MIN_VAN = 45;
-
-function calcPrice(km: number, perKm: number, min: number): number {
-  return Math.max(min, Math.round(km * perKm));
+/**
+ * Transfer price for a given distance, using the official grid brackets read
+ * live from Firestore (useTariffs → TariffData). Delegates to the shared
+ * pricing engine so this page always matches the grid and the /reservation
+ * calculator. No hardcoded rate remains.
+ */
+function transferPrice(km: number, vehicleType: VehicleType, tariffs: TariffData): number {
+  return calculatePrice(
+    { serviceType: 'TRANSFER', vehicleType, distanceKm: km },
+    tariffs
+  ).price as number;
 }
 
 interface GeoPoint { lat: number; lng: number; label: string; }
@@ -149,6 +156,7 @@ export default function TransfertSimplePage() {
   const pathname = usePathname();
   const locale = getLocaleFromPath(pathname);
   const contenus = useContenus('transfertSimple', locale as 'fr' | 'en' | 'nl');
+  const { tariffs } = useTariffs();
 
   const [departure, setDeparture] = useState('');
   const [arrival, setArrival]     = useState('');
@@ -207,8 +215,8 @@ export default function TransfertSimplePage() {
       setResult({
         distanceKm: route.distanceKm,
         durationMin: route.durationMin,
-        businessPrice: calcPrice(km, PRICE_PER_KM_BUSINESS, MIN_BUSINESS),
-        vanPrice: calcPrice(km, PRICE_PER_KM_VAN, MIN_VAN),
+        businessPrice: transferPrice(km, 'BUSINESS', tariffs),
+        vanPrice: transferPrice(km, 'VAN', tariffs),
       });
       setTimeout(() => {
         mapColRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -218,7 +226,7 @@ export default function TransfertSimplePage() {
     } finally {
       setLoading(false);
     }
-  }, [departure, arrival, fromPoint, toPoint, tripType, t]);
+  }, [departure, arrival, fromPoint, toPoint, tripType, tariffs, t]);
 
   return (
     <>

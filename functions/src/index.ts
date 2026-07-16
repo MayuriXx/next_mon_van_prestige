@@ -24,6 +24,7 @@ import { initializeApp } from 'firebase-admin/app';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import Stripe from 'stripe';
 import { Resend } from 'resend';
+import { loadTariffs, transferPrice, madPrice } from './pricing';
 
 // ── Firebase Admin init ───────────────────────────────────────────────────────
 initializeApp();
@@ -158,6 +159,44 @@ export const createCheckoutSession = onRequest(
     }
     if (!data.clientEmail || !data.clientName || !data.clientPhone) {
       res.status(400).json({ error: 'clientName, clientEmail, clientPhone are required' }); return;
+    }
+
+    // ── Server-side price recomputation (anti-tampering) ─────────────────────
+    // Never trust the browser-supplied totalPrice. Recompute the expected price
+    // from the live Firestore grid and reject requests that diverge. The
+    // Stripe amount is always billed from the server-computed value.
+    const tariffs = await loadTariffs(db);
+    let serverTotal: number | null = null;
+
+    if (data.serviceType === 'TRANSFER') {
+      if (typeof data.distanceKm !== 'number' || data.distanceKm <= 0) {
+        res.status(400).json({ error: 'distanceKm is required for a TRANSFER' }); return;
+      }
+      const km = data.distanceKm * (data.tripType === 'round_trip' ? 2 : 1);
+      serverTotal = transferPrice(km, data.vehicleType, tariffs);
+    } else if (data.serviceType === 'MAD') {
+      if (typeof data.durationHours !== 'number' || data.durationHours <= 0) {
+        res.status(400).json({ error: 'durationHours is required for a MAD' }); return;
+      }
+      serverTotal = madPrice(data.durationHours, data.vehicleType, tariffs);
+    }
+
+    // For TRANSFER / MAD we can fully recompute → enforce it. AIRPORT / LEISURE
+    // are fixed packages not booked through this flow, so they keep the client
+    // value (they never reach here in practice).
+    if (serverTotal !== null) {
+      // Allow a 1 € rounding buffer; anything larger is treated as tampering.
+      const drift = Math.abs(serverTotal - data.totalPrice);
+      const tolerance = Math.max(1, serverTotal * 0.02);
+      if (drift > tolerance) {
+        console.warn(
+          `[createCheckoutSession] price mismatch — client=${data.totalPrice} ` +
+          `server=${serverTotal} (${data.serviceType}/${data.vehicleType}). Rejecting.`
+        );
+        res.status(400).json({ error: 'Price validation failed' }); return;
+      }
+      // Bill the server-computed price, not the client one.
+      data.totalPrice = serverTotal;
     }
 
     const stripe = new Stripe(STRIPE_SECRET_KEY.value());
