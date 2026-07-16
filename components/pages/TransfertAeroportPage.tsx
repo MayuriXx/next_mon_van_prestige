@@ -144,7 +144,7 @@ export default function TransfertAeroportPage() {
                   <p className={styles.cardDest}>{getDestination(airport)}</p>
                   <span className={styles.cardIcon}>{airport.icon}</span>
                   <p className={styles.cardFromLabel}>{t('from_label')}</p>
-                  <p className={styles.cardPrice}>{airport.businessMin}<span className={styles.cardCurrency}>€</span></p>
+                  <p className={styles.cardPrice}>{tariffs.airports[airport.dest].BUSINESS.min}<span className={styles.cardCurrency}>€</span></p>
                   <button
                     type="button"
                     className={styles.cardBtn}
