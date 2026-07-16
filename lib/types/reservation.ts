@@ -51,6 +51,8 @@ export interface CheckoutPayload {
   durationHours?    : number;
   /** Distance in km — TRANSFER only */
   distanceKm?       : number;
+  /** Whether the client booked with a pet (server adds a flat surcharge) */
+  pet?              : boolean;
   /** UI locale: 'fr' | 'en' | 'nl' */
   locale            : string;
   /** Client info */
