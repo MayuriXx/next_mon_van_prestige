@@ -72,6 +72,8 @@ interface BookingData {
   distanceKm?: number;
   /** Whether the client booked with a pet (adds a flat surcharge) */
   pet?: boolean;
+  /** Transport au Féminin: apply the women surcharge (percent from Firestore) */
+  womenService?: boolean;
   /** UI locale: 'fr' | 'en' | 'nl' */
   locale: string;
   /** Client full name */
@@ -194,6 +196,15 @@ export const createCheckoutSession = onRequest(
     // are fixed packages not booked through this flow, so they keep the client
     // value (they never reach here in practice).
     if (serverTotal !== null) {
+      // Transport au Féminin surcharge — server-authoritative, read from Firestore
+      // (tarifs/women_surcharge.percentage, default 20). Applied on the fare
+      // after the round-trip discount and before the flat pet surcharge.
+      if (data.womenService) {
+        const wDoc = await db.doc('tarifs/women_surcharge').get();
+        const pct = wDoc.exists && typeof wDoc.data()?.percentage === 'number'
+          ? (wDoc.data()!.percentage as number) : 20;
+        serverTotal = Math.ceil(serverTotal * (1 + pct / 100));
+      }
       // Server-authoritative extras: bill the pet surcharge online as well.
       if (data.pet) serverTotal += PET_SURCHARGE;
       // Allow a 1 € rounding buffer; anything larger is treated as tampering.
