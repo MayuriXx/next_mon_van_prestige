@@ -28,21 +28,66 @@ function transferPrice(km: number, vehicleType: VehicleType, tariffs: TariffData
 }
 
 interface GeoPoint { lat: number; lng: number; label: string; }
-interface Suggestion { display_name: string; lat: string; lon: string; }
+interface Suggestion { placeId: string; description: string; }
 
-async function geocode(address: string): Promise<GeoPoint | null> {
-  const url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address) + '&limit=1';
-  const res = await fetch(url, { headers: { 'Accept-Language': 'fr' } });
-  const data = await res.json();
-  if (!data.length) return null;
-  return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), label: data[0].display_name };
+/* Address search is backed by Google (Places + Geocoding) proxied through the
+   Firebase Cloud Functions (placesAutocomplete, placeDetails, geocode) so the
+   Google Maps API key stays server-side. Autocomplete + Place Details share a
+   per-typing-session token so Google bills them as one session unit. */
+const FUNCTIONS_BASE = 'https://europe-west1-mon-van-prestige.cloudfunctions.net';
+
+function newSessionToken(): string {
+  return typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : Math.random().toString(36).slice(2) + Date.now().toString(36);
 }
 
-async function fetchSuggestions(query: string): Promise<Suggestion[]> {
+async function geocode(address: string): Promise<GeoPoint | null> {
+  try {
+    const res = await fetch(`${FUNCTIONS_BASE}/geocode`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ address, language: 'fr' }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (typeof data.lat !== 'number' || typeof data.lng !== 'number') return null;
+    return { lat: data.lat, lng: data.lng, label: data.formattedAddress ?? '' };
+  } catch {
+    return null;
+  }
+}
+
+async function fetchSuggestions(query: string, sessionToken: string): Promise<Suggestion[]> {
   if (query.length < 3) return [];
-  const url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query) + '&limit=5&addressdetails=1&countrycodes=fr,be';
-  const res = await fetch(url, { headers: { 'Accept-Language': 'fr' } });
-  return res.json();
+  try {
+    const res = await fetch(`${FUNCTIONS_BASE}/placesAutocomplete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ input: query, sessionToken, language: 'fr' }),
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.suggestions ?? []) as Suggestion[];
+  } catch {
+    return [];
+  }
+}
+
+async function fetchPlaceDetails(placeId: string, sessionToken: string): Promise<GeoPoint | null> {
+  try {
+    const res = await fetch(`${FUNCTIONS_BASE}/placeDetails`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ placeId, sessionToken, language: 'fr' }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (typeof data.lat !== 'number' || typeof data.lng !== 'number') return null;
+    return { lat: data.lat, lng: data.lng, label: data.formattedAddress ?? '' };
+  } catch {
+    return null;
+  }
 }
 
 async function getRoute(from: GeoPoint, to: GeoPoint): Promise<{ distanceKm: number; durationMin: number; coords: [number, number][] } | null> {
@@ -71,6 +116,7 @@ function AutocompleteField({ placeholder, value, onChange, onSelect }: Autocompl
   const [open, setOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const sessionTokenRef = useRef<string>(newSessionToken());
 
   // Close on outside click
   useEffect(() => {
@@ -87,17 +133,20 @@ function AutocompleteField({ placeholder, value, onChange, onSelect }: Autocompl
     onChange(val);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(async () => {
-      const results = await fetchSuggestions(val);
+      const results = await fetchSuggestions(val, sessionTokenRef.current);
       setSuggestions(results);
       setOpen(results.length > 0);
     }, 350);
   }
 
-  function handleSelect(s: Suggestion) {
-    onChange(s.display_name);
-    onSelect({ lat: parseFloat(s.lat), lng: parseFloat(s.lon), label: s.display_name });
+  async function handleSelect(s: Suggestion) {
+    onChange(s.description);
     setSuggestions([]);
     setOpen(false);
+    const point = await fetchPlaceDetails(s.placeId, sessionTokenRef.current);
+    // Session ends once details are fetched — start a fresh token next time.
+    sessionTokenRef.current = newSessionToken();
+    if (point) onSelect({ ...point, label: point.label || s.description });
   }
 
   return (
@@ -114,11 +163,11 @@ function AutocompleteField({ placeholder, value, onChange, onSelect }: Autocompl
       {open && (
         <ul className={styles.suggestions}>
           {suggestions.map((s, i) => (
-            <li key={i} className={styles.suggestionItem} onMouseDown={() => handleSelect(s)}>
+            <li key={s.placeId || i} className={styles.suggestionItem} onMouseDown={() => handleSelect(s)}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={styles.suggestionIcon}>
                 <circle cx="12" cy="11" r="3"/><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z"/>
               </svg>
-              <span>{s.display_name}</span>
+              <span>{s.description}</span>
             </li>
           ))}
         </ul>
