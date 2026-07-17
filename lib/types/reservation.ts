@@ -53,6 +53,8 @@ export interface CheckoutPayload {
   distanceKm?       : number;
   /** Whether the client booked with a pet (server adds a flat surcharge) */
   pet?              : boolean;
+  /** Transport au Féminin: apply the women surcharge server-side */
+  womenService?     : boolean;
   /** UI locale: 'fr' | 'en' | 'nl' */
   locale            : string;
   /** Client info */
