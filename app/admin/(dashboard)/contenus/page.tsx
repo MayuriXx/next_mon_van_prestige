@@ -199,6 +199,13 @@ const SECTIONS: SectionDef[] = [
     ],
   },
   {
+    id: 'transportFeminin', label: 'Transport au Féminin', icon: '♀️',
+    fields: [
+      { key: 'title',    label: 'Titre',       multiline: false, i18n: true },
+      { key: 'subtitle', label: 'Sous-titre',  multiline: true,  i18n: true },
+    ],
+  },
+  {
     // Issue #102: homepage teasers (ServiceSection.tsx). Distinct from the
     // per-service-page docs above — same field-per-key engine, just with
     // compound `${sectionId}_title` / `${sectionId}_description` keys so one
@@ -216,6 +223,8 @@ const SECTIONS: SectionDef[] = [
       { key: 'evenements-speciaux_description', label: 'Événements Spéciaux — Description', multiline: true,  i18n: true },
       { key: 'escapades-loisirs_title',         label: 'Escapades Loisirs — Titre',         multiline: false, i18n: true },
       { key: 'escapades-loisirs_description',   label: 'Escapades Loisirs — Description',   multiline: true,  i18n: true },
+      { key: 'transport-feminin_title',        label: 'Transport au Féminin — Titre',       multiline: false, i18n: true },
+      { key: 'transport-feminin_description',  label: 'Transport au Féminin — Description', multiline: true,  i18n: true },
     ],
   },
   {
