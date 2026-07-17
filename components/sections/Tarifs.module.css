@@ -169,8 +169,12 @@
   font-family: var(--font-body);
   font-size: 12px;
   font-weight: 700;
+  border: none;
   border-radius: 50px;
   text-decoration: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
   transition: all 0.3s ease;
 }
 

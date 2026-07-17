@@ -13,10 +13,12 @@
  *   where there is a natural translation (e.g. "Bruxelles" -> "Brussels" /
  *   "Brussel"); "Valenciennes" stays the same across locales.
  *
- *   While touching this file, also fixed a `localePath` violation on the
- *   "Réserver" CTA (same pattern flagged for Vehicles.tsx in #87): it used
- *   a raw `href="/reservation"` instead of `localePath('/reservation',
- *   locale)`.
+ *   The "Réserver" CTA on each card no longer navigates straight to
+ *   /reservation. Like the airport package cards (TransfertAeroportPage),
+ *   it now opens the shared TransferModal popup pre-filled with the card's
+ *   route (departure Valenciennes -> selected arrival), so the whole site
+ *   uses the same booking-popup flow. The modal forwards the values to
+ *   /reservation via query params on submit.
  *
  *   Prices are the "from" (à partir de) teaser figures shown on the cards.
  *   They are the BUSINESS minimum of each airport package, read live from
@@ -28,12 +30,13 @@
  *   card automatically — no hardcoded price remains to keep in sync.
  */
 
-import Link from 'next/link';
+import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
+import { getLocaleFromPath } from '@/lib/utils/locale';
 import { useTariffs } from '@/lib/hooks/useTariffs';
 import type { AirportDestination } from '@/lib/types/pricing';
+import TransferModal from '@/components/pages/TransferModal';
 import styles from './Tarifs.module.css';
 
 const TARIFS: { id: string; dest: AirportDestination; icon: string; popular: boolean }[] = [
@@ -50,6 +53,9 @@ export default function Tarifs() {
   const locale = getLocaleFromPath(pathname);
   const t = useTranslations('tarifs');
   const { tariffs } = useTariffs();
+
+  /* Which transfer card's booking popup is open (null = closed). */
+  const [activeTarif, setActiveTarif] = useState<typeof TARIFS[0] | null>(null);
 
   return (
     <section className={styles.section}>
@@ -84,13 +90,25 @@ export default function Tarifs() {
                 <span className={styles.price}>{tariffs.airports[tarif.dest].BUSINESS.min}€</span>
               </div>
 
-              <Link href={localePath('/reservation', locale)} className={styles.cta}>
+              <button
+                type="button"
+                className={styles.cta}
+                onClick={() => setActiveTarif(tarif)}
+              >
                 {t('cta')}
-              </Link>
+              </button>
             </div>
           ))}
         </div>
       </div>
+
+      <TransferModal
+        open={activeTarif !== null}
+        onClose={() => setActiveTarif(null)}
+        departure={activeTarif ? t(`routes.${activeTarif.id}.from`) : ''}
+        destination={activeTarif ? t(`routes.${activeTarif.id}.to`) : ''}
+        locale={locale}
+      />
     </section>
   );
 }
