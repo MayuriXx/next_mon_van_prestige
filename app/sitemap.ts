@@ -37,6 +37,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/services/evenements-speciaux/',
     '/services/escapades-loisirs/',
     '/services/deplacements-professionnels/',
+    '/services/transport-feminin/',
   ];
 
   const entries: MetadataRoute.Sitemap = [];
