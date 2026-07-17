@@ -75,16 +75,19 @@ async function geocode(address: string): Promise<GeoPoint | null> {
 }
 
 async function getRoute(from: GeoPoint, to: GeoPoint): Promise<{ distanceKm: number; durationMin: number; coords: [number, number][] } | null> {
-  const url = 'https://router.project-osrm.org/route/v1/driving/' + from.lng + ',' + from.lat + ';' + to.lng + ',' + to.lat + '?overview=full&geometries=geojson';
-  const res = await fetch(url);
-  const data = await res.json();
-  if (data.code !== 'Ok' || !data.routes.length) return null;
-  const route = data.routes[0];
-  return {
-    distanceKm: route.distance / 1000,
-    durationMin: Math.round(route.duration / 60),
-    coords: route.geometry.coordinates.map(([lng, lat]: [number, number]) => [lat, lng] as [number, number]),
-  };
+  try {
+    const res = await fetch(`${FUNCTIONS_BASE}/directions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ origin: { lat: from.lat, lng: from.lng }, destination: { lat: to.lat, lng: to.lng } }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (typeof data.distanceKm !== 'number' || !Array.isArray(data.coords)) return null;
+    return { distanceKm: data.distanceKm, durationMin: data.durationMin, coords: data.coords as [number, number][] };
+  } catch {
+    return null;
+  }
 }
 
 /* ── Autocomplete Field ── */

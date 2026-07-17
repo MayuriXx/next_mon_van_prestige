@@ -744,3 +744,129 @@ export const geocode = onRequest(
     }
   }
 );
+
+// ── directions (HTTP) ──────────────────────────────────────────────────────
+// Server-side proxy to the Google Directions API. Keeps GOOGLE_MAPS_API_KEY
+// secret (never exposed client-side). Replaces the previous OSRM/ORS calls
+// (brique 2 of the OSM → Google migration).
+//
+// Request  (POST JSON): { origin: {lat,lng}, destination: {lat,lng}, language? }
+// Response (200 JSON) : { distanceKm, durationMin, coords: [[lat,lng], ...] }
+//
+// `coords` is the decoded overview polyline, returned as [lat, lng] pairs so it
+// can be fed directly to Leaflet / Google Maps JS (brique 3) without any
+// client-side transform — this matches the shape the old OSRM getRoute returned.
+
+/** Decode a Google-encoded polyline into an array of [lat, lng] pairs. */
+function decodePolyline(encoded: string): [number, number][] {
+  const points: [number, number][] = [];
+  let index = 0;
+  let lat = 0;
+  let lng = 0;
+  while (index < encoded.length) {
+    let result = 0;
+    let shift = 0;
+    let byte: number;
+    do {
+      byte = encoded.charCodeAt(index++) - 63;
+      result |= (byte & 0x1f) << shift;
+      shift += 5;
+    } while (byte >= 0x20);
+    const deltaLat = result & 1 ? ~(result >> 1) : result >> 1;
+    lat += deltaLat;
+
+    result = 0;
+    shift = 0;
+    do {
+      byte = encoded.charCodeAt(index++) - 63;
+      result |= (byte & 0x1f) << shift;
+      shift += 5;
+    } while (byte >= 0x20);
+    const deltaLng = result & 1 ? ~(result >> 1) : result >> 1;
+    lng += deltaLng;
+
+    points.push([lat / 1e5, lng / 1e5]);
+  }
+  return points;
+}
+
+export const directions = onRequest(
+  {
+    region: 'europe-west1',
+    invoker: 'public',
+    secrets: [GOOGLE_MAPS_API_KEY],
+    cors: PLACES_CORS,
+  },
+  async (req, res) => {
+    const body = req.body as {
+      origin?: { lat?: number; lng?: number };
+      destination?: { lat?: number; lng?: number };
+      language?: string;
+    };
+    const o = body.origin;
+    const d = body.destination;
+
+    if (
+      !o ||
+      !d ||
+      typeof o.lat !== 'number' ||
+      typeof o.lng !== 'number' ||
+      typeof d.lat !== 'number' ||
+      typeof d.lng !== 'number'
+    ) {
+      res.status(400).json({ error: 'origin and destination {lat,lng} are required' });
+      return;
+    }
+
+    try {
+      const url =
+        'https://maps.googleapis.com/maps/api/directions/json' +
+        `?origin=${o.lat},${o.lng}` +
+        `&destination=${d.lat},${d.lng}` +
+        `&mode=driving&region=fr&units=metric` +
+        `&language=${encodeURIComponent(body.language ?? 'fr')}` +
+        `&key=${GOOGLE_MAPS_API_KEY.value()}`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        console.error('[directions] Google error:', response.status);
+        res.status(502).json({ error: 'Directions request failed' });
+        return;
+      }
+
+      const data = (await response.json()) as {
+        status?: string;
+        routes?: Array<{
+          overview_polyline?: { points?: string };
+          legs?: Array<{
+            distance?: { value?: number };
+            duration?: { value?: number };
+          }>;
+        }>;
+      };
+
+      const route = data.routes?.[0];
+      const leg = route?.legs?.[0];
+
+      if (data.status !== 'OK' || !route || leg?.distance?.value == null) {
+        res.status(404).json({ error: 'No route found' });
+        return;
+      }
+
+      const distanceMeters = leg?.distance?.value ?? 0;
+      const durationSeconds = leg?.duration?.value ?? 0;
+      const encoded = route?.overview_polyline?.points ?? '';
+
+      res.status(200).json({
+        distanceKm: distanceMeters / 1000,
+        durationMin: Math.round(durationSeconds / 60),
+        coords: encoded ? decodePolyline(encoded) : [],
+      });
+    } catch (error) {
+      console.error('[directions] request failed:', error);
+      res.status(500).json({ error: 'Internal error' });
+    }
+  }
+);
+

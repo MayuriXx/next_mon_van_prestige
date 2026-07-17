@@ -78,16 +78,17 @@ async function fetchSuggestions(query: string, sessionToken: string): Promise<Su
   } catch { return []; }
 }
 
-/** OSRM driving route → distance in km. */
+/** Google Directions driving route → distance in km (via `directions` Cloud Function). */
 async function getRouteDistanceKm(from: GeoPoint, to: GeoPoint): Promise<number | null> {
   try {
-    const url =
-      'https://router.project-osrm.org/route/v1/driving/' +
-      `${from.lng},${from.lat};${to.lng},${to.lat}?overview=false`;
-    const res = await fetch(url);
+    const res = await fetch(`${FUNCTIONS_BASE}/directions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ origin: { lat: from.lat, lng: from.lng }, destination: { lat: to.lat, lng: to.lng } }),
+    });
+    if (!res.ok) return null;
     const data = await res.json();
-    if (data.code !== 'Ok' || !data.routes.length) return null;
-    return data.routes[0].distance / 1000;
+    return typeof data.distanceKm === 'number' ? data.distanceKm : null;
   } catch { return null; }
 }
 
