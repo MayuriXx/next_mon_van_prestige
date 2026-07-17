@@ -579,6 +579,7 @@
     "result_distance": "AFSTAND",
     "result_duration": "DUUR",
     "price_from": "vanaf",
+    "book_cta": "Deze rit boeken",
     "error_addresses": "Voer een vertrek- en aankomstadres in.",
     "error_geocode": "Adres niet gevonden. Verfijn uw zoekopdracht.",
     "error_route": "Kan de route niet berekenen.",
