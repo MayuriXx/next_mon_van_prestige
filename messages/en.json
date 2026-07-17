@@ -580,6 +580,7 @@
     "result_distance": "DISTANCE",
     "result_duration": "DURATION",
     "price_from": "from",
+    "book_cta": "Book this trip",
     "error_addresses": "Please enter a departure and arrival address.",
     "error_geocode": "Address not found. Please refine your search.",
     "error_route": "Unable to calculate the route.",

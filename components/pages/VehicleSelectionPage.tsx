@@ -31,6 +31,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import { calculatePrice } from '@/lib/utils/pricing';
 import { useTariffs } from '@/lib/hooks/useTariffs';
+import { useWomenSurcharge } from '@/lib/hooks/useWomenSurcharge';
 import type { VehicleType } from '@/lib/types/pricing';
 import type { CheckoutPayload } from '@/lib/types/reservation';
 import styles from './VehicleSelectionPage.module.css';
@@ -122,7 +123,7 @@ const ICON_CLIM = (
 
 type Params = {
   departure: string; arrival: string; date: string; hour: string;
-  passengers: number; roundTrip: boolean; returnDate: string; returnHour: string;
+  passengers: number; roundTrip: boolean; returnDate: string; returnHour: string; women: boolean;
 };
 
 export default function VehicleSelectionPage() {
@@ -132,6 +133,7 @@ export default function VehicleSelectionPage() {
   const locale = getLocaleFromPath(pathname);
   const router = useRouter();
   const { tariffs } = useTariffs();
+  const surchargePercent = useWomenSurcharge();
 
   const [params, setParams] = useState<Params | null>(null);
   const [distanceKm, setDistanceKm] = useState<number | null>(null);
@@ -166,6 +168,7 @@ export default function VehicleSelectionPage() {
       roundTrip: p.get('trip') === 'round_trip',
       returnDate: p.get('returnDate') || '',
       returnHour: p.get('returnHour') || '',
+      women: p.get('women') === '1',
     };
     setParams(parsed);
     (async () => {
@@ -192,6 +195,8 @@ export default function VehicleSelectionPage() {
     // Round-trip discount: -20% on the return leg. For a symmetric round trip
       // (outbound = return) this equals 10% off the doubled-distance total.
     if (params?.roundTrip) p = Math.ceil(p * 0.9);
+    // Transport au Féminin surcharge, applied after the round-trip discount.
+    if (params?.women) p = Math.ceil(p * (1 + surchargePercent / 100));
     return p;
   }
 
@@ -259,6 +264,7 @@ export default function VehicleSelectionPage() {
         passengers: params.passengers,
         distanceKm: distanceKm ?? undefined,
         pet: addPet,
+        womenService: params.women,
         locale,
         clientName: `${firstName.trim()} ${lastName.trim()}`,
         clientEmail: email.trim(),

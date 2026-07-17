@@ -580,6 +580,7 @@
     "result_distance": "DISTANCE",
     "result_duration": "DURÉE",
     "price_from": "à partir de",
+    "book_cta": "Réserver ce trajet",
     "error_addresses": "Veuillez saisir un point de départ et d'arrivée.",
     "error_geocode": "Adresse introuvable. Veuillez préciser votre saisie.",
     "error_route": "Impossible de calculer l'itinéraire.",
