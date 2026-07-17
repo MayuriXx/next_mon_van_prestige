@@ -2,23 +2,16 @@
  * MS Prestige Driver — Routing utility
  *
  * Calculates driving distance in kilometres between two geographic points
- * using the OpenRouteService (ORS) API — free tier, based on OpenStreetMap.
+ * using the Google Directions API, proxied through the `directions` Cloud
+ * Function (functions/src/index.ts) so the Google Maps API key stays
+ * server-side and is never exposed to the browser.
  *
- * Why ORS instead of Google Maps?
- * - No billing required for the free tier (up to 2 000 requests/day)
- * - Already used on the /services/transfert-simple page (OSRM for map display)
- * - Consistent with the project's OSM-first approach
+ * This replaces the previous OpenRouteService / OSRM implementation as part of
+ * the OSM → Google migration (brique 2).
  *
- * ORS Directions API endpoint (GET):
- *   https://api.openrouteservice.org/v2/directions/driving-car
- *   ?api_key=<key>&start=<lng,lat>&end=<lng,lat>
- *
- * The API key is read from the environment variable NEXT_PUBLIC_ORS_API_KEY.
- * It is safe to expose this key client-side (ORS has rate limiting per key,
- * and the free tier is publicly usable).
- *
- * Fallback: if ORS is unavailable, the Haversine formula provides a straight-
- * line distance approximation (multiply by 1.25 for a road-distance estimate).
+ * Fallback: if the directions function is unavailable, the Haversine formula
+ * provides a straight-line distance approximation (multiplied by a road-distance
+ * correction factor) so pricing never hard-fails.
  */
 
 export interface Coordinates {
@@ -31,7 +24,7 @@ export interface RoutingResult {
   distanceKm: number;
   /** Driving duration in seconds */
   durationSeconds: number;
-  /** True if the result came from the ORS API, false if it's a Haversine estimate */
+  /** True if the result came from the directions API, false if it's a Haversine estimate */
   isEstimate: boolean;
 }
 
@@ -62,68 +55,50 @@ function haversineKm(a: Coordinates, b: Coordinates): number {
 }
 
 // ---------------------------------------------------------------------------
-// OpenRouteService API call
+// Google Directions API call (via the `directions` Cloud Function)
 // ---------------------------------------------------------------------------
 
 /**
- * Fetch driving distance and duration from the ORS Directions API.
+ * Fetch driving distance and duration from the Google Directions API,
+ * proxied through the `directions` Cloud Function.
  *
  * @param origin - Starting coordinates
  * @param destination - Ending coordinates
  * @returns RoutingResult with distanceKm and durationSeconds
- * @throws Error if the ORS API returns an unexpected response
+ * @throws Error if the directions function returns an unexpected response
  */
 export async function getRouteDistance(
   origin: Coordinates,
   destination: Coordinates
 ): Promise<RoutingResult> {
-  const apiKey = process.env.NEXT_PUBLIC_ORS_API_KEY;
-
-  if (!apiKey) {
-    console.warn(
-      '[routing] NEXT_PUBLIC_ORS_API_KEY is not set — falling back to Haversine estimate'
-    );
-    return {
-      distanceKm: haversineKm(origin, destination),
-      durationSeconds: 0,
-      isEstimate: true,
-    };
-  }
-
-  const url =
-    `https://api.openrouteservice.org/v2/directions/driving-car` +
-    `?api_key=${apiKey}` +
-    `&start=${origin.lng},${origin.lat}` +
-    `&end=${destination.lng},${destination.lat}`;
-
   try {
-    const response = await fetch(url, {
-      headers: { Accept: 'application/json, application/geo+json' },
-      // next: { revalidate: 3600 } — uncomment if used in a Server Component with caching
+    const response = await fetch(`${FUNCTIONS_BASE}/directions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        origin: { lat: origin.lat, lng: origin.lng },
+        destination: { lat: destination.lat, lng: destination.lng },
+      }),
     });
 
     if (!response.ok) {
-      throw new Error(`ORS API error: ${response.status} ${response.statusText}`);
+      throw new Error(`directions function error: ${response.status}`);
     }
 
     const data = await response.json();
 
-    // ORS GeoJSON response structure:
-    // features[0].properties.segments[0].distance (metres)
-    // features[0].properties.segments[0].duration (seconds)
-    const segment = data?.features?.[0]?.properties?.segments?.[0];
-
-    if (!segment) {
-      throw new Error('[routing] Unexpected ORS response structure');
+    if (typeof data.distanceKm !== 'number') {
+      throw new Error('[routing] Unexpected directions response structure');
     }
 
     return {
-      distanceKm: Math.round((segment.distance / 1000) * 10) / 10, // metres → km, 1 decimal
-      durationSeconds: Math.round(segment.duration),
+      distanceKm: Math.round(data.distanceKm * 10) / 10,
+      durationSeconds:
+        typeof data.durationMin === 'number' ? data.durationMin * 60 : 0,
       isEstimate: false,
     };
   } catch (error) {
-    console.warn('[routing] ORS request failed — falling back to Haversine:', error);
+    console.warn('[routing] directions request failed — falling back to Haversine:', error);
     return {
       distanceKm: haversineKm(origin, destination),
       durationSeconds: 0,
