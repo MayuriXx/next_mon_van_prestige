@@ -405,7 +405,7 @@ const s: Record<string, React.CSSProperties> = {
   centered  : { display: 'flex', justifyContent: 'center', padding: '80px' },
   spinner   : {
     width: '36px', height: '36px', borderRadius: '50%',
-    border: '3px solid rgba(201,168,76,0.2)', borderTopColor: '#C9A84C',
+    border: '3px solid rgba(var(--color-gold-rgb), 0.2)', borderTopColor: 'var(--color-gold)',
     animation: 'spin 0.8s linear infinite',
   },
   toastOk   : {
@@ -419,16 +419,16 @@ const s: Record<string, React.CSSProperties> = {
     color: '#EF4444', fontSize: '13px',
   },
   addBtn    : {
-    padding: '10px 20px', background: '#C9A84C', border: 'none', borderRadius: '8px',
+    padding: '10px 20px', background: 'var(--color-gold)', border: 'none', borderRadius: '8px',
     color: '#000', fontWeight: 600, fontSize: '13px', cursor: 'pointer', whiteSpace: 'nowrap',
   },
 
   // Form card
   formCard  : {
-    background: '#111', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '12px',
+    background: '#111', border: '1px solid rgba(var(--color-gold-rgb), 0.25)', borderRadius: '12px',
     padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px',
   },
-  formTitle : { margin: 0, fontSize: '15px', fontWeight: 600, color: '#C9A84C' },
+  formTitle : { margin: 0, fontSize: '15px', fontWeight: 600, color: 'var(--color-gold)' },
   localeTabs: { display: 'flex', gap: '6px' },
   localeTab : {
     padding: '7px 14px', borderRadius: '8px', cursor: 'pointer',
@@ -436,7 +436,7 @@ const s: Record<string, React.CSSProperties> = {
     color: 'rgba(255,255,255,0.55)', fontSize: '13px', fontWeight: 500,
   },
   localeTabActive: {
-    background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.3)', color: '#C9A84C',
+    background: 'rgba(var(--color-gold-rgb), 0.12)', border: '1px solid rgba(var(--color-gold-rgb), 0.3)', color: 'var(--color-gold)',
   },
   required  : { color: '#EF4444', marginLeft: '2px' },
   fieldGroup: { display: 'flex', flexDirection: 'column', gap: '6px' },
@@ -463,7 +463,7 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '8px', color: 'rgba(255,255,255,0.55)', fontSize: '13px', cursor: 'pointer',
   },
   saveBtn   : {
-    padding: '9px 20px', background: '#C9A84C', border: 'none', borderRadius: '8px',
+    padding: '9px 20px', background: 'var(--color-gold)', border: 'none', borderRadius: '8px',
     color: '#000', fontWeight: 600, fontSize: '13px', cursor: 'pointer',
   },
 
@@ -493,8 +493,8 @@ const s: Record<string, React.CSSProperties> = {
   badgeActive : { background: 'rgba(34,197,94,0.12)', color: '#22C55E' },
   badgeInactive:{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.35)' },
   editBtn     : {
-    padding: '6px 12px', background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.2)',
-    borderRadius: '6px', color: '#C9A84C', cursor: 'pointer', fontSize: '12px',
+    padding: '6px 12px', background: 'rgba(var(--color-gold-rgb), 0.1)', border: '1px solid rgba(var(--color-gold-rgb), 0.2)',
+    borderRadius: '6px', color: 'var(--color-gold)', cursor: 'pointer', fontSize: '12px',
   },
   deleteBtn   : {
     padding: '6px 10px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.15)',
