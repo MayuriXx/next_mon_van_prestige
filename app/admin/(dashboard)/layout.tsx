@@ -129,8 +129,8 @@ const styles: Record<string, React.CSSProperties> = {
     width          : '36px',
     height         : '36px',
     borderRadius   : '50%',
-    border         : '3px solid rgba(201,168,76,0.2)',
-    borderTopColor : '#C9A84C',
+    border         : '3px solid rgba(var(--color-gold-rgb), 0.2)',
+    borderTopColor : 'var(--color-gold)',
     animation      : 'spin 0.8s linear infinite',
   },
   shell: {
@@ -142,7 +142,7 @@ const styles: Record<string, React.CSSProperties> = {
     width          : '240px',
     minWidth       : '240px',
     background     : '#111',
-    borderRight    : '1px solid rgba(201,168,76,0.15)',
+    borderRight    : '1px solid rgba(var(--color-gold-rgb), 0.15)',
     display        : 'flex',
     flexDirection  : 'column',
     padding        : '24px 0',
@@ -170,7 +170,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   divider: {
     height         : '1px',
-    background     : 'rgba(201,168,76,0.15)',
+    background     : 'rgba(var(--color-gold-rgb), 0.15)',
     margin         : '20px 0',
   },
   nav: {
@@ -193,8 +193,8 @@ const styles: Record<string, React.CSSProperties> = {
     cursor         : 'pointer',
   },
   navItemActive: {
-    background     : 'rgba(201,168,76,0.12)',
-    color          : '#C9A84C',
+    background     : 'rgba(var(--color-gold-rgb), 0.12)',
+    color          : 'var(--color-gold)',
   },
   navIcon: {
     fontSize       : '16px',
