@@ -1,0 +1,50 @@
+/* ============================================================
+   MS PRESTIGE DRIVER — Self-Hosted Fonts via Fontsource
+   ============================================================
+   Typography rule (matches the reference design):
+     - Playfair Display  -> large display headings only
+                            (brand name, page/section titles)
+     - Montserrat        -> everything else (body copy, labels,
+                            buttons, form fields, nav, footer)
+   Lato is no longer used and is therefore no longer imported.
+   ============================================================ */
+
+/* Playfair Display — display headings */
+@import '@fontsource/playfair-display/400.css';
+@import '@fontsource/playfair-display/600.css';
+@import '@fontsource/playfair-display/700.css';
+@import '@fontsource/playfair-display/800.css';
+
+/* Montserrat — body, UI, labels. Weights 300/500/800 added because
+   they are referenced by component stylesheets but were previously
+   never loaded, silently falling back to synthesised faces. */
+@import '@fontsource/montserrat/300.css';
+@import '@fontsource/montserrat/400.css';
+@import '@fontsource/montserrat/500.css';
+@import '@fontsource/montserrat/600.css';
+@import '@fontsource/montserrat/700.css';
+@import '@fontsource/montserrat/800.css';
+
+/* ============================================================
+   Enforce font-display: swap on all self-hosted font faces.
+   @fontsource does not set swap by default; this override
+   prevents FOIT (invisible text) during font load, improving
+   FCP and perceived performance (Core Web Vitals).
+   ============================================================ */
+@font-face {
+  font-display: swap;
+}
+
+/* ============================================================
+   Font Family Variables
+   ============================================================ */
+
+:root {
+  --font-playfair:   'Playfair Display', Georgia, serif;
+  --font-montserrat: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+
+  /* Semantic aliases — always prefer these in component styles. */
+  --font-title:   var(--font-playfair);
+  --font-display: var(--font-playfair);
+  --font-body:    var(--font-montserrat);
+}
