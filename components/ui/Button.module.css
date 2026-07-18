@@ -47,7 +47,7 @@
   border-color: var(--color-gold);
 }
 .outline:hover {
-  background-color: rgba(201, 168, 76, 0.08);
+  background-color: rgba(var(--color-gold-rgb), 0.08);
   box-shadow: var(--shadow-gold);
 }
 
