@@ -60,7 +60,7 @@
 
 .card:hover {
   transform: translateY(-4px);
-  border-color: rgba(201, 168, 76, 0.4);
+  border-color: rgba(var(--color-gold-rgb), 0.4);
 }
 
 .cardPopular {
@@ -157,7 +157,7 @@
   font-size: 12px;
   font-weight: 600;
   color: var(--color-gold);
-  background: rgba(201, 168, 76, 0.08);
+  background: rgba(var(--color-gold-rgb), 0.08);
 }
 
 /* Prix */
@@ -192,8 +192,8 @@
 }
 
 .cta:hover {
-  background-color: #d4b55a;
-  box-shadow: 0 6px 24px rgba(201, 168, 76, 0.4);
+  background-color: var(--color-gold-light);
+  box-shadow: 0 6px 24px rgba(var(--color-gold-rgb), 0.4);
 }
 
 /* Responsive */
