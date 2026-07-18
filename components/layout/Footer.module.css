@@ -24,7 +24,7 @@
 }
 
 .brandHeader:hover .logoImg {
-  filter: drop-shadow(0 0 10px rgba(201, 168, 76, 0.5));
+  filter: drop-shadow(0 0 10px rgba(var(--color-gold-rgb), 0.5));
 }
 
 .logoImg {

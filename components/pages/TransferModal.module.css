@@ -76,7 +76,7 @@
 
 .label {
   display: block;
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--color-white);
@@ -139,7 +139,7 @@
 }
 
 .returnBadge {
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--color-bg);
@@ -152,7 +152,7 @@
   display: block;
   width: 100%;
   padding: 16px;
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 700;
   color: var(--color-bg);
@@ -178,7 +178,7 @@
 }
 
 .returnSectionTitle {
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.05em;

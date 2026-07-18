@@ -57,7 +57,7 @@
 }
 
 .heroTag {
-  font-family: var(--font-montserrat);
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.25em;
@@ -67,7 +67,7 @@
 }
 
 .heroTitle {
-  font-family: var(--font-playfair);
+  font-family: var(--font-title);
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
   color: #fff;
@@ -132,7 +132,7 @@
 }
 
 .formTitle {
-  font-family: var(--font-playfair);
+  font-family: var(--font-title);
   font-size: 1.15rem;
   font-weight: 700;
   color: #1a1a1a;
@@ -224,7 +224,7 @@
   text-align: center;
   background: var(--color-gold);
   color: #0a0a0a;
-  font-family: var(--font-montserrat);
+  font-family: var(--font-body);
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -294,7 +294,7 @@
 }
 
 .sectionTitle {
-  font-family: var(--font-playfair);
+  font-family: var(--font-title);
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   font-weight: 700;
   color: #fff;
@@ -322,7 +322,7 @@
   gap: 20px;
   align-items: flex-start;
   padding: 28px 0;
-  border-bottom: 1px solid rgba(201, 168, 76, 0.12);
+  border-bottom: 1px solid rgba(var(--color-gold-rgb), 0.12);
   position: relative;
 }
 
@@ -343,7 +343,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: rgba(201, 168, 76, 0.10);
+  background: rgba(var(--color-gold-rgb), 0.10);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -364,7 +364,7 @@
 }
 
 .featureTitle {
-  font-family: var(--font-montserrat);
+  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 700;
   color: #fff;

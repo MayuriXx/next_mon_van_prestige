@@ -479,7 +479,7 @@ const s: Record<string, React.CSSProperties> = {
   centered   : { display: 'flex', justifyContent: 'center', padding: '60px' },
   spinner    : {
     width: '32px', height: '32px', borderRadius: '50%',
-    border: '3px solid rgba(201,168,76,0.2)', borderTopColor: '#C9A84C',
+    border: '3px solid rgba(var(--color-gold-rgb), 0.2)', borderTopColor: 'var(--color-gold)',
     animation: 'spin 0.8s linear infinite',
   },
   toastOk    : {
@@ -505,7 +505,7 @@ const s: Record<string, React.CSSProperties> = {
     fontWeight: 500, textAlign: 'left',
   },
   sectionBtnActive: {
-    background: 'rgba(201,168,76,0.12)', color: '#C9A84C',
+    background: 'rgba(var(--color-gold-rgb), 0.12)', color: 'var(--color-gold)',
   },
   sectionBtnLabel : { flex: 1, lineHeight: '1.3' },
   content    : { flex: 1, display: 'flex', flexDirection: 'column', gap: '12px', minWidth: 0 },
@@ -516,7 +516,7 @@ const s: Record<string, React.CSSProperties> = {
     color: 'rgba(255,255,255,0.55)', fontSize: '13px',
   },
   localeTabActive : {
-    background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.3)', color: '#C9A84C',
+    background: 'rgba(var(--color-gold-rgb), 0.12)', border: '1px solid rgba(var(--color-gold-rgb), 0.3)', color: 'var(--color-gold)',
   },
   sectionCard : {
     background: '#111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', overflow: 'hidden',
@@ -527,7 +527,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   sectionCardTitle : { margin: 0, fontSize: '15px', fontWeight: 600, color: '#fff' },
   saveBtn    : {
-    padding: '9px 20px', background: '#C9A84C', border: 'none', borderRadius: '8px',
+    padding: '9px 20px', background: 'var(--color-gold)', border: 'none', borderRadius: '8px',
     color: '#000', fontWeight: 600, fontSize: '13px', cursor: 'pointer', whiteSpace: 'nowrap',
   },
   fields     : { padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' },
@@ -537,8 +537,8 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '8px',
   },
   localeBadge: {
-    fontSize: '10px', fontWeight: 700, color: '#C9A84C',
-    background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.2)',
+    fontSize: '10px', fontWeight: 700, color: 'var(--color-gold)',
+    background: 'rgba(var(--color-gold-rgb), 0.12)', border: '1px solid rgba(var(--color-gold-rgb), 0.2)',
     borderRadius: '4px', padding: '1px 6px',
   },
   fieldHint  : { margin: 0, fontSize: '11px', color: 'rgba(255,255,255,0.25)' },

@@ -59,7 +59,7 @@
 .summaryRowLast { border-bottom: none; }
 
 .summaryLabel {
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -140,7 +140,7 @@
 
 .unavailable {
   display: inline-block;
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--color-white);
@@ -166,7 +166,7 @@
 
 .selectBtn {
   padding: 12px 28px;
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -247,7 +247,7 @@
 .submit {
   width: 100%;
   padding: 16px;
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 700;
   color: var(--color-bg);
@@ -282,7 +282,7 @@
 }
 .formLabel {
   display: block;
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -311,7 +311,7 @@
   margin: var(--spacing-sm) 0 var(--spacing-lg);
 }
 .extrasTitle {
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -349,12 +349,12 @@
   color: var(--color-white);
 }
 .extraPrice {
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-weight: 700;
   color: var(--color-gold);
 }
 .extraFree {
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-weight: 700;
   color: var(--color-gold);
 }
@@ -377,7 +377,7 @@
 /* ── Recap step ── */
 .recap { margin-top: var(--spacing-sm); }
 .recapSection {
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -406,7 +406,7 @@
 }
 
 .totalBox {
-  background: linear-gradient(135deg, rgba(201,168,76,0.14), rgba(201,168,76,0.04));
+  background: linear-gradient(135deg, rgba(var(--color-gold-rgb), 0.14), rgba(var(--color-gold-rgb), 0.04));
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--spacing-lg);
@@ -439,9 +439,9 @@
   color: var(--color-text);
 }
 .depositValue {
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-weight: 700;
-  color: #e0a93a;
+  color: var(--color-gold);
 }
 
 .payMethods {
@@ -452,7 +452,7 @@
   text-align: center;
 }
 .payTitle {
-  font-family: var(--font-montserrat, var(--font-body));
+  font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -495,4 +495,4 @@
   border-radius: var(--radius-sm);
   cursor: pointer;
 }
-.suggestionItem:hover { background: rgba(201, 168, 76, 0.12); color: var(--color-white); }
+.suggestionItem:hover { background: rgba(var(--color-gold-rgb), 0.12); color: var(--color-white); }

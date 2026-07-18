@@ -64,8 +64,8 @@
 /* ── Info block ── */
 .infoBlock {
   width: 100%;
-  background: rgba(201, 168, 76, 0.06);
-  border: 1px solid rgba(201, 168, 76, 0.2);
+  background: rgba(var(--color-gold-rgb), 0.06);
+  border: 1px solid rgba(var(--color-gold-rgb), 0.2);
   border-left: 3px solid var(--color-gold);
   border-radius: var(--radius-sm);
   padding: 1rem 1.25rem;

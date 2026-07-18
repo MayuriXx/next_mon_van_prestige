@@ -24,7 +24,7 @@
 }
 
 .serviceItem:hover {
-  border-color: rgba(201, 168, 76, 0.4);
+  border-color: rgba(var(--color-gold-rgb), 0.4);
   background-color: var(--color-card-alt);
 }
 

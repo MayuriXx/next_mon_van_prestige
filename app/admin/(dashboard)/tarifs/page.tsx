@@ -372,7 +372,7 @@ export default function TarifsPage() {
               </div>
               <p style={{ margin: '8px 0 0', fontSize: '12px', color: 'rgba(255,255,255,0.3)' }}>
                 Exemple : un transfert à 50 € avec une majoration de {womenSurcharge}% sera facturé{' '}
-                <strong style={{ color: '#C9A84C' }}>{Math.ceil(50 * (1 + womenSurcharge / 100))} €</strong>
+                <strong style={{ color: 'var(--color-gold)' }}>{Math.ceil(50 * (1 + womenSurcharge / 100))} €</strong>
               </p>
             </div>
           </div>
@@ -517,7 +517,7 @@ function BracketEditor({
     onChange(next);
   }
 
-  const color = vehicleType === 'BUSINESS' ? '#C9A84C' : '#818CF8';
+  const color = vehicleType === 'BUSINESS' ? 'var(--color-gold)' : '#818CF8';
 
   return (
     <div style={be.wrap}>
@@ -610,7 +610,7 @@ const s: Record<string, React.CSSProperties> = {
   centered : { display: 'flex', justifyContent: 'center', padding: '80px' },
   spinner  : {
     width: '36px', height: '36px', borderRadius: '50%',
-    border: '3px solid rgba(201,168,76,0.2)', borderTopColor: '#C9A84C',
+    border: '3px solid rgba(var(--color-gold-rgb), 0.2)', borderTopColor: 'var(--color-gold)',
     animation: 'spin 0.8s linear infinite',
   },
   toastOk  : {
@@ -631,8 +631,8 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'all .15s',
   },
   tabActive: {
-    background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.3)',
-    color: '#C9A84C',
+    background: 'rgba(var(--color-gold-rgb), 0.12)', border: '1px solid rgba(var(--color-gold-rgb), 0.3)',
+    color: 'var(--color-gold)',
   },
   section  : {
     background: '#111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px',
@@ -647,7 +647,7 @@ const s: Record<string, React.CSSProperties> = {
   sectionDesc  : { margin: '4px 0 0', fontSize: '12px', color: 'rgba(255,255,255,0.35)', maxWidth: '500px' },
   sectionBody  : { padding: '24px' },
   saveBtn      : {
-    padding: '9px 20px', background: '#C9A84C', border: 'none', borderRadius: '8px',
+    padding: '9px 20px', background: 'var(--color-gold)', border: 'none', borderRadius: '8px',
     color: '#000', fontWeight: 600, fontSize: '13px', cursor: 'pointer',
     whiteSpace: 'nowrap' as const, flexShrink: 0,
   },
@@ -656,7 +656,7 @@ const s: Record<string, React.CSSProperties> = {
     background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px',
     padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '12px',
   },
-  madLabel : { color: '#C9A84C', fontWeight: 700, fontSize: '14px' },
+  madLabel : { color: 'var(--color-gold)', fontWeight: 700, fontSize: '14px' },
   madRow   : { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' },
   fieldLabel : { fontSize: '13px', color: 'rgba(255,255,255,0.5)' },
   input    : {
@@ -700,7 +700,7 @@ const be: Record<string, React.CSSProperties> = {
   },
   addBtn      : {
     marginTop: '8px', padding: '7px 14px', background: 'transparent',
-    border: '1px dashed rgba(201,168,76,0.3)', borderRadius: '8px',
-    color: '#C9A84C', cursor: 'pointer', fontSize: '12px', alignSelf: 'flex-start',
+    border: '1px dashed rgba(var(--color-gold-rgb), 0.3)', borderRadius: '8px',
+    color: 'var(--color-gold)', cursor: 'pointer', fontSize: '12px', alignSelf: 'flex-start',
   },
 };

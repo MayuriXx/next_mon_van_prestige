@@ -269,14 +269,14 @@ export default function AdminReservationsPage() {
 
                   <td style={s.td}>
                     <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)', maxWidth: '200px' }}>
-                      <span style={{ color: '#C9A84C' }}>↑</span> {r.departureAddress ?? '—'}
+                      <span style={{ color: 'var(--color-gold)' }}>↑</span> {r.departureAddress ?? '—'}
                     </div>
                     {r.arrivalAddress && (
                       <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>
-                        <span style={{ color: '#C9A84C' }}>↓</span> {r.arrivalAddress}
+                        <span style={{ color: 'var(--color-gold)' }}>↓</span> {r.arrivalAddress}
                       </div>
                     )}
-                    <div style={{ fontSize: '11px', color: '#C9A84C', marginTop: '2px' }}>
+                    <div style={{ fontSize: '11px', color: 'var(--color-gold)', marginTop: '2px' }}>
                       {SERVICE_LABELS[r.serviceType] ?? r.serviceType}
                     </div>
                   </td>
@@ -290,7 +290,7 @@ export default function AdminReservationsPage() {
                     </div>
                   </td>
 
-                  <td style={{ ...s.td, fontWeight: 700, color: '#C9A84C' }}>
+                  <td style={{ ...s.td, fontWeight: 700, color: 'var(--color-gold)' }}>
                     {formatEur(r.totalPrice ?? 0)}
                   </td>
 
@@ -372,9 +372,9 @@ const s: Record<string, React.CSSProperties> = {
   title   : { margin: 0, fontSize: '24px', fontWeight: 700, color: '#fff' },
   subtitle: { margin: '4px 0 0', fontSize: '14px', color: 'rgba(255,255,255,0.4)' },
   exportBtn: {
-    padding: '10px 18px', background: 'rgba(201,168,76,0.12)',
-    border: '1px solid rgba(201,168,76,0.35)', borderRadius: '8px',
-    color: '#C9A84C', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+    padding: '10px 18px', background: 'rgba(var(--color-gold-rgb), 0.12)',
+    border: '1px solid rgba(var(--color-gold-rgb), 0.35)', borderRadius: '8px',
+    color: 'var(--color-gold)', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
     whiteSpace: 'nowrap', flexShrink: 0,
   },
   kpiGrid: {
@@ -425,8 +425,8 @@ const s: Record<string, React.CSSProperties> = {
   },
   vehicleBadge: {
     display: 'inline-block', padding: '2px 10px',
-    background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.25)',
-    borderRadius: '20px', fontSize: '11px', color: '#C9A84C', fontWeight: 600,
+    background: 'rgba(var(--color-gold-rgb), 0.1)', border: '1px solid rgba(var(--color-gold-rgb), 0.25)',
+    borderRadius: '20px', fontSize: '11px', color: 'var(--color-gold)', fontWeight: 600,
   },
   statusSelect: {
     padding: '5px 8px', background: '#1a1a1a',
@@ -438,7 +438,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   spinner: {
     width: '36px', height: '36px', borderRadius: '50%',
-    border: '3px solid rgba(201,168,76,0.2)', borderTopColor: '#C9A84C',
+    border: '3px solid rgba(var(--color-gold-rgb), 0.2)', borderTopColor: 'var(--color-gold)',
     animation: 'spin 0.8s linear infinite',
   },
   errorBox: {

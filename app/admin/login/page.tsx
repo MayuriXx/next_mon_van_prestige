@@ -133,7 +133,7 @@ const styles: Record<string, React.CSSProperties> = {
     background      : '#1a1a1a',
     borderRadius    : '16px',
     padding         : '40px 36px',
-    border          : '1px solid rgba(201,168,76,0.2)',
+    border          : '1px solid rgba(var(--color-gold-rgb), 0.2)',
     boxShadow       : '0 24px 64px rgba(0,0,0,0.6)',
   },
   header: {
@@ -194,7 +194,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize        : '13px',
   },
   btn: {
-    background      : '#C9A84C',
+    background      : 'var(--color-gold)',
     color           : '#0a0a0a',
     border          : 'none',
     borderRadius    : '8px',

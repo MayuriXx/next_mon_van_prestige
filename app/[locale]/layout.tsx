@@ -8,7 +8,7 @@ import Footer from '@/components/layout/Footer';
 import FloatingButtons from '@/components/layout/FloatingButtons';
 import SplashScreen from '@/components/layout/SplashScreen';
 import OrganizationJsonLd from '@/components/seo/OrganizationJsonLd';
-import './fonts.css';
+import '../fonts.css';
 import '../globals.css';
 
 export const dynamic = 'force-static';

@@ -316,7 +316,7 @@ function ImageCard({
           <>
             <div style={c.arrow}>→</div>
             <div style={c.previewBlock}>
-              <div style={{ ...c.previewLabel, color: '#C9A84C' }}>Nouvelle</div>
+              <div style={{ ...c.previewLabel, color: 'var(--color-gold)' }}>Nouvelle</div>
               <div style={c.imgWrap}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={pending.previewUrl} alt="Prévisualisation" style={c.img} />
@@ -390,7 +390,7 @@ const s: Record<string, React.CSSProperties> = {
   centered : { display: 'flex', justifyContent: 'center', padding: '80px' },
   spinner  : {
     width: '36px', height: '36px', borderRadius: '50%',
-    border: '3px solid rgba(201,168,76,0.2)', borderTopColor: '#C9A84C',
+    border: '3px solid rgba(var(--color-gold-rgb), 0.2)', borderTopColor: 'var(--color-gold)',
     animation: 'spin 0.8s linear infinite',
   },
   toastOk  : {
@@ -411,8 +411,8 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'all .15s',
   },
   tabActive: {
-    background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.3)',
-    color: '#C9A84C',
+    background: 'rgba(var(--color-gold-rgb), 0.12)', border: '1px solid rgba(var(--color-gold-rgb), 0.3)',
+    color: 'var(--color-gold)',
   },
   grid     : {
     display: 'grid',
@@ -456,7 +456,7 @@ const c: Record<string, React.CSSProperties> = {
   },
   altInput    : {
     width: '100%', padding: '5px 8px', background: '#0a0a0a',
-    border: '1px solid rgba(201,168,76,0.3)', borderRadius: '6px',
+    border: '1px solid rgba(var(--color-gold-rgb), 0.3)', borderRadius: '6px',
     color: '#fff', fontSize: '11px', boxSizing: 'border-box' as const,
   },
   arrow       : { color: 'rgba(255,255,255,0.25)', fontSize: '20px', paddingTop: '28px', flexShrink: 0 },
@@ -465,19 +465,19 @@ const c: Record<string, React.CSSProperties> = {
     borderTop: '1px solid rgba(255,255,255,0.05)',
     background: 'rgba(0,0,0,0.2)',
   },
-  code        : { fontFamily: 'monospace', color: 'rgba(201,168,76,0.6)', fontSize: '11px' },
+  code        : { fontFamily: 'monospace', color: 'rgba(var(--color-gold-rgb), 0.6)', fontSize: '11px' },
   actions     : {
     display: 'flex', gap: '8px', padding: '12px 16px',
     borderTop: '1px solid rgba(255,255,255,0.07)',
   },
   btnUpload   : {
     flex: 1, padding: '9px 14px', background: 'transparent',
-    border: '1px dashed rgba(201,168,76,0.4)', borderRadius: '8px',
-    color: '#C9A84C', cursor: 'pointer', fontSize: '13px', fontWeight: 500,
+    border: '1px dashed rgba(var(--color-gold-rgb), 0.4)', borderRadius: '8px',
+    color: 'var(--color-gold)', cursor: 'pointer', fontSize: '13px', fontWeight: 500,
     transition: 'all .15s',
   },
   btnConfirm  : {
-    flex: 1, padding: '9px 14px', background: '#C9A84C',
+    flex: 1, padding: '9px 14px', background: 'var(--color-gold)',
     border: 'none', borderRadius: '8px',
     color: '#000', cursor: 'pointer', fontSize: '13px', fontWeight: 600,
   },
