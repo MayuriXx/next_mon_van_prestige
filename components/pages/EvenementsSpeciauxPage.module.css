@@ -58,17 +58,17 @@
 }
 
 .heroTag {
-  font-family: var(--font-lato, sans-serif);
+  font-family: var(--font-body);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-gold, #C9A84C);
+  color: var(--color-gold, var(--color-gold));
   margin: 0;
 }
 
 .heroTitle {
-  font-family: var(--font-playfair, serif);
+  font-family: var(--font-title);
   font-size: clamp(2rem, 4vw, 3.2rem);
   font-weight: 700;
   color: #fff;
@@ -77,7 +77,7 @@
 }
 
 .heroSubtitle {
-  font-family: var(--font-lato, sans-serif);
+  font-family: var(--font-body);
   font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.75);
   line-height: 1.7;
@@ -96,10 +96,10 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(201, 168, 76, 0.15);
-  border: 1px solid rgba(201, 168, 76, 0.4);
-  color: var(--color-gold, #C9A84C);
-  font-family: var(--font-lato, sans-serif);
+  background: rgba(var(--color-gold-rgb), 0.15);
+  border: 1px solid rgba(var(--color-gold-rgb), 0.4);
+  color: var(--color-gold, var(--color-gold));
+  font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -125,7 +125,7 @@
 }
 
 .heroFormTitle {
-  font-family: var(--font-playfair, serif);
+  font-family: var(--font-title);
   font-size: 1.1rem;
   font-weight: 700;
   color: #0a0a0a;
@@ -144,7 +144,7 @@
 
 .modeBtn {
   padding: 10px 8px;
-  font-family: var(--font-lato, sans-serif);
+  font-family: var(--font-body);
   font-size: 0.82rem;
   font-weight: 600;
   background: #f5f5f5;
@@ -155,7 +155,7 @@
 }
 
 .modeBtnActive {
-  background: var(--color-gold, #C9A84C);
+  background: var(--color-gold, var(--color-gold));
   color: #fff;
 }
 
@@ -164,7 +164,7 @@
   padding: 10px 14px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-family: var(--font-lato, sans-serif);
+  font-family: var(--font-body);
   font-size: 0.88rem;
   color: #333;
   background: #fff;
@@ -181,7 +181,7 @@
   padding: 10px 14px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-family: var(--font-lato, sans-serif);
+  font-family: var(--font-body);
   font-size: 0.88rem;
   color: #333;
   background: #fff;
@@ -191,7 +191,7 @@
 }
 
 .formInput:focus {
-  border-color: var(--color-gold, #C9A84C);
+  border-color: var(--color-gold, var(--color-gold));
 }
 
 .formRow {
@@ -207,7 +207,7 @@
 }
 
 .formLabel {
-  font-family: var(--font-lato, sans-serif);
+  font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 600;
   color: #666;
@@ -219,9 +219,9 @@
   display: block;
   width: 100%;
   padding: 13px;
-  background: var(--color-gold, #C9A84C);
+  background: var(--color-gold, var(--color-gold));
   color: #fff;
-  font-family: var(--font-lato, sans-serif);
+  font-family: var(--font-body);
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -235,7 +235,7 @@
 }
 
 .formBtn:hover {
-  background: #b8943e;
+  background: var(--color-gold-dark);
   transform: translateY(-1px);
 }
 
@@ -243,10 +243,10 @@
   width: 100%;
   padding: 11px;
   background: transparent;
-  color: var(--color-gold, #C9A84C);
-  border: 1px solid var(--color-gold, #C9A84C);
+  color: var(--color-gold, var(--color-gold));
+  border: 1px solid var(--color-gold, var(--color-gold));
   border-radius: 8px;
-  font-family: var(--font-lato, sans-serif);
+  font-family: var(--font-body);
   font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -255,7 +255,7 @@
 }
 
 .formBtnSecondary:hover:not(:disabled) {
-  background: rgba(201, 168, 76, 0.1);
+  background: rgba(var(--color-gold-rgb), 0.1);
 }
 
 .formBtnSecondary:disabled {
@@ -264,7 +264,7 @@
 }
 
 .errorMsg {
-  font-family: var(--font-lato, sans-serif);
+  font-family: var(--font-body);
   font-size: 0.8rem;
   color: #c0392b;
   margin: 0;
@@ -280,7 +280,7 @@
 }
 
 .sectionTitle {
-  font-family: var(--font-playfair, serif);
+  font-family: var(--font-title);
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   font-weight: 700;
   color: #fff;
@@ -291,7 +291,7 @@
 .sectionSeparator {
   width: 60px;
   height: 3px;
-  background: var(--color-gold, #C9A84C);
+  background: var(--color-gold, var(--color-gold));
   margin: 0 auto 52px;
   border-radius: 2px;
 }
@@ -315,26 +315,26 @@
   gap: 20px;
   align-items: flex-start;
   background: #1a1a1a;
-  border: 1px solid rgba(201, 168, 76, 0.15);
+  border: 1px solid rgba(var(--color-gold-rgb), 0.15);
   border-radius: 12px;
   padding: 24px 22px;
   transition: border-color 0.2s;
 }
 
 .featureCard:hover {
-  border-color: rgba(201, 168, 76, 0.4);
+  border-color: rgba(var(--color-gold-rgb), 0.4);
 }
 
 .featureIconWrap {
   width: 44px;
   height: 44px;
   min-width: 44px;
-  background: rgba(201, 168, 76, 0.12);
+  background: rgba(var(--color-gold-rgb), 0.12);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-gold, #C9A84C);
+  color: var(--color-gold, var(--color-gold));
 }
 
 .featureIconWrap svg {
@@ -343,7 +343,7 @@
 }
 
 .featureTitle {
-  font-family: var(--font-playfair, serif);
+  font-family: var(--font-title);
   font-size: 1rem;
   font-weight: 600;
   color: #fff;
@@ -351,7 +351,7 @@
 }
 
 .featureDesc {
-  font-family: var(--font-lato, sans-serif);
+  font-family: var(--font-body);
   font-size: 0.88rem;
   color: rgba(255, 255, 255, 0.6);
   line-height: 1.6;
@@ -365,7 +365,7 @@
   gap: 0;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(201, 168, 76, 0.2);
+  border: 1px solid rgba(var(--color-gold-rgb), 0.2);
 }
 
 .mapWrapper {
@@ -392,13 +392,13 @@
 .statIcon {
   width: 20px;
   height: 20px;
-  color: var(--color-gold, #C9A84C);
+  color: var(--color-gold, var(--color-gold));
   flex-shrink: 0;
 }
 
 .statLabel {
   display: block;
-  font-family: var(--font-lato, sans-serif);
+  font-family: var(--font-body);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -408,7 +408,7 @@
 
 .statValue {
   display: block;
-  font-family: var(--font-playfair, serif);
+  font-family: var(--font-title);
   font-size: 1.1rem;
   font-weight: 700;
   color: #fff;
@@ -492,14 +492,14 @@
 .suggestionIcon {
   width: 14px;
   height: 14px;
-  color: var(--color-gold, #C9A84C);
+  color: var(--color-gold, var(--color-gold));
   flex-shrink: 0;
   margin-top: 2px;
 }
 
 /* ── Hero note ── */
 .heroNote {
-  font-family: var(--font-lato, sans-serif);
+  font-family: var(--font-body);
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.5);
   font-style: italic;
