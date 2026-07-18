@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { reportError } from '@/lib/errors/errorBus';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useCallback, useRef, useEffect } from 'react';
@@ -55,7 +56,8 @@ async function geocode(address: string): Promise<GeoPoint | null> {
     const data = await res.json();
     if (typeof data.lat !== 'number' || typeof data.lng !== 'number') return null;
     return { lat: data.lat, lng: data.lng, label: data.formattedAddress ?? '' };
-  } catch {
+  } catch (err) {
+    reportError(err, "Adresse introuvable. Vérifiez votre saisie.", 'geocode');
     return null;
   }
 }
@@ -71,7 +73,8 @@ async function fetchSuggestions(query: string, sessionToken: string): Promise<Su
     if (!res.ok) return [];
     const data = await res.json();
     return (data.suggestions ?? []) as Suggestion[];
-  } catch {
+  } catch (err) {
+    reportError(err, "Suggestions d'adresses indisponibles.", 'autocomplete', 'warning');
     return [];
   }
 }
@@ -87,7 +90,8 @@ async function fetchPlaceDetails(placeId: string, sessionToken: string): Promise
     const data = await res.json();
     if (typeof data.lat !== 'number' || typeof data.lng !== 'number') return null;
     return { lat: data.lat, lng: data.lng, label: data.formattedAddress ?? '' };
-  } catch {
+  } catch (err) {
+    reportError(err, "Impossible de récupérer cette adresse.", 'geocode', 'warning');
     return null;
   }
 }
@@ -103,7 +107,8 @@ async function getRoute(from: GeoPoint, to: GeoPoint): Promise<{ distanceKm: num
     const data = await res.json();
     if (typeof data.distanceKm !== 'number' || !Array.isArray(data.coords)) return null;
     return { distanceKm: data.distanceKm, durationMin: data.durationMin, coords: data.coords as [number, number][] };
-  } catch {
+  } catch (err) {
+    reportError(err, "Impossible de calculer l'itinéraire. Réessayez.", 'route');
     return null;
   }
 }
