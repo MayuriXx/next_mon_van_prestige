@@ -17,6 +17,7 @@ import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { getFirebaseAuth } from '@/lib/firebase/client';
+import { reportError } from '@/lib/errors/errorBus';
 import { useAuth } from '@/lib/firebase/auth-context';
 import Image from 'next/image';
 
@@ -44,8 +45,13 @@ export default function AdminLoginPage() {
     try {
       await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
       router.replace('/admin');
-    } catch {
-      setError('Email ou mot de passe incorrect.');
+    } catch (err) {
+      // Previously this was a bare `catch {}` that always blamed the
+      // credentials. That hid a genuine configuration failure (an expired
+      // Firebase API key) behind "mot de passe incorrect" and cost real
+      // debugging time. Surface what actually happened.
+      const reported = reportError(err, 'Email ou mot de passe incorrect.', 'auth');
+      setError(reported.userMessage);
     } finally {
       setPending(false);
     }
