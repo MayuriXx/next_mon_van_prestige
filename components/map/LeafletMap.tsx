@@ -55,7 +55,7 @@ export default function LeafletMap({ from, to, routeCoords }: LeafletMapProps) {
       });
 
       const goldIcon = L.divIcon({
-        html: '<div style="width:16px;height:16px;background:#C9A84C;border:2px solid #fff;border-radius:50%;box-shadow:0 0 6px rgba(201,168,76,0.6)"></div>',
+        html: '<div style="width:16px;height:16px;background:#D4AF37;border:2px solid #fff;border-radius:50%;box-shadow:0 0 6px rgba(212,175,55,0.6)"></div>',
         iconSize: [16, 16],
         iconAnchor: [8, 8],
         className: '',
@@ -79,7 +79,7 @@ export default function LeafletMap({ from, to, routeCoords }: LeafletMapProps) {
 
       if (routeCoords && routeCoords.length > 0) {
         L.polyline(routeCoords, {
-          color: '#C9A84C',
+          color: '#D4AF37', // keep in sync with --color-gold
           weight: 4,
           opacity: 0.85,
         }).addTo(map);
