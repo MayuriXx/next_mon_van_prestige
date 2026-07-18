@@ -165,7 +165,7 @@ export default function ReservationDetailPage() {
               <option key={st} value={st}>{STATUS_LABELS[st]}</option>
             ))}
           </select>
-          {saving && <span style={{ color: '#C9A84C', fontSize: '13px' }}>Enregistrement…</span>}
+          {saving && <span style={{ color: 'var(--color-gold)', fontSize: '13px' }}>Enregistrement…</span>}
         </div>
       </div>
 
@@ -265,7 +265,7 @@ function Row({ label, value, link, highlight }: {
           {text}
         </a>
       ) : (
-        <span style={{ ...row.value, ...(highlight ? { color: '#C9A84C', fontWeight: 700 } : {}) }}>
+        <span style={{ ...row.value, ...(highlight ? { color: 'var(--color-gold)', fontWeight: 700 } : {}) }}>
           {text}
         </span>
       )}
@@ -299,7 +299,7 @@ const s: Record<string, React.CSSProperties> = {
   centered: { display: 'flex', justifyContent: 'center', padding: '80px' },
   spinner: {
     width: '36px', height: '36px', borderRadius: '50%',
-    border: '3px solid rgba(201,168,76,0.2)', borderTopColor: '#C9A84C',
+    border: '3px solid rgba(var(--color-gold-rgb), 0.2)', borderTopColor: 'var(--color-gold)',
     animation: 'spin 0.8s linear infinite',
   },
   errorBox: {
@@ -319,5 +319,5 @@ const row: Record<string, React.CSSProperties> = {
   wrap : { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', padding: '10px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)' },
   label: { fontSize: '13px', color: 'rgba(255,255,255,0.4)', flexShrink: 0, minWidth: '120px' },
   value: { fontSize: '13px', color: '#fff', textAlign: 'right' as const, wordBreak: 'break-all' as const },
-  link : { fontSize: '13px', color: '#C9A84C', textAlign: 'right' as const, textDecoration: 'none', wordBreak: 'break-all' as const },
+  link : { fontSize: '13px', color: 'var(--color-gold)', textAlign: 'right' as const, textDecoration: 'none', wordBreak: 'break-all' as const },
 };
