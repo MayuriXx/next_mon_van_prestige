@@ -376,11 +376,11 @@ export const stripeWebhook = onRequest(
         to     : [session.customer_email ?? meta.clientName],
         subject: '✅ Confirmation de votre réservation — MS Prestige Driver',
         html   : `
-          <div style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e0e0e0">
+          <div style="font-family:'Montserrat','Helvetica Neue',Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e0e0e0">
 
             <!-- Header -->
             <div style="background:#1a1a1a;padding:28px 32px">
-              <h1 style="margin:0;font-size:22px;color:#C9A84C;font-weight:700">MS Prestige Driver</h1>
+              <h1 style="margin:0;font-family:'Playfair Display',Georgia,serif;font-size:22px;color:#D4AF37;font-weight:700">MS Prestige Driver</h1>
               <p style="margin:6px 0 0;font-size:13px;color:rgba(255,255,255,0.7)">Votre réservation est confirmée</p>
             </div>
 
@@ -392,41 +392,41 @@ export const stripeWebhook = onRequest(
               <!-- Summary table -->
               <table style="width:100%;border-collapse:collapse;margin:0 0 24px;font-size:14px">
                 <tr>
-                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee;width:40%">Service</td>
+                  <td style="padding:12px 16px;color:#D4AF37;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee;width:40%">Service</td>
                   <td style="padding:12px 16px;color:#333;border-bottom:1px solid #eee">${serviceLabel}</td>
                 </tr>
                 <tr style="background:#f9f9f9">
-                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Véhicule</td>
+                  <td style="padding:12px 16px;color:#D4AF37;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Véhicule</td>
                   <td style="padding:12px 16px;color:#333;border-bottom:1px solid #eee">${vehicleLabel}</td>
                 </tr>
                 <tr>
-                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Date</td>
+                  <td style="padding:12px 16px;color:#D4AF37;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Date</td>
                   <td style="padding:12px 16px;color:#333;border-bottom:1px solid #eee">${departureDate} à ${departureTime}</td>
                 </tr>
                 <tr style="background:#f9f9f9">
-                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Départ</td>
+                  <td style="padding:12px 16px;color:#D4AF37;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Départ</td>
                   <td style="padding:12px 16px;color:#333;border-bottom:1px solid #eee">${meta.departureAddress}</td>
                 </tr>
                 ${meta.arrivalAddress ? `<tr>
-                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Arrivée</td>
+                  <td style="padding:12px 16px;color:#D4AF37;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Arrivée</td>
                   <td style="padding:12px 16px;color:#333;border-bottom:1px solid #eee">${meta.arrivalAddress}</td>
                 </tr>` : ''}
                 <tr style="background:#f9f9f9">
-                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Prix total estimé</td>
+                  <td style="padding:12px 16px;color:#D4AF37;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Prix total estimé</td>
                   <td style="padding:12px 16px;color:#333;font-weight:700;font-size:16px;border-bottom:1px solid #eee">${totalPrice} €</td>
                 </tr>
                 <tr>
-                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Acompte réglé (${depositPct}%)</td>
+                  <td style="padding:12px 16px;color:#D4AF37;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid #eee">Acompte réglé (${depositPct}%)</td>
                   <td style="padding:12px 16px;color:#2e7d32;font-weight:700;font-size:16px;border-bottom:1px solid #eee">${depositAmt.toFixed(2)} €</td>
                 </tr>
                 <tr style="background:#f9f9f9">
-                  <td style="padding:12px 16px;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700">Solde restant dû</td>
+                  <td style="padding:12px 16px;color:#D4AF37;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700">Solde restant dû</td>
                   <td style="padding:12px 16px;color:#333;font-weight:700;font-size:16px">${remaining.toFixed(2)} €</td>
                 </tr>
               </table>
 
               <!-- Remaining balance notice -->
-              <div style="background:#faf6eb;padding:16px 20px;border-left:4px solid #C9A84C;border-radius:4px;margin:0 0 24px">
+              <div style="background:#faf6eb;padding:16px 20px;border-left:4px solid #D4AF37;border-radius:4px;margin:0 0 24px">
                 <p style="margin:0;font-size:13px;color:#555;line-height:1.5">
                   Le solde restant (<strong style="color:#333">${remaining.toFixed(2)} €</strong>) sera à régler avant le départ, à bord du véhicule par carte bancaire ou espèces.
                 </p>
@@ -434,7 +434,7 @@ export const stripeWebhook = onRequest(
 
               <!-- Contact -->
               <p style="font-size:14px;color:#555;margin:0 0 32px">
-                Pour toute question ou modification : <a href="tel:+33783698460" style="color:#C9A84C;text-decoration:none;font-weight:600">07 83 69 84 60</a> ou WhatsApp <a href="https://wa.me/33783698460" style="color:#C9A84C;text-decoration:none;font-weight:600">+33 7 83 69 84 60</a>
+                Pour toute question ou modification : <a href="tel:+33783698460" style="color:#D4AF37;text-decoration:none;font-weight:600">07 83 69 84 60</a> ou WhatsApp <a href="https://wa.me/33783698460" style="color:#D4AF37;text-decoration:none;font-weight:600">+33 7 83 69 84 60</a>
               </p>
 
               <!-- Footer -->
@@ -455,8 +455,8 @@ export const stripeWebhook = onRequest(
         to     : [adminEmail],
         subject: `🚗 Nouvelle réservation — ${meta.clientName} — ${departureDate}`,
         html   : `
-          <div style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:600px;margin:0 auto">
-            <h2 style="color:#C9A84C">Nouvelle réservation confirmée</h2>
+          <div style="font-family:'Montserrat','Helvetica Neue',Arial,sans-serif;max-width:600px;margin:0 auto">
+            <h2 style="font-family:'Playfair Display',Georgia,serif;color:#D4AF37">Nouvelle réservation confirmée</h2>
             <p>Un acompte de <strong>${depositAmt.toFixed(2)} € (${depositPct}%)</strong> a été reçu via Stripe.</p>
 
             <h3>Client</h3>
