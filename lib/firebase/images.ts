@@ -29,6 +29,7 @@
  */
 
 import { db, storage } from '@/lib/firebase/client';
+import { reportError } from '@/lib/errors/errorBus';
 import {
   collection,
   query,
@@ -65,7 +66,8 @@ export async function getHeroImage(): Promise<ImageData | null> {
   try {
     const snap = await getDoc(doc(db, 'images', 'hero'));
     if (snap.exists()) return snap.data() as ImageData;
-  } catch {
+  } catch (err) {
+    reportError(err, "Certains contenus n'ont pas pu être chargés.", 'firestore', 'warning');
     console.log('Firestore unavailable for hero image, using local data');
   }
   return imagesData.hero;
@@ -80,7 +82,8 @@ export async function getVehicleImages(): Promise<VehicleImage[]> {
         .map((d) => ({ name: d.id, ...d.data() } as VehicleImage))
         .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
     }
-  } catch {
+  } catch (err) {
+    reportError(err, "Certains contenus n'ont pas pu être chargés.", 'firestore', 'warning');
     console.log('Firestore unavailable for vehicle images, using local data');
   }
   return Object.entries(imagesData.vehicles).map(([id, data]) => ({
@@ -94,7 +97,8 @@ export async function getSectionImages(section: string): Promise<ImageData | nul
   try {
     const snap = await getDoc(doc(db, 'section_images', section));
     if (snap.exists()) return snap.data() as ImageData;
-  } catch {
+  } catch (err) {
+    reportError(err, "Certains contenus n'ont pas pu être chargés.", 'firestore', 'warning');
     console.log(`Firestore unavailable for ${section} image, using local data`);
   }
   return (imagesData.sections as Record<string, ImageData | undefined>)[section] ?? null;
