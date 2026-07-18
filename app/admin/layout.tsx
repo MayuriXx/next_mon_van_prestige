@@ -17,6 +17,7 @@ import type { Metadata } from 'next';
 import { AuthProvider } from '@/lib/firebase/auth-context';
 import '@/app/globals.css';
 import '@/app/fonts.css';
+import ErrorToaster from '@/components/ui/ErrorToaster';
 
 export const metadata: Metadata = {
   title: 'Admin — MS Prestige Driver',
@@ -36,6 +37,8 @@ export default function AdminRootLayout({ children }: { children: React.ReactNod
       >
         <AuthProvider>
           {children}
+        {/* Admin sees the raw code: they are the ones who must fix it. */}
+        <ErrorToaster verbosity="technical" />
         </AuthProvider>
       </body>
     </html>

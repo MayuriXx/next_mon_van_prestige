@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { reportError } from '@/lib/errors/errorBus';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
@@ -34,7 +35,8 @@ async function fetchSuggestions(query: string, sessionToken: string): Promise<Su
     if (!res.ok) return [];
     const data = await res.json();
     return (data.suggestions ?? []) as Suggestion[];
-  } catch {
+  } catch (err) {
+    reportError(err, "Suggestions d'adresses indisponibles.", 'autocomplete', 'warning');
     return [];
   }
 }
