@@ -48,7 +48,7 @@
 }
 
 .heroTag {
-  font-family: var(--font-montserrat);
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.25em;
@@ -87,7 +87,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  font-family: var(--font-montserrat);
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
@@ -146,8 +146,8 @@
   height: 32px;
   min-width: 32px;
   border-radius: 50%;
-  background: rgba(201, 168, 76, 0.10);
-  border: 1px solid rgba(201, 168, 76, 0.35);
+  background: rgba(var(--color-gold-rgb), 0.10);
+  border: 1px solid rgba(var(--color-gold-rgb), 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -157,7 +157,7 @@
 .advantageIconWrap svg { width: 15px; height: 15px; }
 
 .advantageTitle {
-  font-family: var(--font-montserrat);
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 700;
   color: var(--color-white);
@@ -190,10 +190,10 @@
   text-align: center;
   transition: border-color 0.25s;
 }
-.airportCard:hover { border-color: rgba(201, 168, 76, 0.35); }
+.airportCard:hover { border-color: rgba(var(--color-gold-rgb), 0.35); }
 
 .cardFrom {
-  font-family: var(--font-montserrat);
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.55);
@@ -216,7 +216,7 @@
 }
 .cardIcon { font-size: 18px; color: var(--color-gold); margin: 4px 0; }
 .cardFromLabel {
-  font-family: var(--font-montserrat);
+  font-family: var(--font-body);
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.15em;
@@ -239,7 +239,7 @@
   padding: 10px 14px;
   background: var(--color-gold);
   color: #000;
-  font-family: var(--font-montserrat);
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -249,8 +249,8 @@
   transition: background 0.2s, box-shadow 0.2s;
 }
 .cardBtn:hover {
-  background: #d4b55a;
-  box-shadow: 0 4px 14px rgba(201, 168, 76, 0.3);
+  background: var(--color-gold-light);
+  box-shadow: 0 4px 14px rgba(var(--color-gold-rgb), 0.3);
 }
 
 /* ══ Responsive ══ */
