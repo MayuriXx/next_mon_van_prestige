@@ -8,13 +8,15 @@
   --color-bg-alt:      #111111;
   --color-card:        #1a1a1a;
   --color-card-alt:    #222222;
-  --color-gold:        #C9A84C;
-  --color-gold-light:  #dfc070;
-  --color-gold-dark:   #a8853a;
+  --color-gold:        #D4AF37;
+  /* RGB channels of --color-gold, for rgba() with variable alpha. */
+  --color-gold-rgb:    212, 175, 55;
+  --color-gold-light:  #E3C468;
+  --color-gold-dark:   #A88829;
   --color-white:       #FFFFFF;
   --color-text:        #ededed;
   --color-text-muted:  rgba(255, 255, 255, 0.6);
-  --color-border:      rgba(201, 168, 76, 0.2);
+  --color-border:      rgba(var(--color-gold-rgb), 0.2);
   --color-border-card: rgba(255, 255, 255, 0.07);
 
   /* --- Espacements --- */
@@ -38,7 +40,7 @@
   --transition-slow:   400ms ease;
 
   /* --- Shadows --- */
-  --shadow-gold: 0 0 20px rgba(201, 168, 76, 0.25);
+  --shadow-gold: 0 0 20px rgba(var(--color-gold-rgb), 0.25);
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
 
   /* --- Layout --- */
