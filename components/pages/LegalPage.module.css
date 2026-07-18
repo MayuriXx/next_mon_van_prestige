@@ -77,7 +77,7 @@
 }
 
 .card:hover {
-  border-color: rgba(201, 168, 76, 0.25);
+  border-color: rgba(var(--color-gold-rgb), 0.25);
 }
 
 .cardTitle {
@@ -153,7 +153,7 @@
 }
 
 .link:hover {
-  color: #b8962e;
+  color: var(--color-gold-dark);
   text-decoration: underline;
 }
 
@@ -204,7 +204,7 @@
 }
 
 .ctaBtn:hover {
-  background-color: #b8962e;
+  background-color: var(--color-gold-dark);
   transform: translateY(-2px);
 }
 
