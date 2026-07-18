@@ -8,6 +8,7 @@ import Footer from '@/components/layout/Footer';
 import FloatingButtons from '@/components/layout/FloatingButtons';
 import SplashScreen from '@/components/layout/SplashScreen';
 import OrganizationJsonLd from '@/components/seo/OrganizationJsonLd';
+import ErrorToaster from '@/components/ui/ErrorToaster';
 import '../fonts.css';
 import '../globals.css';
 
@@ -100,6 +101,8 @@ export default async function LocaleLayout({
           <main style={{ paddingTop: 'var(--nav-height)' }}>{children}</main>
           <Footer />
           <FloatingButtons />
+          {/* Visitor-facing notifications: plain message, no internals. */}
+          <ErrorToaster verbosity="user" />
         </NextIntlClientProvider>
       </body>
     </html>
