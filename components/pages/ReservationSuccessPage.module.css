@@ -30,7 +30,7 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: rgba(201, 168, 76, 0.12);
+  background: rgba(var(--color-gold-rgb), 0.12);
   border: 2px solid var(--color-gold);
   display: flex;
   align-items: center;
