@@ -73,7 +73,7 @@
 }
 
 .logo:hover .logoImg {
-  filter: drop-shadow(0 0 10px rgba(201, 168, 76, 0.5));
+  filter: drop-shadow(0 0 10px rgba(var(--color-gold-rgb), 0.5));
   transform: scale(1.04);
 }
 
@@ -154,7 +154,7 @@
 
 .dropdownItem:hover,
 .dropdownItemActive {
-  background-color: rgba(201, 168, 76, 0.08);
+  background-color: rgba(var(--color-gold-rgb), 0.08);
   color: var(--color-gold);
 }
 
@@ -183,13 +183,13 @@
 }
 
 .langBtn:hover {
-  border-color: rgba(201, 168, 76, 0.4);
+  border-color: rgba(var(--color-gold-rgb), 0.4);
   transform: scale(1.1);
 }
 
 .langActive {
   border-color: var(--color-gold) !important;
-  box-shadow: 0 0 8px rgba(201, 168, 76, 0.35);
+  box-shadow: 0 0 8px rgba(var(--color-gold-rgb), 0.35);
 }
 
 .flagImg {
