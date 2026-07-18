@@ -176,7 +176,7 @@
   margin-top: 0.25rem;
 }
 
-.formBtn:hover { background: #d4a84b; transform: translateY(-1px); }
+.formBtn:hover { background: var(--color-gold-light); transform: translateY(-1px); }
 .formBtn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
 .errorMsg {
@@ -232,14 +232,14 @@
   transition: border-color 0.25s;
 }
 
-.advantageCard:hover { border-color: rgba(201, 168, 76, 0.4); }
+.advantageCard:hover { border-color: rgba(var(--color-gold-rgb), 0.4); }
 
 .advantageIconWrap {
   width: 40px;
   height: 40px;
   min-width: 40px;
   border-radius: 50%;
-  background: rgba(201, 168, 76, 0.12);
+  background: rgba(var(--color-gold-rgb), 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -335,7 +335,7 @@
 
 .priceCard {
   background: var(--color-card);
-  border: 1px solid rgba(201, 168, 76, 0.35);
+  border: 1px solid rgba(var(--color-gold-rgb), 0.35);
   border-radius: 10px;
   padding: 1rem;
   text-align: center;
