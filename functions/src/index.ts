@@ -141,6 +141,16 @@ const VEHICLE_LABELS: Record<string, string> = {
   VAN      : 'Van de Luxe',
 };
 
+// ── CORS ──────────────────────────────────────────────────────────────────────
+// Firebase Hosting serves the site on BOTH *.web.app and *.firebaseapp.com, and
+// neither can be disabled. Both must be allowed or every browser call from the
+// omitted domain is blocked by CORS. Keep in sync with cors.json (Storage).
+const ALLOWED_ORIGINS = [
+  'https://mon-van-prestige.web.app',
+  'https://mon-van-prestige.firebaseapp.com',
+  'http://localhost:3000',
+];
+
 // ── Cloud Function: createCheckoutSession ─────────────────────────────────────
 
 export const createCheckoutSession = onRequest(
@@ -148,7 +158,7 @@ export const createCheckoutSession = onRequest(
     region: 'europe-west1',
     invoker: 'public',
     secrets: [STRIPE_SECRET_KEY],
-    cors: ['https://mon-van-prestige.web.app', 'http://localhost:3000'],
+    cors: ALLOWED_ORIGINS,
   },
   async (req, res) => {
     // CORS is handled automatically by the "cors" option in onRequest above.
@@ -519,7 +529,7 @@ const GOOGLE_MAPS_API_KEY = defineSecret('GOOGLE_MAPS_API_KEY');
 /** Regions the address search is restricted to (France + Belgium). */
 const PLACES_REGION_CODES = ['fr', 'be'];
 
-const PLACES_CORS = ['https://mon-van-prestige.web.app', 'http://localhost:3000'];
+const PLACES_CORS = ALLOWED_ORIGINS;
 
 interface AutocompleteSuggestion {
   /** Google place_id, used to fetch coordinates via placeDetails */
