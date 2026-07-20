@@ -485,7 +485,12 @@
     "recap_card": "Credit card",
     "recap_cash": "Cash",
     "recap_confirm": "CONFIRM BOOKING",
-    "recap_edit": "Edit"
+    "recap_edit": "Edit",
+    "service_mad": "Chauffeur Service",
+    "duration": "DURATION",
+    "duration_value": "{count} hour(s)",
+    "recap_duration": "Duration",
+    "recap_trip_mad": "Chauffeur service"
   },
   "tarifs": {
     "title": "MOST REQUESTED TRANSFERS",
