@@ -86,3 +86,8 @@ The **itinerary/route drawing** still uses OSRM/OpenRouteService (the map polyli
 and distance). Only the *address search* was migrated. Route calculation can be
 migrated to the Google Directions API later if higher precision or live traffic is
 required.
+
+> **Superseded.** The follow-up migration described above has since happened:
+> route calculation now goes through the `directions` Cloud Function
+> (`lib/utils/routing.ts`), and OpenRouteService is no longer called anywhere.
+> Leaflet/OpenStreetMap remain in use for map *rendering* only.
