@@ -485,7 +485,12 @@
     "recap_card": "Carte bancaire",
     "recap_cash": "Espèces",
     "recap_confirm": "CONFIRMER LA RÉSERVATION",
-    "recap_edit": "Modifier"
+    "recap_edit": "Modifier",
+    "service_mad": "Mise à Disposition",
+    "duration": "DURÉE",
+    "duration_value": "{count} heure(s)",
+    "recap_duration": "Durée",
+    "recap_trip_mad": "Mise à disposition"
   },
   "tarifs": {
     "title": "TRANSFERTS LES PLUS DEMANDÉS",
