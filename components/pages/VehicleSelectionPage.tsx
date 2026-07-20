@@ -177,7 +177,9 @@ export default function VehicleSelectionPage() {
       returnDate: p.get('returnDate') || '',
       returnHour: p.get('returnHour') || '',
       women: p.get('women') === '1',
-      durationHours: Math.max(1, parseInt(p.get('duration') || '0', 10) || 0),
+      // MAD is billed for a minimum of 2 hours (CGV) — enforce the floor here
+      // too, in case the query param is missing or tampered with.
+      durationHours: Math.max(2, parseInt(p.get('duration') || '2', 10) || 2),
     };
     setParams(parsed);
 
