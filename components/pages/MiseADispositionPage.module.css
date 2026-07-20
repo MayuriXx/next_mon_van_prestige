@@ -221,6 +221,10 @@
 
 .formBtn {
   display: block;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  appearance: none;
   text-align: center;
   background: var(--color-gold);
   color: #0a0a0a;
