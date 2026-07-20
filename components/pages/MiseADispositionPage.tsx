@@ -2,8 +2,7 @@
 
 import Image from 'next/image';
 import { reportError } from '@/lib/errors/errorBus';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import { useContenus } from '@/lib/hooks/useContenus';
@@ -161,9 +160,8 @@ const FEATURES = [
   },
 ];
 
-const DURATIONS_FR = ['2 heures', '3 heures', '4 heures', '5 heures', '6 heures', '8 heures', '10 heures', '12 heures'];
-const DURATIONS_EN = ['2 hours',  '3 hours',  '4 hours',  '5 hours',  '6 hours',  '8 hours',  '10 hours',  '12 hours'];
-const DURATIONS_NL = ['2 uur',    '3 uur',    '4 uur',    '5 uur',    '6 uur',    '8 uur',    '10 uur',    '12 uur'];
+/* Bookable durations in hours (min 2h per the CGV). The unit word is localized. */
+const DURATION_HOURS = [2, 3, 4, 5, 6, 8, 10, 12];
 
 const PASSENGERS_FR = ['1 Passager', '2 Passagers', '3 Passagers', '4 Passagers', '5 Passagers', '6 Passagers', '7 Passagers', '8 Passagers'];
 const PASSENGERS_EN = ['1 Passenger','2 Passengers','3 Passengers','4 Passengers','5 Passengers','6 Passengers','7 Passengers','8 Passengers'];
@@ -175,7 +173,7 @@ const CONTENT: Record<Locale, {
   tag: string; title: string; subtitle: string; note: string; badges: string[];
   formTitle: string; pickupPlaceholder: string; dropoffPlaceholder: string;
   durationLabel: string; passengersLabel: string; ctaBtn: string; sectionTitle: string;
-  durations: string[]; passengers: string[];
+  hourUnit: string; passengers: string[];
 }> = {
   fr: {
     tag: 'MISE À DISPOSITION',
@@ -190,7 +188,7 @@ const CONTENT: Record<Locale, {
     passengersLabel: 'Nombre de passagers',
     ctaBtn: 'VOIR LES VÉHICULES',
     sectionTitle: 'Service Mise à Disposition',
-    durations: DURATIONS_FR,
+    hourUnit: 'heures',
     passengers: PASSENGERS_FR,
   },
   en: {
@@ -206,7 +204,7 @@ const CONTENT: Record<Locale, {
     passengersLabel: 'Number of passengers',
     ctaBtn: 'SEE VEHICLES',
     sectionTitle: 'Chauffeur Service',
-    durations: DURATIONS_EN,
+    hourUnit: 'hours',
     passengers: PASSENGERS_EN,
   },
   nl: {
@@ -222,7 +220,7 @@ const CONTENT: Record<Locale, {
     passengersLabel: 'Aantal passagiers',
     ctaBtn: 'VOERTUIGEN BEKIJKEN',
     sectionTitle: 'Chauffeur ter Beschikking',
-    durations: DURATIONS_NL,
+    hourUnit: 'uur',
     passengers: PASSENGERS_NL,
   },
 };
@@ -246,8 +244,31 @@ export default function MiseADispositionPage() {
   const contenus = useContenus('miseADisposition', locale);
   const c = CONTENT[locale] ?? CONTENT.fr;
 
+  const router = useRouter();
   const [pickup, setPickup] = useState('');
   const [dropoff, setDropoff] = useState('');
+  const [date, setDate] = useState('');
+  const [hour, setHour] = useState('');
+  const [durationHours, setDurationHours] = useState<number>(DURATION_HOURS[0]);
+  const [passengers, setPassengers] = useState<number>(1);
+
+  /* On submit, forward the form to the shared vehicle-selection funnel in MAD
+     mode (?service=mad), exactly like the airport packages do — instead of the
+     old redirect straight to /reservation. VehicleSelectionPage then prices it
+     as hourly rate x duration (Business 55 EUR/h, Van 90 EUR/h) and drives the
+     client-info -> recap -> Stripe popups. */
+  function handleSeeVehicles() {
+    const p = new URLSearchParams({
+      service: 'mad',
+      duration: String(durationHours),
+      passengers: String(passengers),
+    });
+    if (date) p.set('date', date);
+    if (hour) p.set('hour', hour);
+    if (pickup.trim()) p.set('departure', pickup.trim());
+    if (dropoff.trim()) p.set('arrival', dropoff.trim());
+    router.push(`${localePath('/reservation/vehicules', locale)}?${p.toString()}`);
+  }
 
   function getFeatureTitle(f: typeof FEATURES[0]): string {
     if (locale === 'en') return f.title_en;
@@ -301,7 +322,7 @@ export default function MiseADispositionPage() {
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Date</label>
                 <div className={styles.inputWithIcon}>
-                  <input type="date" className={styles.formInput} />
+                  <input type="date" className={styles.formInput} value={date} onChange={(e) => setDate(e.target.value)} />
                   <span className={styles.inputIcon}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
@@ -312,7 +333,7 @@ export default function MiseADispositionPage() {
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Heure</label>
                 <div className={styles.inputWithIcon}>
-                  <input type="time" className={styles.formInput} />
+                  <input type="time" className={styles.formInput} value={hour} onChange={(e) => setHour(e.target.value)} />
                   <span className={styles.inputIcon}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
@@ -336,25 +357,33 @@ export default function MiseADispositionPage() {
 
             <div className={styles.formGroup}>
               <label className={styles.formLabel}>{c.durationLabel}</label>
-              <select className={styles.formSelect}>
-                {c.durations.map((d) => (
-                  <option key={d} value={d}>{d}</option>
+              <select
+                className={styles.formSelect}
+                value={durationHours}
+                onChange={(e) => setDurationHours(parseInt(e.target.value, 10))}
+              >
+                {DURATION_HOURS.map((h) => (
+                  <option key={h} value={h}>{h} {c.hourUnit}</option>
                 ))}
               </select>
             </div>
 
             <div className={styles.formGroup}>
               <label className={styles.formLabel}>{c.passengersLabel}</label>
-              <select className={styles.formSelect}>
-                {c.passengers.map((p) => (
-                  <option key={p} value={p}>{p}</option>
+              <select
+                className={styles.formSelect}
+                value={passengers}
+                onChange={(e) => setPassengers(parseInt(e.target.value, 10))}
+              >
+                {c.passengers.slice(0, 7).map((label, i) => (
+                  <option key={label} value={i + 1}>{label}</option>
                 ))}
               </select>
             </div>
 
-            <Link href={localePath('/reservation', locale)} className={styles.formBtn}>
+            <button type="button" className={styles.formBtn} onClick={handleSeeVehicles}>
               {c.ctaBtn}
-            </Link>
+            </button>
           </div>
         </div>
       </section>
