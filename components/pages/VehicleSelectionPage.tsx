@@ -123,8 +123,13 @@ const ICON_CLIM = (
 );
 
 type Params = {
+  /** 'transfer' (airport / point-to-point, distance-based) or 'mad' (chauffeur hire, time-based). */
+  service: 'transfer' | 'mad';
   departure: string; arrival: string; date: string; hour: string;
-  passengers: number; roundTrip: boolean; returnDate: string; returnHour: string; women: boolean;
+  passengers: number; roundTrip: boolean; returnDate: string; returnHour: string;
+  women: boolean;
+  /** Mise à Disposition only — billed as hourly rate x durationHours. */
+  durationHours: number;
 };
 
 export default function VehicleSelectionPage() {
@@ -160,7 +165,9 @@ export default function VehicleSelectionPage() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const p = new URLSearchParams(window.location.search);
+    const service = p.get('service') === 'mad' ? 'mad' : 'transfer';
     const parsed: Params = {
+      service,
       departure: p.get('departure') || 'Valenciennes',
       arrival: p.get('arrival') || '',
       date: p.get('date') || '',
@@ -170,8 +177,15 @@ export default function VehicleSelectionPage() {
       returnDate: p.get('returnDate') || '',
       returnHour: p.get('returnHour') || '',
       women: p.get('women') === '1',
+      // MAD is billed for a minimum of 2 hours (CGV) — enforce the floor here
+      // too, in case the query param is missing or tampered with.
+      durationHours: Math.max(2, parseInt(p.get('duration') || '2', 10) || 2),
     };
     setParams(parsed);
+
+    // MAD is time-based (hourly): no geocoding or route distance is needed.
+    if (service === 'mad') { setLoading(false); return; }
+
     (async () => {
       setLoading(true); setGeoError(false);
       const [from, to] = await Promise.all([geocode(parsed.departure), geocode(parsed.arrival)]);
@@ -189,7 +203,17 @@ export default function VehicleSelectionPage() {
     return params.roundTrip ? distanceKm * 2 : distanceKm;
   }, [distanceKm, params]);
 
+  const isMad = params?.service === 'mad';
+
   function priceFor(type: VehicleType): number | null {
+    // ── MAD: hourly rate x duration (no distance involved) ──
+    if (params?.service === 'mad') {
+      if (!params.durationHours || params.durationHours <= 0) return null;
+      const rMad = calculatePrice({ serviceType: 'MAD', vehicleType: type, durationHours: params.durationHours }, tariffs);
+      let pMad = typeof rMad.price === 'number' ? rMad.price : rMad.price.min;
+      if (params?.women) pMad = Math.ceil(pMad * (1 + surchargePercent / 100));
+      return pMad;
+    }
     if (totalKm == null) return null;
     const r = calculatePrice({ serviceType: 'TRANSFER', vehicleType: type, distanceKm: totalKm }, tariffs);
     let p = typeof r.price === 'number' ? r.price : r.price.min;
@@ -246,7 +270,7 @@ export default function VehicleSelectionPage() {
 
     /* Compose free-text notes from flight number, extras and instructions. */
     const noteParts: string[] = [];
-    if (flightNumber.trim()) noteParts.push(`${t('flight_label')}: ${flightNumber.trim()}`);
+    if (!isMad && flightNumber.trim()) noteParts.push(`${t('flight_label')}: ${flightNumber.trim()}`);
     if (addPet) noteParts.push(`${t('extra_pet')} (+${PET_SURCHARGE}€)`);
     if (addChildSeat) noteParts.push(t('extra_child_seat'));
     if (instructions.trim()) noteParts.push(instructions.trim());
@@ -258,12 +282,13 @@ export default function VehicleSelectionPage() {
         totalPrice: price,
         departureDateTime: `${params.date}T${params.hour || '00:00'}:00`,
         departureAddress: pickupAddress.trim() || params.departure,
-        arrivalAddress: params.arrival,
+        arrivalAddress: params.arrival || undefined,
         vehicleType: selected,
-        serviceType: 'TRANSFER',
-        tripType: params.roundTrip ? 'round_trip' : 'one_way',
+        serviceType: isMad ? 'MAD' : 'TRANSFER',
+        tripType: isMad ? undefined : (params.roundTrip ? 'round_trip' : 'one_way'),
         passengers: params.passengers,
-        distanceKm: distanceKm ?? undefined,
+        durationHours: isMad ? params.durationHours : undefined,
+        distanceKm: isMad ? undefined : (distanceKm ?? undefined),
         pet: addPet,
         womenService: params.women,
         locale,
@@ -286,7 +311,9 @@ export default function VehicleSelectionPage() {
     finally { setBookingLoading(false); }
   }
 
-  const serviceLabel = params?.roundTrip ? t('service_roundtrip') : t('service_oneway');
+  const serviceLabel = isMad
+    ? t('service_mad')
+    : (params?.roundTrip ? t('service_roundtrip') : t('service_oneway'));
 
   return (
     <section className={styles.wrapper}>
@@ -302,19 +329,28 @@ export default function VehicleSelectionPage() {
 
             <SummaryRow label={t('service_type')} value={serviceLabel} />
             <SummaryRow label={t('departure_place')} value={params?.departure || '—'} />
-            <SummaryRow label={t('destination_place')} value={params?.arrival || '—'} />
-            {params?.roundTrip && (
+            {(!isMad || !!params?.arrival) && (
+              <SummaryRow label={t('destination_place')} value={params?.arrival || '—'} />
+            )}
+            {!isMad && params?.roundTrip && (
               <SummaryRow label={t('return_destination')} value={params?.departure || '—'} />
             )}
-            <SummaryRow
-              label={t('total_distance')}
-              value={totalKm != null ? `${Math.round(totalKm)} km` : (loading ? '…' : '—')}
-            />
+            {isMad ? (
+              <SummaryRow
+                label={t('duration')}
+                value={params ? t('duration_value', { count: params.durationHours }) : '—'}
+              />
+            ) : (
+              <SummaryRow
+                label={t('total_distance')}
+                value={totalKm != null ? `${Math.round(totalKm)} km` : (loading ? '…' : '—')}
+              />
+            )}
             <SummaryRow
               label={t('departure_datetime')}
               value={params ? `${fmtDate(params.date)}${params.hour ? `, ${params.hour}` : ''}` : '—'}
             />
-            {params?.roundTrip && (
+            {!isMad && params?.roundTrip && (
               <SummaryRow
                 label={t('return_datetime')}
                 value={`${fmtDate(params.returnDate)}${params.returnHour ? `, ${params.returnHour}` : ''} ${t('return_discount')}`}
@@ -412,10 +448,12 @@ export default function VehicleSelectionPage() {
               <AutocompleteInput value={pickupAddress} onChange={setPickupAddress} placeholder={t('pickup_address_ph')} />
             </label>
 
+            {!isMad && (
             <label className={styles.formField}>
               <span className={styles.formLabel}>{t('flight_number')}</span>
               <input className={styles.input} placeholder={t('flight_number_ph')} value={flightNumber} onChange={(e) => setFlightNumber(e.target.value)} />
             </label>
+            )}
 
             <label className={styles.formField}>
               <span className={styles.formLabel}>{t('instructions')}</span>
@@ -451,10 +489,16 @@ export default function VehicleSelectionPage() {
               return (
                 <div className={styles.recap}>
                   <p className={styles.recapSection}>{t('recap_trip')}</p>
-                  <RecapRow label={t('recap_service')} value={params.roundTrip ? t('service_roundtrip') : t('service_oneway')} />
+                  <RecapRow label={t('recap_service')} value={isMad ? t('service_mad') : (params.roundTrip ? t('service_roundtrip') : t('service_oneway'))} />
                   <RecapRow label={t('recap_departure')} value={params.departure} />
-                  <RecapRow label={t('recap_destination')} value={params.arrival} />
-                  <RecapRow label={t('recap_distance')} value={distanceKm != null ? `${Math.round(params.roundTrip ? distanceKm * 2 : distanceKm)} km` : '—'} />
+                  {(!isMad || !!params.arrival) && (
+                    <RecapRow label={t('recap_destination')} value={params.arrival} />
+                  )}
+                  {isMad ? (
+                    <RecapRow label={t('recap_duration')} value={t('duration_value', { count: params.durationHours })} />
+                  ) : (
+                    <RecapRow label={t('recap_distance')} value={distanceKm != null ? `${Math.round(params.roundTrip ? distanceKm * 2 : distanceKm)} km` : '—'} />
+                  )}
                   <RecapRow label={t('recap_date')} value={fmtLongDate(params.date)} />
                   <RecapRow label={t('recap_time')} value={params.hour || '—'} />
                   <RecapRow label={t('recap_passengers')} value={String(params.passengers)} />
@@ -474,7 +518,7 @@ export default function VehicleSelectionPage() {
 
                   <div className={styles.recapDivider} />
                   <p className={styles.recapSection}>{t('recap_pricing')}</p>
-                  <RecapRow label={params.roundTrip ? t('recap_trip_roundtrip') : t('recap_trip_oneway')} value={b ? `${b.base}€` : '—'} />
+                  <RecapRow label={isMad ? t('recap_trip_mad') : (params.roundTrip ? t('recap_trip_roundtrip') : t('recap_trip_oneway'))} value={b ? `${b.base}€` : '—'} />
                   {b && b.petFee > 0 && <RecapRow label={t('extra_pet')} value={`+${b.petFee}€`} />}
 
                   {b && (

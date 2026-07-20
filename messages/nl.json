@@ -485,7 +485,12 @@
     "recap_card": "Bankkaart",
     "recap_cash": "Contant",
     "recap_confirm": "RESERVERING BEVESTIGEN",
-    "recap_edit": "Wijzigen"
+    "recap_edit": "Wijzigen",
+    "service_mad": "Chauffeur ter Beschikking",
+    "duration": "DUUR",
+    "duration_value": "{count} uur",
+    "recap_duration": "Duur",
+    "recap_trip_mad": "Chauffeur ter beschikking"
   },
   "tarifs": {
     "title": "MEEST GEVRAAGDE TRANSFERS",
