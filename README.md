@@ -7,7 +7,7 @@ Site web de MS Prestige Driver, service VTC de luxe à Valenciennes (France).
 - **Framework** : Next.js 15 (App Router, TypeScript)
 - **Backend** : Firebase (Firestore, Storage, Auth, Hosting)
 - **Paiement** : Stripe Checkout
-- **Cartographie** : OpenStreetMap + Leaflet + OpenRouteService
+- **Cartographie** : OpenStreetMap + Leaflet (affichage) ; Google Places & Directions (adresses + itinéraires, via Cloud Functions)
 - **Emails** : Resend
 - **i18n** : next-intl (FR / EN / NL)
 - **CI/CD** : GitHub Actions → Firebase Hosting
@@ -65,11 +65,17 @@ STRIPE_SECRET_KEY=
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
 STRIPE_WEBHOOK_SECRET=
 
-# OpenRouteService — calcul d'itinéraire routier (gratuit, basé OpenStreetMap)
-# Obtenir une clé gratuite sur https://openrouteservice.org → Dashboard → Token
-# Limite : 2 000 requêtes/jour en offre gratuite
-# Sans cette clé, le calcul de distance tombe en mode dégradé (estimation Haversine)
-NEXT_PUBLIC_ORS_API_KEY=
+# Google Maps — autocomplete d'adresse, geocoding et calcul d'itinéraire.
+# Clé SERVEUR : elle n'est JAMAIS exposée au navigateur. Le front appelle les
+# Cloud Functions (placesAutocomplete / placeDetails / geocode / directions),
+# qui seules portent la clé. À définir comme secret Firebase, pas dans .env.local :
+#   firebase functions:secrets:set GOOGLE_MAPS_API_KEY
+# Sans ce secret, /directions échoue et le calcul de distance tombe en mode
+# dégradé (estimation Haversine, à vol d'oiseau → sous-facturation silencieuse).
+GOOGLE_MAPS_API_KEY=
+
+# Base URL des Cloud Functions (optionnel — défaut : europe-west1 du projet)
+NEXT_PUBLIC_FUNCTIONS_BASE=
 
 # Resend — emails transactionnels
 RESEND_API_KEY=
