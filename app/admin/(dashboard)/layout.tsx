@@ -19,11 +19,13 @@
  */
 'use client';
 
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { getFirebaseAuth } from '@/lib/firebase/client';
 import { useAdminAuth } from '@/lib/hooks/useAdminAuth';
+import { useIsMobile } from '@/lib/hooks/useMediaQuery';
 
 const NAV_ITEMS = [
   { href: '/admin/reservations', label: 'Réservations', icon: '📋' },
@@ -37,6 +39,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { user, loading } = useAdminAuth();
   const router            = useRouter();
   const pathname          = usePathname();
+  const isMobile          = useIsMobile();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Close the mobile drawer whenever the route changes.
+  useEffect(() => { setDrawerOpen(false); }, [pathname]);
 
   async function handleLogout() {
     await signOut(getFirebaseAuth());
@@ -57,8 +64,33 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div style={styles.shell}>
+      {/* ── Mobile top bar ──────────────────────────────────────────────── */}
+      {isMobile && (
+        <header style={styles.topbar}>
+          <button
+            onClick={() => setDrawerOpen(true)}
+            style={styles.burger}
+            aria-label="Ouvrir le menu"
+          >
+            ☰
+          </button>
+          <span style={styles.topbarTitle}>MS Prestige · Admin</span>
+        </header>
+      )}
+
+      {/* ── Backdrop (mobile drawer open) ───────────────────────────────── */}
+      {isMobile && drawerOpen && (
+        <div style={styles.backdrop} onClick={() => setDrawerOpen(false)} />
+      )}
+
       {/* ── Sidebar ─────────────────────────────────────────────────────── */}
-      <aside style={styles.sidebar}>
+      <aside
+        style={{
+          ...styles.sidebar,
+          ...(isMobile ? styles.sidebarMobile : {}),
+          ...(isMobile && !drawerOpen ? styles.sidebarMobileHidden : {}),
+        }}
+      >
         {/* Branding */}
         <div style={styles.brand}>
           <Image
@@ -73,6 +105,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div style={styles.brandTitle}>MS Prestige</div>
             <div style={styles.brandSub}>Administration</div>
           </div>
+          {isMobile && (
+            <button
+              onClick={() => setDrawerOpen(false)}
+              style={styles.drawerClose}
+              aria-label="Fermer le menu"
+            >
+              ✕
+            </button>
+          )}
         </div>
 
         {/* Divider */}
@@ -109,7 +150,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       {/* ── Main content ─────────────────────────────────────────────────── */}
-      <main style={styles.main}>
+      <main style={{ ...styles.main, ...(isMobile ? styles.mainMobile : {}) }}>
         {children}
       </main>
     </div>
@@ -228,5 +269,66 @@ const styles: Record<string, React.CSSProperties> = {
     overflow       : 'auto',
     padding        : '40px',
     background     : '#0a0a0a',
+  },
+  mainMobile: {
+    padding        : '72px 16px 24px',
+  },
+
+  // ── Mobile drawer ──────────────────────────────────────────────────────────
+  topbar: {
+    position       : 'fixed' as const,
+    top            : 0,
+    left           : 0,
+    right          : 0,
+    height         : '56px',
+    display        : 'flex',
+    alignItems     : 'center',
+    gap            : '12px',
+    padding        : '0 16px',
+    background     : '#111',
+    borderBottom   : '1px solid rgba(var(--color-gold-rgb), 0.15)',
+    zIndex         : 30,
+  },
+  topbarTitle: {
+    color          : '#fff',
+    fontWeight     : 600,
+    fontSize       : '14px',
+  },
+  burger: {
+    background     : 'transparent',
+    border         : 'none',
+    color          : 'var(--color-gold)',
+    fontSize       : '22px',
+    lineHeight     : 1,
+    cursor         : 'pointer',
+    padding        : '4px 8px',
+  },
+  backdrop: {
+    position       : 'fixed' as const,
+    inset          : 0,
+    background     : 'rgba(0,0,0,0.6)',
+    zIndex         : 40,
+  },
+  sidebarMobile: {
+    position       : 'fixed' as const,
+    top            : 0,
+    left           : 0,
+    height         : '100vh',
+    zIndex         : 50,
+    transition     : 'transform .25s ease',
+    transform      : 'translateX(0)',
+  },
+  sidebarMobileHidden: {
+    transform      : 'translateX(-100%)',
+  },
+  drawerClose: {
+    marginLeft     : 'auto',
+    background     : 'transparent',
+    border         : 'none',
+    color          : 'rgba(255,255,255,0.6)',
+    fontSize       : '18px',
+    lineHeight     : 1,
+    cursor         : 'pointer',
+    padding        : '4px 8px',
   },
 };

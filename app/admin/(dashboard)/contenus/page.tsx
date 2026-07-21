@@ -111,6 +111,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase/client';
+import { useIsMobile } from '@/lib/hooks/useMediaQuery';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -278,6 +279,7 @@ type SectionData = Record<string, I18nField | string>;
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function AdminContenusPage() {
+  const isMobile = useIsMobile();
   const [activeSection, setActiveSection] = useState(SECTIONS[0].id);
   const [locale,        setLocale]        = useState<Locale>('fr');
   const [data,          setData]          = useState<Record<string, SectionData>>({});
@@ -379,10 +381,17 @@ export default function AdminContenusPage() {
         <div style={toast.ok ? s.toastOk : s.toastErr}>{toast.msg}</div>
       )}
 
-      <div style={s.layout}>
+      <div style={{ ...s.layout, ...(isMobile ? { flexDirection: 'column' } : {}) }}>
 
         {/* ── Section sidebar ──────────────────────────────────────── */}
-        <nav style={s.sectionNav}>
+        <nav
+          style={{
+            ...s.sectionNav,
+            ...(isMobile
+              ? { width: '100%', minWidth: 0, position: 'static' as const }
+              : {}),
+          }}
+        >
           {SECTIONS.map((sec) => (
             <button
               key={sec.id}
