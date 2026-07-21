@@ -103,6 +103,25 @@
 /* color-scheme dark makes native date/time pickers readable on dark bg */
 .input { color-scheme: dark; }
 
+/* Date/time inputs — iOS Safari otherwise renders an empty value as a blank
+ * field (no visible native placeholder). Normalise the appearance and make the
+ * empty "jj/mm/aaaa" / "--:--" text legible on the dark background. */
+.input[type='date'],
+.input[type='time'] {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.input[type='date']::-webkit-date-and-time-value,
+.input[type='time']::-webkit-date-and-time-value { text-align: left; }
+
+.input[type='date']::-webkit-datetime-edit,
+.input[type='time']::-webkit-datetime-edit { color: var(--color-white); }
+
+.input[type='date']:invalid::-webkit-datetime-edit,
+.input[type='time']:invalid::-webkit-datetime-edit { color: rgba(255, 255, 255, 0.5); }
+
 .returnBox {
   display: flex;
   align-items: center;

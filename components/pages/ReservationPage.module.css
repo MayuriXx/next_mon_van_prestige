@@ -175,6 +175,26 @@
 .formInput::placeholder { color: #999; }
 .formSelect { appearance: none; cursor: pointer; }
 
+/* Date/time inputs — iOS Safari otherwise renders an empty value as a blank
+ * field (no visible native placeholder). Normalise the appearance, keep a
+ * consistent height, and make the empty "jj/mm/aaaa" / "--:--" text legible. */
+.formInput[type='date'],
+.formInput[type='time'] {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 2.6rem;
+  cursor: pointer;
+}
+
+.formInput[type='date']::-webkit-date-and-time-value,
+.formInput[type='time']::-webkit-date-and-time-value { text-align: left; }
+
+.formInput[type='date']::-webkit-datetime-edit,
+.formInput[type='time']::-webkit-datetime-edit { color: #333; }
+
+.formInput[type='date']:invalid::-webkit-datetime-edit,
+.formInput[type='time']:invalid::-webkit-datetime-edit { color: #999; }
+
 /* ── Vehicle selector ── */
 .vehicleSelector {
   display: grid;
