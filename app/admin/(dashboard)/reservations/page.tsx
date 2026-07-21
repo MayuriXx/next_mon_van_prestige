@@ -378,7 +378,9 @@ const s: Record<string, React.CSSProperties> = {
     whiteSpace: 'nowrap', flexShrink: 0,
   },
   kpiGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '16px',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+    gap: '16px',
   },
   filtersBar: {
     display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center',
