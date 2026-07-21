@@ -1,112 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { reportError } from '@/lib/errors/errorBus';
-import { usePathname, useRouter } from 'next/navigation';
-import { useState, useRef, useEffect } from 'react';
-import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
+import { usePathname } from 'next/navigation';
+import { getLocaleFromPath } from '@/lib/utils/locale';
 import { useContenus } from '@/lib/hooks/useContenus';
+import ReservationForm from '@/components/reservation/ReservationForm';
 import styles from './MiseADispositionPage.module.css';
-
-/* ── Google Places autocomplete ── */
-interface Suggestion { placeId: string; description: string; }
-
-/* Address autocomplete is backed by Google Places, proxied through the
-   placesAutocomplete Cloud Function so the Google Maps API key stays
-   server-side. This service is time-based (no distance), so no coordinates
-   or Place Details lookup are needed — only the address text. */
-const FUNCTIONS_BASE = 'https://europe-west1-mon-van-prestige.cloudfunctions.net';
-
-function newSessionToken(): string {
-  return typeof crypto !== 'undefined' && crypto.randomUUID
-    ? crypto.randomUUID()
-    : Math.random().toString(36).slice(2) + Date.now().toString(36);
-}
-
-async function fetchSuggestions(query: string, sessionToken: string): Promise<Suggestion[]> {
-  if (query.length < 3) return [];
-  try {
-    const res = await fetch(`${FUNCTIONS_BASE}/placesAutocomplete`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ input: query, sessionToken, language: 'fr' }),
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data.suggestions ?? []) as Suggestion[];
-  } catch (err) {
-    reportError(err, "Suggestions d'adresses indisponibles.", 'autocomplete', 'warning');
-    return [];
-  }
-}
-
-interface AutocompleteFieldProps {
-  placeholder: string;
-  value: string;
-  onChange: (val: string) => void;
-}
-
-function AutocompleteField({ placeholder, value, onChange }: AutocompleteFieldProps) {
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [open, setOpen] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const sessionTokenRef = useRef<string>(newSessionToken());
-
-  useEffect(() => {
-    function handle(e: MouseEvent) {
-      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handle);
-    return () => document.removeEventListener('mousedown', handle);
-  }, []);
-
-  function handleChange(val: string) {
-    onChange(val);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(async () => {
-      const results = await fetchSuggestions(val, sessionTokenRef.current);
-      setSuggestions(results);
-      setOpen(results.length > 0);
-    }, 350);
-  }
-
-  function handleSelect(s: Suggestion) {
-    onChange(s.description);
-    setSuggestions([]);
-    setOpen(false);
-    // End the billing session — a fresh token starts on the next keystroke.
-    sessionTokenRef.current = newSessionToken();
-  }
-
-  return (
-    <div className={styles.autocompleteWrap} ref={wrapRef}>
-      <input
-        type="text"
-        className={styles.formInput}
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => handleChange(e.target.value)}
-        onFocus={() => suggestions.length > 0 && setOpen(true)}
-        autoComplete="off"
-      />
-      {open && (
-        <ul className={styles.suggestions}>
-          {suggestions.map((s, i) => (
-            <li key={s.placeId || i} className={styles.suggestionItem} onMouseDown={() => handleSelect(s)}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={styles.suggestionIcon}>
-                <circle cx="12" cy="11" r="3"/><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z"/>
-              </svg>
-              <span>{s.description}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
 
 /* ── Features data ── */
 const FEATURES = [
@@ -160,20 +59,11 @@ const FEATURES = [
   },
 ];
 
-/* Bookable durations in hours (min 2h per the CGV). The unit word is localized. */
-const DURATION_HOURS = [2, 3, 4, 5, 6, 8, 10, 12];
-
-const PASSENGERS_FR = ['1 Passager', '2 Passagers', '3 Passagers', '4 Passagers', '5 Passagers', '6 Passagers', '7 Passagers', '8 Passagers'];
-const PASSENGERS_EN = ['1 Passenger','2 Passengers','3 Passengers','4 Passengers','5 Passengers','6 Passengers','7 Passengers','8 Passengers'];
-const PASSENGERS_NL = ['1 Passagier','2 Passagiers','3 Passagiers','4 Passagiers','5 Passagiers','6 Passagiers','7 Passagiers','8 Passagiers'];
-
 type Locale = 'fr' | 'en' | 'nl';
 
 const CONTENT: Record<Locale, {
   tag: string; title: string; subtitle: string; note: string; badges: string[];
-  formTitle: string; pickupPlaceholder: string; dropoffPlaceholder: string;
-  durationLabel: string; passengersLabel: string; ctaBtn: string; sectionTitle: string;
-  hourUnit: string; passengers: string[];
+  formTitle: string; sectionTitle: string;
 }> = {
   fr: {
     tag: 'MISE À DISPOSITION',
@@ -182,14 +72,7 @@ const CONTENT: Record<Locale, {
     note: '* Durée minimum de mise à disposition : 2 heures (20km par heure inclus)',
     badges: ['Flexibilité totale', 'Chauffeur dédié', 'Sécurité'],
     formTitle: 'Réservez votre mise à disposition',
-    pickupPlaceholder: 'Adresse de prise en charge',
-    dropoffPlaceholder: 'Adresse de destination',
-    durationLabel: 'Durée de la mise à disposition',
-    passengersLabel: 'Nombre de passagers',
-    ctaBtn: 'VOIR LES VÉHICULES',
     sectionTitle: 'Service Mise à Disposition',
-    hourUnit: 'heures',
-    passengers: PASSENGERS_FR,
   },
   en: {
     tag: 'CHAUFFEUR SERVICE',
@@ -198,14 +81,7 @@ const CONTENT: Record<Locale, {
     note: '* Minimum duration: 2 hours (20 km per hour included)',
     badges: ['Total flexibility', 'Dedicated chauffeur', 'Safety'],
     formTitle: 'Book your chauffeur service',
-    pickupPlaceholder: 'Pickup address',
-    dropoffPlaceholder: 'Destination address',
-    durationLabel: 'Service duration',
-    passengersLabel: 'Number of passengers',
-    ctaBtn: 'SEE VEHICLES',
     sectionTitle: 'Chauffeur Service',
-    hourUnit: 'hours',
-    passengers: PASSENGERS_EN,
   },
   nl: {
     tag: 'CHAUFFEUR TER BESCHIKKING',
@@ -214,14 +90,7 @@ const CONTENT: Record<Locale, {
     note: '* Minimale duur: 2 uur (20 km per uur inbegrepen)',
     badges: ['Totale flexibiliteit', 'Toegewijde chauffeur', 'Veiligheid'],
     formTitle: 'Boek uw chauffeursdienst',
-    pickupPlaceholder: 'Ophaaladres',
-    dropoffPlaceholder: 'Bestemmingsadres',
-    durationLabel: 'Duur van de dienst',
-    passengersLabel: 'Aantal passagiers',
-    ctaBtn: 'VOERTUIGEN BEKIJKEN',
     sectionTitle: 'Chauffeur ter Beschikking',
-    hourUnit: 'uur',
-    passengers: PASSENGERS_NL,
   },
 };
 
@@ -243,32 +112,6 @@ export default function MiseADispositionPage() {
   const locale = getLocaleFromPath(pathname) as Locale;
   const contenus = useContenus('miseADisposition', locale);
   const c = CONTENT[locale] ?? CONTENT.fr;
-
-  const router = useRouter();
-  const [pickup, setPickup] = useState('');
-  const [dropoff, setDropoff] = useState('');
-  const [date, setDate] = useState('');
-  const [hour, setHour] = useState('');
-  const [durationHours, setDurationHours] = useState<number>(DURATION_HOURS[0]);
-  const [passengers, setPassengers] = useState<number>(1);
-
-  /* On submit, forward the form to the shared vehicle-selection funnel in MAD
-     mode (?service=mad), exactly like the airport packages do — instead of the
-     old redirect straight to /reservation. VehicleSelectionPage then prices it
-     as hourly rate x duration (Business 55 EUR/h, Van 90 EUR/h) and drives the
-     client-info -> recap -> Stripe popups. */
-  function handleSeeVehicles() {
-    const p = new URLSearchParams({
-      service: 'mad',
-      duration: String(durationHours),
-      passengers: String(passengers),
-    });
-    if (date) p.set('date', date);
-    if (hour) p.set('hour', hour);
-    if (pickup.trim()) p.set('departure', pickup.trim());
-    if (dropoff.trim()) p.set('arrival', dropoff.trim());
-    router.push(`${localePath('/reservation/vehicules', locale)}?${p.toString()}`);
-  }
 
   function getFeatureTitle(f: typeof FEATURES[0]): string {
     if (locale === 'en') return f.title_en;
@@ -314,77 +157,10 @@ export default function MiseADispositionPage() {
             </div>
           </div>
 
-          {/* Droite : formulaire */}
-          <div className={styles.formCard}>
-            <h2 className={styles.formTitle}>{c.formTitle}</h2>
-
-            <div className={styles.formRow}>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Date</label>
-                <div className={styles.inputWithIcon}>
-                  <input type="date" className={styles.formInput} value={date} onChange={(e) => setDate(e.target.value)} />
-                  <span className={styles.inputIcon}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-                    </svg>
-                  </span>
-                </div>
-              </div>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Heure</label>
-                <div className={styles.inputWithIcon}>
-                  <input type="time" className={styles.formInput} value={hour} onChange={(e) => setHour(e.target.value)} />
-                  <span className={styles.inputIcon}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                    </svg>
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <AutocompleteField
-              placeholder={c.pickupPlaceholder}
-              value={pickup}
-              onChange={setPickup}
-            />
-
-            <AutocompleteField
-              placeholder={c.dropoffPlaceholder}
-              value={dropoff}
-              onChange={setDropoff}
-            />
-
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>{c.durationLabel}</label>
-              <select
-                className={styles.formSelect}
-                value={durationHours}
-                onChange={(e) => setDurationHours(parseInt(e.target.value, 10))}
-              >
-                {DURATION_HOURS.map((h) => (
-                  <option key={h} value={h}>{h} {c.hourUnit}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>{c.passengersLabel}</label>
-              <select
-                className={styles.formSelect}
-                value={passengers}
-                onChange={(e) => setPassengers(parseInt(e.target.value, 10))}
-              >
-                {c.passengers.slice(0, 7).map((label, i) => (
-                  <option key={label} value={i + 1}>{label}</option>
-                ))}
-              </select>
-            </div>
-
-            <button type="button" className={styles.formBtn} onClick={handleSeeVehicles}>
-              {c.ctaBtn}
-            </button>
-          </div>
+          {/* Droite : formulaire partagé, verrouillé sur "Mise à Disposition"
+              (pas de sélecteur ici — la page implique déjà le service). Le bouton
+              "Réserver" mène au funnel véhicules → pop-up → paiement Stripe. */}
+          <ReservationForm lockedService="mad" title={c.formTitle} />
         </div>
       </section>
 
@@ -412,4 +188,3 @@ export default function MiseADispositionPage() {
     </>
   );
 }
-
