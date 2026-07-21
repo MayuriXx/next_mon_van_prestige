@@ -109,7 +109,7 @@ function AutocompleteField({ placeholder, value, onChange, onSelect }: Autocompl
       const results = await fetchSuggestions(val, sessionTokenRef.current);
       setSuggestions(results);
       setOpen(results.length > 0);
-    }, 350);
+    }, 150);
   }
 
   async function handleSelect(s: Suggestion) {
