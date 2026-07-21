@@ -75,6 +75,29 @@
 .input::placeholder { color: #999; }
 .select { appearance: none; cursor: pointer; }
 
+/* Date/time inputs — iOS Safari otherwise renders an empty value as a blank
+ * field (no visible native placeholder). Normalise the appearance, keep a
+ * consistent height, and make the empty "jj/mm/aaaa" / "--:--" text legible. */
+.input[type='date'],
+.input[type='time'] {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 2.6rem;
+  cursor: pointer;
+}
+
+.input[type='date']::-webkit-date-and-time-value,
+.input[type='time']::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+.input[type='date']::-webkit-datetime-edit,
+.input[type='time']::-webkit-datetime-edit { color: #333; }
+
+/* Empty state: the native placeholder fields render very light — darken them. */
+.input[type='date']:invalid::-webkit-datetime-edit,
+.input[type='time']:invalid::-webkit-datetime-edit { color: #999; }
+
 .row {
   display: grid;
   grid-template-columns: 1fr 1fr;
