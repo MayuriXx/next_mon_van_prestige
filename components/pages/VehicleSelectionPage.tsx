@@ -599,7 +599,7 @@ function AutocompleteInput({
       const results = await fetchSuggestions(val, sessionTokenRef.current);
       setSuggestions(results);
       setOpen(results.length > 0);
-    }, 350);
+    }, 150);
   }
 
   function handleSelect(sug: Suggestion) {
