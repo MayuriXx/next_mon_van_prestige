@@ -29,11 +29,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
-import { calculatePrice } from '@/lib/utils/pricing';
+import { calculatePrice, calculateOutOfBaseSurcharge } from '@/lib/utils/pricing';
 import { useTariffs } from '@/lib/hooks/useTariffs';
 import { useWomenSurcharge } from '@/lib/hooks/useWomenSurcharge';
 import type { VehicleType } from '@/lib/types/pricing';
 import type { CheckoutPayload } from '@/lib/types/reservation';
+import { getBaseApproachKm } from '@/lib/reservation/places';
 import styles from './VehicleSelectionPage.module.css';
 
 const FUNCTIONS_BASE = 'https://europe-west1-mon-van-prestige.cloudfunctions.net';
@@ -140,6 +141,12 @@ type Params = {
    */
   fromLat?: number; fromLng?: number; toLat?: number; toLng?: number;
   providedKm?: number;
+  /**
+   * Road distance base (Gare de Valenciennes) → pickup, forwarded by
+   * <ReservationForm>. Drives the out-of-base surcharge; recomputed here when
+   * absent (airport-modal flow / direct URL).
+   */
+  obKm?: number;
 };
 
 export default function VehicleSelectionPage() {
@@ -153,6 +160,8 @@ export default function VehicleSelectionPage() {
 
   const [params, setParams] = useState<Params | null>(null);
   const [distanceKm, setDistanceKm] = useState<number | null>(null);
+  /** Out-of-base approach distance (base → pickup). 0 = within base / unknown. */
+  const [outOfBaseKm, setOutOfBaseKm] = useState(0);
   const [loading, setLoading] = useState(true);
   const [geoError, setGeoError] = useState(false);
 
@@ -197,8 +206,28 @@ export default function VehicleSelectionPage() {
       fromLat: num('fromLat'), fromLng: num('fromLng'),
       toLat: num('toLat'), toLng: num('toLng'),
       providedKm: num('dist'),
+      obKm: num('obkm'),
     };
     setParams(parsed);
+
+    // ── Out-of-base surcharge distance (applies to every service) ──
+    // Trust the value forwarded by <ReservationForm>; otherwise resolve the
+    // pickup point and measure the road approach from the base (Gare de
+    // Valenciennes). Runs independently of the main route loading and
+    // fail-opens to 0 so a Directions hiccup never blocks the funnel.
+    if (parsed.obKm != null && parsed.obKm >= 0) {
+      setOutOfBaseKm(parsed.obKm);
+    } else {
+      (async () => {
+        const from: GeoPoint | null =
+          parsed.fromLat != null && parsed.fromLng != null
+            ? { lat: parsed.fromLat, lng: parsed.fromLng, label: parsed.departure }
+            : await geocode(parsed.departure);
+        if (!from) return;
+        const approach = await getBaseApproachKm(from);
+        if (approach != null) setOutOfBaseKm(approach);
+      })();
+    }
 
     // MAD is time-based (hourly): no geocoding or route distance is needed.
     if (service === 'mad') { setLoading(false); return; }
@@ -247,6 +276,8 @@ export default function VehicleSelectionPage() {
       const rMad = calculatePrice({ serviceType: 'MAD', vehicleType: type, durationHours: params.durationHours }, tariffs);
       let pMad = typeof rMad.price === 'number' ? rMad.price : rMad.price.min;
       if (params?.women) pMad = Math.ceil(pMad * (1 + surchargePercent / 100));
+      // Flat out-of-base approach fee — added last, never discounted.
+      pMad += calculateOutOfBaseSurcharge(outOfBaseKm, type, tariffs);
       return pMad;
     }
     if (totalKm == null) return null;
@@ -257,6 +288,8 @@ export default function VehicleSelectionPage() {
     if (params?.roundTrip) p = Math.ceil(p * 0.9);
     // Transport au Féminin surcharge, applied after the round-trip discount.
     if (params?.women) p = Math.ceil(p * (1 + surchargePercent / 100));
+    // Flat out-of-base approach fee — added last, never discounted.
+    p += calculateOutOfBaseSurcharge(outOfBaseKm, type, tariffs);
     return p;
   }
 
@@ -279,10 +312,14 @@ export default function VehicleSelectionPage() {
   function priceBreakdown() {
     const base = selected ? priceFor(selected) : null;
     if (base == null) return null;
+    // `base` already includes the out-of-base fee — split it back out so the
+    // recap can show the service fare and the surcharge as separate lines.
+    const outOfBaseFee = selected ? calculateOutOfBaseSurcharge(outOfBaseKm, selected, tariffs) : 0;
+    const serviceFare = base - outOfBaseFee;
     const petFee = addPet ? PET_SURCHARGE : 0;
     const total = base + petFee;
     const deposit = Math.round(total * DEPOSIT_RATE);
-    return { base, petFee, total, deposit, rest: total - deposit };
+    return { base, serviceFare, outOfBaseFee, petFee, total, deposit, rest: total - deposit };
   }
 
   /* Step 1 → validate, then reveal recap. */
@@ -326,6 +363,7 @@ export default function VehicleSelectionPage() {
         distanceKm: isMad ? undefined : (distanceKm ?? undefined),
         pet: addPet,
         womenService: params.women,
+        outOfBaseKm: outOfBaseKm > 0 ? outOfBaseKm : undefined,
         locale,
         clientName: `${firstName.trim()} ${lastName.trim()}`,
         clientEmail: email.trim(),
@@ -553,7 +591,8 @@ export default function VehicleSelectionPage() {
 
                   <div className={styles.recapDivider} />
                   <p className={styles.recapSection}>{t('recap_pricing')}</p>
-                  <RecapRow label={isMad ? t('recap_trip_mad') : (params.roundTrip ? t('recap_trip_roundtrip') : t('recap_trip_oneway'))} value={b ? `${b.base}€` : '—'} />
+                  <RecapRow label={isMad ? t('recap_trip_mad') : (params.roundTrip ? t('recap_trip_roundtrip') : t('recap_trip_oneway'))} value={b ? `${b.serviceFare}€` : '—'} />
+                  {b && b.outOfBaseFee > 0 && <RecapRow label={t('recap_out_of_base')} value={`+${b.outOfBaseFee}€`} />}
                   {b && b.petFee > 0 && <RecapRow label={t('extra_pet')} value={`+${b.petFee}€`} />}
 
                   {b && (

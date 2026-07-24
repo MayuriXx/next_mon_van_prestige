@@ -465,6 +465,7 @@
     "recap_departure": "Départ",
     "recap_destination": "Destination",
     "recap_distance": "Distance",
+    "recap_out_of_base": "Majoration hors-base",
     "recap_date": "Date",
     "recap_time": "Heure",
     "recap_passengers": "Passagers",

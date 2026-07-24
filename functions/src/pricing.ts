@@ -28,6 +28,12 @@ export interface ServerTariffs {
   mad: Record<VehicleType, number>;
   minimumFares: Record<VehicleType, number>;
   transferBrackets: Record<VehicleType, KmBracket[]>;
+  /**
+   * Out-of-base ("hors-base") surcharge brackets, keyed on the road distance
+   * between the base (Gare de Valenciennes) and the pickup point. Applies to
+   * every service — TRANSFER, MAD, and the fixed packages.
+   */
+  outOfBaseBrackets: Record<VehicleType, KmBracket[]>;
 }
 
 // ── Static grid (offline fallback, mirrors lib/data/tariffs.ts) ───────────────
@@ -55,6 +61,22 @@ const STATIC_TARIFFS: ServerTariffs = {
       { from: 201, to: Infinity, ratePerKm: 1.95 },
     ],
   },
+  outOfBaseBrackets: {
+    BUSINESS: [
+      { from: 0, to: 3, flat: 0 },
+      { from: 3, to: 7, flat: 10 },
+      { from: 7, to: 13, flat: 12 },
+      { from: 13, to: 26, ratePerKm: 0.9 },
+      { from: 26, to: Infinity, ratePerKm: 0.7 },
+    ],
+    VAN: [
+      { from: 0, to: 3, flat: 0 },
+      { from: 3, to: 7, flat: 10 },
+      { from: 7, to: 15, ratePerKm: 1.5 },
+      { from: 15, to: 25, ratePerKm: 1.2 },
+      { from: 25, to: Infinity, ratePerKm: 0.9 },
+    ],
+  },
 };
 
 // ── Firestore loader (live values, -1 → Infinity) ─────────────────────────────
@@ -80,6 +102,7 @@ export async function loadTariffs(db: Firestore): Promise<ServerTariffs> {
     const minimumFares =
       (docs['minimum_fares'] as ServerTariffs['minimumFares']) ?? STATIC_TARIFFS.minimumFares;
     const tb = docs['transfer_brackets'] as { BUSINESS?: KmBracket[]; VAN?: KmBracket[] } | undefined;
+    const ob = docs['out_of_base_brackets'] as { BUSINESS?: KmBracket[]; VAN?: KmBracket[] } | undefined;
 
     return {
       mad,
@@ -87,6 +110,10 @@ export async function loadTariffs(db: Firestore): Promise<ServerTariffs> {
       transferBrackets: {
         BUSINESS: normaliseBrackets(tb?.BUSINESS ?? STATIC_TARIFFS.transferBrackets.BUSINESS),
         VAN: normaliseBrackets(tb?.VAN ?? STATIC_TARIFFS.transferBrackets.VAN),
+      },
+      outOfBaseBrackets: {
+        BUSINESS: normaliseBrackets(ob?.BUSINESS ?? STATIC_TARIFFS.outOfBaseBrackets.BUSINESS),
+        VAN: normaliseBrackets(ob?.VAN ?? STATIC_TARIFFS.outOfBaseBrackets.VAN),
       },
     };
   } catch (err) {
@@ -126,4 +153,23 @@ export function transferPrice(km: number, vehicleType: VehicleType, tariffs: Ser
 /** Recompute the expected MAD price (hourly rate × duration). */
 export function madPrice(hours: number, vehicleType: VehicleType, tariffs: ServerTariffs): number {
   return Math.ceil(tariffs.mad[vehicleType] * hours);
+}
+
+/**
+ * Recompute the out-of-base surcharge for a pickup located `km` (road
+ * distance) from the base (Gare de Valenciennes).
+ *
+ * Mirrors calculateOutOfBaseSurcharge() in lib/utils/pricing.ts. The surcharge
+ * is a FLAT approach fee: it is added after the round-trip discount and the
+ * Transport au Féminin percentage, and is never reduced by either.
+ */
+export function outOfBaseSurcharge(
+  km: number,
+  vehicleType: VehicleType,
+  tariffs: ServerTariffs
+): number {
+  if (!km || km <= 0) return 0;
+  const bracket = findBracket(km, tariffs.outOfBaseBrackets[vehicleType]);
+  if (!bracket) return 0;
+  return Math.ceil(applyBracket(km, bracket));
 }

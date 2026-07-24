@@ -24,7 +24,7 @@ import { initializeApp } from 'firebase-admin/app';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import Stripe from 'stripe';
 import { Resend } from 'resend';
-import { loadTariffs, transferPrice, madPrice } from './pricing';
+import { loadTariffs, transferPrice, madPrice, outOfBaseSurcharge } from './pricing';
 
 // ── Firebase Admin init ───────────────────────────────────────────────────────
 initializeApp();
@@ -70,6 +70,11 @@ interface BookingData {
   durationHours?: number;
   /** Distance in km — TRANSFER only */
   distanceKm?: number;
+  /**
+   * Road distance base (Gare de Valenciennes) → pickup point. Drives the
+   * out-of-base surcharge, which applies to every service.
+   */
+  outOfBaseKm?: number;
   /** Whether the client booked with a pet (adds a flat surcharge) */
   pet?: boolean;
   /** Transport au Féminin: apply the women surcharge (percent from Firestore) */
@@ -215,6 +220,14 @@ export const createCheckoutSession = onRequest(
           ? (wDoc.data()!.percentage as number) : 20;
         serverTotal = Math.ceil(serverTotal * (1 + pct / 100));
       }
+      // Out-of-base ("hors-base") approach fee — the base is the Gare de
+      // Valenciennes and the fee is keyed on the road distance base → pickup.
+      // It is a FLAT fee: added after the round-trip discount and the women
+      // surcharge, and never reduced by either. Client and server apply the
+      // exact same ordering, so the drift check below stays tight.
+      if (typeof data.outOfBaseKm === 'number' && data.outOfBaseKm > 0) {
+        serverTotal += outOfBaseSurcharge(data.outOfBaseKm, data.vehicleType, tariffs);
+      }
       // Server-authoritative extras: bill the pet surcharge online as well.
       if (data.pet) serverTotal += PET_SURCHARGE;
       // Allow a 1 € rounding buffer; anything larger is treated as tampering.
@@ -258,6 +271,7 @@ export const createCheckoutSession = onRequest(
       passengers      : data.passengers,
       durationHours   : data.durationHours ?? null,
       distanceKm      : data.distanceKm ?? null,
+      outOfBaseKm     : data.outOfBaseKm ?? null,
       totalPrice      : data.totalPrice,
       depositRatio    : depositRatio,
       depositAmount   : depositAmount,
