@@ -23,6 +23,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { localePath } from '@/lib/utils/locale';
+import TimeSelect from '@/components/ui/TimeSelect';
 import styles from './TransferModal.module.css';
 
 interface TransferModalProps {
@@ -122,11 +123,11 @@ export default function TransferModal({
 
         <label className={styles.field}>
           <span className={styles.label}>{t('modal_time_label')}</span>
-          <input
-            type="time"
+          <TimeSelect
             className={styles.input}
             value={hour}
-            onChange={(e) => setHour(e.target.value)}
+            onChange={setHour}
+            ariaLabel={t('modal_time_label')}
           />
         </label>
 
@@ -173,11 +174,11 @@ export default function TransferModal({
 
             <label className={styles.field}>
               <span className={styles.label}>{t('modal_return_time_label')}</span>
-              <input
-                type="time"
+              <TimeSelect
                 className={styles.input}
                 value={returnHour}
-                onChange={(e) => setReturnHour(e.target.value)}
+                onChange={setReturnHour}
+                ariaLabel={t('modal_return_time_label')}
               />
             </label>
           </div>

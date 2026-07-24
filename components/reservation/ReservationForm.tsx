@@ -33,6 +33,7 @@ import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import { useTariffs } from '@/lib/hooks/useTariffs';
 import { useWomenSurcharge } from '@/lib/hooks/useWomenSurcharge';
 import { calculatePrice, formatPrice } from '@/lib/utils/pricing';
+import TimeSelect from '@/components/ui/TimeSelect';
 import type { VehicleType } from '@/lib/types/pricing';
 import {
   type GeoPoint,
@@ -324,6 +325,15 @@ export default function ReservationForm({
     if (activeService === 'simple') {
       if (arrival) qp.set('arrival', arrival);
       qp.set('trip', tripType);
+      // Forward the already-resolved coordinates + the distance we just computed
+      // so the funnel doesn't re-geocode the raw address strings. Re-geocoding
+      // free text loses the precise Places pick and can resolve to a completely
+      // different location (root cause of the wrong 580 km / 960 € recap, and of
+      // the "une erreur est survenue" when a POI like "Mairie de Saint-Amand"
+      // can't be geocoded from text alone).
+      if (fromPoint) { qp.set('fromLat', String(fromPoint.lat)); qp.set('fromLng', String(fromPoint.lng)); }
+      if (toPoint) { qp.set('toLat', String(toPoint.lat)); qp.set('toLng', String(toPoint.lng)); }
+      if (result) qp.set('dist', String(result.distanceKm));
     } else {
       qp.set('duration', duration);
     }
@@ -375,7 +385,7 @@ export default function ReservationForm({
 
       <div className={styles.row}>
         <input type="date" className={styles.input} value={date} onChange={(e) => setDate(e.target.value)} />
-        <input type="time" className={styles.input} value={hour} onChange={(e) => setHour(e.target.value)} />
+        <TimeSelect className={styles.input} value={hour} onChange={setHour} />
       </div>
 
       <div className={styles.row}>

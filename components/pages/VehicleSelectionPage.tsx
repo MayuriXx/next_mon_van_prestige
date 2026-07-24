@@ -130,6 +130,16 @@ type Params = {
   women: boolean;
   /** Mise à Disposition only — billed as hourly rate x durationHours. */
   durationHours: number;
+  /**
+   * Optional pre-resolved trip geometry forwarded by <ReservationForm>: the
+   * exact Places coordinates the visitor picked and the single-leg road
+   * distance already computed on the previous screen. When present we trust
+   * them instead of re-geocoding the address strings (which loses the precise
+   * pick and can resolve elsewhere). Absent for the airport modal flow, which
+   * still falls back to geocoding the (well-known) departure/arrival labels.
+   */
+  fromLat?: number; fromLng?: number; toLat?: number; toLng?: number;
+  providedKm?: number;
 };
 
 export default function VehicleSelectionPage() {
@@ -166,6 +176,10 @@ export default function VehicleSelectionPage() {
     if (typeof window === 'undefined') return;
     const p = new URLSearchParams(window.location.search);
     const service = p.get('service') === 'mad' ? 'mad' : 'transfer';
+    const num = (key: string): number | undefined => {
+      const v = parseFloat(p.get(key) || '');
+      return Number.isFinite(v) ? v : undefined;
+    };
     const parsed: Params = {
       service,
       departure: p.get('departure') || 'Valenciennes',
@@ -180,15 +194,36 @@ export default function VehicleSelectionPage() {
       // MAD is billed for a minimum of 2 hours (CGV) — enforce the floor here
       // too, in case the query param is missing or tampered with.
       durationHours: Math.max(2, parseInt(p.get('duration') || '2', 10) || 2),
+      fromLat: num('fromLat'), fromLng: num('fromLng'),
+      toLat: num('toLat'), toLng: num('toLng'),
+      providedKm: num('dist'),
     };
     setParams(parsed);
 
     // MAD is time-based (hourly): no geocoding or route distance is needed.
     if (service === 'mad') { setLoading(false); return; }
 
+    // Prefer the distance already computed by <ReservationForm> on the previous
+    // screen — no geocoding, no second Directions call, and no risk of a
+    // different geocode result than the one the visitor saw.
+    if (parsed.providedKm != null && parsed.providedKm > 0) {
+      setDistanceKm(parsed.providedKm);
+      setLoading(false);
+      return;
+    }
+
     (async () => {
       setLoading(true); setGeoError(false);
-      const [from, to] = await Promise.all([geocode(parsed.departure), geocode(parsed.arrival)]);
+      // Trust the forwarded Places coordinates when we have them; only fall back
+      // to geocoding the address strings (airport modal flow) otherwise.
+      const from: GeoPoint | null =
+        parsed.fromLat != null && parsed.fromLng != null
+          ? { lat: parsed.fromLat, lng: parsed.fromLng, label: parsed.departure }
+          : await geocode(parsed.departure);
+      const to: GeoPoint | null =
+        parsed.toLat != null && parsed.toLng != null
+          ? { lat: parsed.toLat, lng: parsed.toLng, label: parsed.arrival }
+          : await geocode(parsed.arrival);
       if (!from || !to) { setGeoError(true); setLoading(false); return; }
       const km = await getRouteDistanceKm(from, to);
       if (km == null) { setGeoError(true); setLoading(false); return; }

@@ -104,7 +104,7 @@ export default function Navbar() {
           >
             <button
               className={`${styles.navLink} ${dropdownOpen ? styles.active : ''}`}
-              onClick={() => scrollToSection('transfert-aeroport')}
+              onClick={() => setDropdownOpen((o) => !o)}
               aria-expanded={dropdownOpen}
               aria-haspopup="true"
             >
@@ -173,7 +173,9 @@ export default function Navbar() {
 
       {menuOpen && (
         <div className={styles.mobileMenu}>
-          <button className={styles.mobileLink} onClick={() => scrollToSection('transfert-aeroport')}>{t('services')}</button>
+          {/* Label only — the service list sits right below it. Must not navigate
+              back to the home page (see Mohamed's "bouton service" feedback). */}
+          <span className={styles.mobileLink}>{t('services')}</span>
           <div className={styles.mobileSubmenu}>
             {SERVICES.map((s) => (
               <Link key={s.href} href={localePath(s.href, locale)} className={styles.mobileSubLink}>{t(`servicesDropdown.${s.key}`)}</Link>

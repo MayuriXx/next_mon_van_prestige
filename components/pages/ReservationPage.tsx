@@ -8,6 +8,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import { calculatePrice, formatPrice } from '@/lib/utils/pricing';
+import TimeSelect from '@/components/ui/TimeSelect';
 import { useTariffs } from '@/lib/hooks/useTariffs';
 import type { VehicleType } from '@/lib/types/pricing';
 import type { CheckoutPayload } from '@/lib/types/reservation';
@@ -515,11 +516,10 @@ export default function ReservationPage() {
                     onChange={(e) => setDate(e.target.value)}
                     min={new Date().toISOString().split('T')[0]}
                   />
-                  <input
-                    type="time"
+                  <TimeSelect
                     className={styles.formInput}
                     value={hour}
-                    onChange={(e) => setHour(e.target.value)}
+                    onChange={setHour}
                   />
                 </div>
                 <div className={styles.formRow}>
@@ -612,11 +612,10 @@ export default function ReservationPage() {
                     onChange={(e) => setDate(e.target.value)}
                     min={new Date().toISOString().split('T')[0]}
                   />
-                  <input
-                    type="time"
+                  <TimeSelect
                     className={styles.formInput}
                     value={hour}
-                    onChange={(e) => setHour(e.target.value)}
+                    onChange={setHour}
                   />
                 </div>
                 <div className={styles.formRow}>

@@ -1,0 +1,70 @@
+/* components/ui/TimeSelect.module.css
+ *
+ * Self-contained styling for the shared <TimeSelect> so the picker looks and
+ * behaves identically on every booking form and every device. The trigger
+ * input keeps the host form's field class; only the wrapper, the clock icon and
+ * the dropdown popover are styled here. */
+
+.wrap {
+  position: relative;
+  width: 100%;
+}
+
+/* Decorative clock at the trailing edge — never intercepts clicks so the whole
+ * field still focuses/opens the list. The value ("HH:MM") is short and
+ * left-aligned, so it never runs under the icon. */
+.icon {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: #9a8047;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Popover list of selectable times — mirrors the address-autocomplete dropdown
+ * used elsewhere so the two feel like one system. Always light-themed for
+ * legibility on both light forms and the dark transfer modal. */
+.list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  z-index: 200;
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.item {
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #333;
+  text-align: center;
+  letter-spacing: 0.02em;
+  transition: background 0.15s;
+}
+
+.item:hover { background: #f5f0e8; }
+
+.itemSelected {
+  background: #f5f0e8;
+  color: #9a8047;
+  font-weight: 600;
+}

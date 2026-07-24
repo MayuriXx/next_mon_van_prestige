@@ -545,6 +545,10 @@
       "title": "Escapades Loisirs",
       "description": "Parcs d'attractions, sorties familiales, Disneyland Paris... Profitez d'un transport confortable pour toute la famille. Nous vous déposons et venons vous chercher pour des journées inoubliables."
     },
+    "deplacements-professionnels": {
+      "title": "Déplacements Professionnels",
+      "description": "Un service VTC à la hauteur de vos exigences professionnelles : ponctualité irréprochable, discrétion absolue et confort haut de gamme. Idéal pour vos rendez-vous d'affaires, transferts de collaborateurs et clients VIP."
+    },
     "transport-feminin": {
       "title": "Transport au Féminin",
       "description": "Service de chauffeurs privé dédié aux femmes. Être conduite par une femme n'a jamais été aussi rassurant."
@@ -553,7 +557,7 @@
   "about": {
     "title": "À PROPOS",
     "whoTitle": "QUI SUIS-JE ?",
-    "whoText1": "Passionné par l'automobile et le service d'excellence, j'ai créé MS PRESTIGE DRIVER pour offrir bien plus qu'un simple trajet. Mon objectif est de vous apporter une sérénité totale lors de vos déplacements.",
+    "whoText1": "L'excellence au service de votre mobilité, j'ai créé MS PRESTIGE DRIVER pour offrir bien plus qu'un simple trajet. Mon objectif est de vous apporter une sérénité totale lors de vos déplacements.",
     "whoText2": "Fort d'une expérience significative dans le transport de personnes, je m'engage personnellement à garantir votre satisfaction par une conduite souple, une discrétion absolue et une disponibilité sans faille.",
     "values": {
       "title": "NOS VALEURS",

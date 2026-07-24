@@ -138,7 +138,9 @@ export default function FaqPage() {
       {/* ── CTA bottom ── */}
       <section className={styles.ctaSection}>
         <p className={styles.ctaText}>{t('cta_text')}</p>
-        <Link href={localePath('/reservation', locale)} className={styles.ctaBtn}>
+        {/* "Nous contacter" must lead to the contact details (footer #contact),
+            not the booking funnel — see Mohamed's FAQ feedback. */}
+        <Link href={localePath('/#contact', locale)} className={styles.ctaBtn}>
           {t('cta_btn')}
         </Link>
       </section>

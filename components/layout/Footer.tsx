@@ -33,12 +33,14 @@
  *   name. This ensures visual consistency between header and footer.
  */
 
+import type { MouseEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
+import { usePathname } from 'next/navigation';
 import styles from './Footer.module.css';
 import { useContenus } from '@/lib/hooks/useContenus';
-import { localePath } from '@/lib/utils/locale';
+import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 
 // ─── Static fallback values ─────────────────────────────────────────────────
 // These are used when the Firestore document has no override for the field.
@@ -89,9 +91,33 @@ const SITE_LINKS = [
 ];
 
 // ─── Component ──────────────────────────────────────────────────────────────
+/** A "Plan du site" entry that points at a homepage anchor (or the home top). */
+function isInPageLink(href: string): boolean {
+  return href === '/' || href.startsWith('/#');
+}
+
 export default function Footer() {
   const year = new Date().getFullYear();
   const locale = useLocale();
+  const pathname = usePathname();
+  // Are we already on the homepage? (locale-prefixed, e.g. /fr or /fr/)
+  const onHome = (pathname.replace(`/${getLocaleFromPath(pathname)}`, '') || '/') === '/';
+
+  /**
+   * In-page footer links (Accueil / Véhicules / À Propos / Contact) point at a
+   * homepage anchor. Next's <Link> does client-side hash navigation WITHOUT
+   * scrolling when the path is unchanged, so on the homepage these did nothing
+   * (Mohamed's "Accueil et Véhicules ne fonctionnent pas"). When already home we
+   * smooth-scroll ourselves; otherwise we let the plain <a> navigate to the
+   * homepage anchor, which scrolls natively on load.
+   */
+  function handleInPageLink(e: MouseEvent<HTMLAnchorElement>, href: string) {
+    if (!onHome) return; // cross-page: let the anchor navigate normally
+    e.preventDefault();
+    const hash = href.startsWith('/#') ? href.slice(2) : '';
+    if (hash) document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+    else window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   // Fetch contact overrides from Firestore.
   // Locale is irrelevant for contact fields (plain strings, not i18n objects).
@@ -188,7 +214,17 @@ export default function Footer() {
           <ul className={styles.linkList}>
             {SITE_LINKS.map((l) => (
               <li key={l.href}>
-                <Link href={localePath(l.href, locale)} className={styles.footerLink}>{l.label}</Link>
+                {isInPageLink(l.href) ? (
+                  <a
+                    href={localePath(l.href, locale)}
+                    className={styles.footerLink}
+                    onClick={(e) => handleInPageLink(e, l.href)}
+                  >
+                    {l.label}
+                  </a>
+                ) : (
+                  <Link href={localePath(l.href, locale)} className={styles.footerLink}>{l.label}</Link>
+                )}
               </li>
             ))}
           </ul>
