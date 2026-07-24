@@ -158,11 +158,10 @@ export const TRANSFER_BRACKETS: Record<VehicleType, KmBracket[]> = {
 //
 // NOTE — gap closing: the source grid lists "3////6KM" then "7///13KM", leaving
 // 6–7 km undefined (same for the Van between 6 and 7 km). The lower bracket is
-// extended to 7 km so every distance resolves to a price. Bounds are
+// extended to 7 km so every distance resolves to a price — decision validated
+// by Evan on 2026-07-24: the 10 € flat tier covers 3 to 7 km. Bounds are
 // half-open on the upper side in practice: findBracket() returns the FIRST
 // matching bracket, so a shared boundary resolves to the lower tier.
-// ⚠️ To be confirmed with Mohammed — if he wants the higher tier from 6 km,
-// only the `to` values below need changing (or the Firestore document).
 //
 // Business:
 //   3–6 km → flat 10 €

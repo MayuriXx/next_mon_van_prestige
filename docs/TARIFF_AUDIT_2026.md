@@ -241,10 +241,8 @@ distance resolves.
 Bounds are effectively half-open on the upper side: `findBracket()` returns the
 **first** matching bracket, so a shared boundary resolves to the lower tier.
 
-> ⚠️ **To confirm with Mohammed.** If he wants the higher tier to start at 6 km,
-> only the `to` values change — in `lib/data/tariffs.ts`,
-> `functions/src/pricing.ts`, both scripts, and the Firestore document (or
-> directly through the admin panel).
+> **Decision validated by Evan on 2026-07-24:** the 10 € flat tier covers 3 to
+> 7 km. This is settled — no further client confirmation needed on this point.
 
 ## A.4 Grid copies to keep in sync
 
