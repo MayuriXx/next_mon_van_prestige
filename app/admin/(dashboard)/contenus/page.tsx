@@ -22,7 +22,6 @@
  *   contenus/about
  *     title:          { fr, en, nl }
  *     text:           { fr, en, nl }   — main À-propos paragraph
- *     whoTitle:       { fr, en, nl }   — "Who am I?" heading (issue #104)
  *     values_title:   { fr, en, nl }   — Values card title   (issue #104)
  *     values_text:    { fr, en, nl }   — Values card text    (issue #104)
  *     mission_title:  { fr, en, nl }   — Mission card title  (issue #104)
@@ -141,14 +140,13 @@ const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    // Issue #104: extended with whoTitle + the 3 value cards (Values /
-    // Mission / Vision), each as title+text compound keys on the same
+    // Issue #104: extended with the 3 value cards (Values / Mission /
+    // Vision), each as title+text compound keys on the same
     // contenus/about doc, so Mohammed can edit everything in this section.
     id: 'about', label: 'À Propos', icon: '👤',
     fields: [
       { key: 'title',          label: 'Titre section',           multiline: false, i18n: true },
       { key: 'text',           label: 'Texte À Propos',          multiline: true,  i18n: true },
-      { key: 'whoTitle',       label: 'Titre "Qui suis-je ?"',   multiline: false, i18n: true },
       { key: 'values_title',   label: 'Carte Valeurs — Titre',   multiline: false, i18n: true },
       { key: 'values_text',    label: 'Carte Valeurs — Texte',   multiline: true,  i18n: true },
       { key: 'mission_title',  label: 'Carte Mission — Titre',   multiline: false, i18n: true },

@@ -21,7 +21,6 @@
  *     - `text`          : the "Who am I?" body as a single rich block
  *                         (falls back to the two i18n paragraphs
  *                         about.whoText1 / about.whoText2)
- *     - `whoTitle`       : the "Who am I?" heading (falls back to about.whoTitle)
  *     - `values_title`   : Values card title  (falls back to about.values.title)
  *     - `values_text`    : Values card text   (falls back to about.values.text)
  *     - `mission_title`  : Mission card title (falls back to about.mission.title)
@@ -84,9 +83,6 @@ export default function About() {
 
         {/* "Who am I?" card */}
         <div className={styles.whoCard}>
-          <h3 className={styles.whoTitle}>
-            {contenus.get('whoTitle') || t('whoTitle')}
-          </h3>
           {contenus.get('text') ? (
             /* Firestore override: single rich text block */
             <p className={styles.whoText}>{contenus.get('text')}</p>
