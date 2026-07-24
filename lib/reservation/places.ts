@@ -98,6 +98,17 @@ export async function geocode(address: string): Promise<GeoPoint | null> {
   }
 }
 
+/**
+ * Pricing base point — Gare de Valenciennes.
+ * All out-of-base surcharges are keyed on the road distance between this point
+ * and the local pickup address (see OUT_OF_BASE_BRACKETS in lib/data/tariffs.ts).
+ */
+export const VALENCIENNES_BASE: GeoPoint = {
+  lat: 50.3623,
+  lng: 3.5166,
+  label: 'Gare de Valenciennes',
+};
+
 export interface RouteResult {
   distanceKm: number;
   durationMin: number;
@@ -130,4 +141,15 @@ export async function getRoute(
     reportError(err, "Impossible de calculer l'itinéraire. Réessayez.", 'route');
     return null;
   }
+}
+
+/**
+ * Road distance (km) from the base (Gare de Valenciennes) to a pickup point.
+ * Used to price the out-of-base surcharge. Returns null when the Directions
+ * call fails — callers should then treat the surcharge as 0 rather than block
+ * the quote/booking.
+ */
+export async function getBaseApproachKm(pickup: GeoPoint): Promise<number | null> {
+  const route = await getRoute(VALENCIENNES_BASE, pickup);
+  return route ? route.distanceKm : null;
 }

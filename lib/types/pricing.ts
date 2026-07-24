@@ -5,9 +5,15 @@
  * - ServiceType drives which tariff table is used
  * - VehicleType (BUSINESS | VAN) determines the rate tier
  * - MAD (Mise à Disposition) is priced per hour
- * - AIRPORT and LEISURE services use fixed package pricing (round-trip included)
+ * - AIRPORT and LEISURE services use fixed package pricing. Package prices are
+ *   DIRECTIONAL one-way fares: `min` is the outbound fare (Valenciennes →
+ *   destination) and `max` is the reverse fare (destination → Valenciennes).
+ *   E.g. V-CDG Business "300///390" = 300 € leaving from Valenciennes,
+ *   390 € when the trip runs from CDG back to Valenciennes.
  * - TRANSFER (simple point-to-point) uses per-km bracket pricing
- * - A surcharge ("hors-base") applies when the pickup address is outside Valenciennes
+ * - An out-of-base surcharge ("hors-base") applies to EVERY service when the
+ *   local pickup point sits away from the base (Gare de Valenciennes). The
+ *   surcharge brackets are keyed on the road distance base → pickup.
  */
 
 export type VehicleType = 'BUSINESS' | 'VAN';
@@ -36,13 +42,28 @@ export type LeisureDestination =
   | 'LOSC';
 
 /**
- * Structured price range (min/max) used for fixed-price services.
- * Displayed as "from X€" or "X€ – Y€" depending on context.
+ * Directional package fare used for fixed-price services (AIRPORT / LEISURE).
+ *
+ * `min` = outbound fare, departing FROM the Valenciennes base toward the
+ *         destination (grid notation "300///390" → 300).
+ * `max` = reverse fare, departing from the destination back TO Valenciennes
+ *         (grid notation "300///390" → 390).
+ *
+ * The field names are kept as min/max for Firestore backward compatibility
+ * (`tarifs/airports`, `tarifs/leisure`). Public pages may still display
+ * "from {min} €" which remains accurate.
  */
 export interface PriceRange {
   min: number;
   max: number;
 }
+
+/**
+ * Trip direction for fixed-price packages.
+ * FROM_BASE → departure from the Valenciennes area (uses PriceRange.min)
+ * TO_BASE   → return from the destination to Valenciennes (uses PriceRange.max)
+ */
+export type PackageDirection = 'FROM_BASE' | 'TO_BASE';
 
 /** Input payload for the price calculator */
 export interface PriceRequest {
@@ -62,9 +83,17 @@ export interface PriceRequest {
   leisureDestination?: LeisureDestination;
 
   /**
-   * Extra distance in km from the Valenciennes base to the pickup point.
-   * Used to compute the hors-base surcharge when pickup is outside Valenciennes.
-   * Leave undefined or 0 when pickup is within the base area.
+   * Trip direction for AIRPORT / LEISURE packages.
+   * When provided, the calculator returns a single directional fare
+   * (min for FROM_BASE, max for TO_BASE) instead of a PriceRange.
+   */
+  direction?: PackageDirection;
+
+  /**
+   * Road distance in km between the base (Gare de Valenciennes) and the local
+   * pickup point. Drives the hors-base surcharge, which applies to EVERY
+   * service (TRANSFER, MAD, AIRPORT, LEISURE).
+   * Leave undefined or 0 when pickup is within the base area (< 3 km).
    */
   outOfBaseKm?: number;
 }
@@ -84,7 +113,8 @@ export interface PriceResult {
 
   /**
    * Optional surcharge added on top of the base price.
-   * Applies when pickup is outside the Valenciennes base.
+   * Applies when the local pickup point is outside the base area
+   * (road distance from Gare de Valenciennes ≥ 3 km).
    */
   outOfBaseSurcharge?: number;
 

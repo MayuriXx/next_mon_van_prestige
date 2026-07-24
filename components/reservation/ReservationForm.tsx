@@ -32,7 +32,7 @@ import { useTranslations } from 'next-intl';
 import { getLocaleFromPath, localePath } from '@/lib/utils/locale';
 import { useTariffs } from '@/lib/hooks/useTariffs';
 import { useWomenSurcharge } from '@/lib/hooks/useWomenSurcharge';
-import { calculatePrice, formatPrice } from '@/lib/utils/pricing';
+import { calculatePrice, calculateOutOfBaseSurcharge, formatPrice } from '@/lib/utils/pricing';
 import TimeSelect from '@/components/ui/TimeSelect';
 import type { VehicleType } from '@/lib/types/pricing';
 import {
@@ -43,6 +43,7 @@ import {
   fetchPlaceDetails,
   geocode,
   getRoute,
+  getBaseApproachKm,
 } from '@/lib/reservation/places';
 import styles from './ReservationForm.module.css';
 
@@ -191,6 +192,9 @@ export default function ReservationForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<(ReservationEstimate & { rawPrice: number }) | null>(null);
+  // Road distance base (Gare de Valenciennes) → pickup, priced as the
+  // out-of-base surcharge. 0 = within base or approach lookup failed (fail-open).
+  const [outOfBaseKm, setOutOfBaseKm] = useState(0);
 
   const businessAllowed = parseInt(passengers, 10) <= 3;
 
@@ -224,7 +228,7 @@ export default function ReservationForm({
   }, [result]);
 
   /** Reset the current estimate (e.g. when an input changes). */
-  function clearEstimate() { setResult(null); }
+  function clearEstimate() { setResult(null); setOutOfBaseKm(0); }
 
   function handleDepartureChange(val: string) { setDeparture(val); setFromPoint(null); clearEstimate(); }
   function handleArrivalChange(val: string) { setArrival(val); setToPoint(null); clearEstimate(); }
@@ -259,8 +263,15 @@ export default function ReservationForm({
       ]);
       if (!from || !to) { setError(t('error_geocode')); setLoading(false); return; }
       setFromPoint(from); setToPoint(to);
-      const route = await getRoute(from, to);
+      // Route + out-of-base approach (base = Gare de Valenciennes) in parallel.
+      // A failed approach lookup must never block the quote → fall back to 0.
+      const [route, approachKm] = await Promise.all([
+        getRoute(from, to),
+        getBaseApproachKm(from),
+      ]);
       if (!route) { setError(t('error_route')); setLoading(false); return; }
+      const obKm = approachKm ?? 0;
+      setOutOfBaseKm(obKm);
 
       const multiplier = tripType === 'round_trip' ? 2 : 1;
       const km = route.distanceKm * multiplier;
@@ -271,8 +282,12 @@ export default function ReservationForm({
       const vPrice = typeof vanResult.price === 'number' ? vanResult.price : vanResult.price.min;
       // Round-trip discount (-20% on the return leg = -10% on the doubled total),
       // applied before the Transport au Féminin surcharge to match the server.
-      const rawB = surcharge(tripType === 'round_trip' ? Math.ceil(bPrice * 0.9) : bPrice);
-      const rawV = surcharge(tripType === 'round_trip' ? Math.ceil(vPrice * 0.9) : vPrice);
+      // The out-of-base surcharge is a flat approach fee added LAST — it is
+      // never reduced by the round-trip discount (client + server identical).
+      const rawB = surcharge(tripType === 'round_trip' ? Math.ceil(bPrice * 0.9) : bPrice)
+        + calculateOutOfBaseSurcharge(obKm, 'BUSINESS', tariffs);
+      const rawV = surcharge(tripType === 'round_trip' ? Math.ceil(vPrice * 0.9) : vPrice)
+        + calculateOutOfBaseSurcharge(obKm, 'VAN', tariffs);
 
       setRouteCoords(route.coords);
       setResult({
@@ -287,14 +302,32 @@ export default function ReservationForm({
   }, [departure, arrival, fromPoint, toPoint, tripType, vehicleType, tariffs, t, surcharge]);
 
   /* ── Calculate — MAD ── */
-  const handleCalculateMAD = useCallback(() => {
+  const handleCalculateMAD = useCallback(async () => {
     const hours = parseInt(duration, 10);
+
+    // Out-of-base surcharge applies to MAD too — resolve the departure address
+    // (already-picked Places point, else geocode) to measure the approach from
+    // the base (Gare de Valenciennes). Fail-open to 0 to never block the quote.
+    let obKm = 0;
+    if (departure.trim()) {
+      setLoading(true);
+      try {
+        const from = fromPoint ?? (await geocode(departure));
+        if (from) {
+          if (!fromPoint) setFromPoint(from);
+          obKm = (await getBaseApproachKm(from)) ?? 0;
+        }
+      } finally { setLoading(false); }
+    }
+    setOutOfBaseKm(obKm);
+
     const businessResult = calculatePrice({ serviceType: 'MAD', vehicleType: 'BUSINESS', durationHours: hours }, tariffs);
     const vanResult = calculatePrice({ serviceType: 'MAD', vehicleType: 'VAN', durationHours: hours }, tariffs);
     const bRaw = typeof businessResult.price === 'number' ? businessResult.price : businessResult.price.min;
     const vRaw = typeof vanResult.price === 'number' ? vanResult.price : vanResult.price.min;
-    const rawB = surcharge(bRaw);
-    const rawV = surcharge(vRaw);
+    // Flat approach fee added after the Transport au Féminin percentage.
+    const rawB = surcharge(bRaw) + calculateOutOfBaseSurcharge(obKm, 'BUSINESS', tariffs);
+    const rawV = surcharge(vRaw) + calculateOutOfBaseSurcharge(obKm, 'VAN', tariffs);
     setRouteCoords([]);
     setResult({
       distanceKm: 0,
@@ -303,7 +336,7 @@ export default function ReservationForm({
       vanPrice: formatPrice(rawV),
       rawPrice: vehicleType === 'BUSINESS' ? rawB : rawV,
     });
-  }, [duration, vehicleType, tariffs, surcharge]);
+  }, [duration, departure, fromPoint, vehicleType, tariffs, surcharge]);
 
   function handleCalculate() {
     if (activeService === 'mad') handleCalculateMAD();
@@ -322,6 +355,9 @@ export default function ReservationForm({
     if (date) qp.set('date', date);
     if (hour) qp.set('hour', hour);
     qp.set('passengers', passengers);
+    // Forward the out-of-base approach distance so the funnel prices the same
+    // surcharge without a second Directions call (recomputed there if absent).
+    if (outOfBaseKm > 0) qp.set('obkm', String(outOfBaseKm));
     if (activeService === 'simple') {
       if (arrival) qp.set('arrival', arrival);
       qp.set('trip', tripType);
@@ -336,6 +372,9 @@ export default function ReservationForm({
       if (result) qp.set('dist', String(result.distanceKm));
     } else {
       qp.set('duration', duration);
+      // MAD: forward the resolved departure point so the funnel can compute the
+      // out-of-base surcharge without re-geocoding free text.
+      if (fromPoint) { qp.set('fromLat', String(fromPoint.lat)); qp.set('fromLng', String(fromPoint.lng)); }
     }
     if (women) qp.set('women', '1');
     if (lockedService) qp.set('lock', '1');

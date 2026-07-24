@@ -7,7 +7,9 @@
  * It is used as a static fallback and for client-side price calculation
  * when a Firestore fetch is not required.
  *
- * Format for fixed-price packages: { min, max } in euros (round-trip included).
+ * Format for fixed-price packages: { min, max } in euros — DIRECTIONAL fares:
+ *   min = departure from Valenciennes → destination (grid "300///390" → 300)
+ *   max = destination → Valenciennes (grid "300///390" → 390)
  * Format for per-km brackets: rate in €/km or flat fee in €.
  * Format for MAD: rate in €/hour.
  */
@@ -20,7 +22,8 @@ import type {
 } from '@/lib/types/pricing';
 
 // ---------------------------------------------------------------------------
-// Airport packages (Valenciennes ↔ Airport, round-trip price)
+// Airport packages — directional one-way fares:
+//   min = Valenciennes → airport, max = airport → Valenciennes
 // ---------------------------------------------------------------------------
 export const AIRPORT_PRICES: Record<
   AirportDestination,
@@ -53,7 +56,8 @@ export const AIRPORT_PRICES: Record<
 };
 
 // ---------------------------------------------------------------------------
-// Leisure / theme-park packages (round-trip price)
+// Leisure / theme-park packages — directional one-way fares:
+//   min = Valenciennes → venue, max = venue → Valenciennes
 // ---------------------------------------------------------------------------
 export const LEISURE_PRICES: Record<
   LeisureDestination,
@@ -146,8 +150,18 @@ export const TRANSFER_BRACKETS: Record<VehicleType, KmBracket[]> = {
 // ---------------------------------------------------------------------------
 // Hors-base (out-of-base) surcharge
 //
-// Applied when the pickup address is outside the Valenciennes base area.
-// The surcharge is added on top of the transfer price.
+// Base point = Gare de Valenciennes. The brackets are keyed on the ROAD
+// distance between the base and the local pickup point ("3///6KM" in the grid
+// = pickup between 3 and 6 km from the base).
+// The surcharge applies to EVERY service (TRANSFER, MAD, AIRPORT, LEISURE)
+// and is added flat on top of the service price.
+//
+// NOTE — gap closing: the source grid lists "3////6KM" then "7///13KM", leaving
+// 6–7 km undefined (same for the Van between 6 and 7 km). The lower bracket is
+// extended to 7 km so every distance resolves to a price — decision validated
+// by Evan on 2026-07-24: the 10 € flat tier covers 3 to 7 km. Bounds are
+// half-open on the upper side in practice: findBracket() returns the FIRST
+// matching bracket, so a shared boundary resolves to the lower tier.
 //
 // Business:
 //   3–6 km → flat 10 €
@@ -164,18 +178,18 @@ export const TRANSFER_BRACKETS: Record<VehicleType, KmBracket[]> = {
 
 export const OUT_OF_BASE_BRACKETS: Record<VehicleType, KmBracket[]> = {
   BUSINESS: [
-    { from: 0, to: 2, flat: 0 },    // Within base — no surcharge
-    { from: 3, to: 6, flat: 10 },
+    { from: 0, to: 3, flat: 0 },    // Within base — no surcharge
+    { from: 3, to: 7, flat: 10 },   // grid "3////6KM" — extended to 7 to close the gap
     { from: 7, to: 13, flat: 12 },
-    { from: 13, to: 25, ratePerKm: 0.9 },
+    { from: 13, to: 26, ratePerKm: 0.9 },
     { from: 26, to: Infinity, ratePerKm: 0.7 },
   ],
   VAN: [
-    { from: 0, to: 2, flat: 0 },    // Within base — no surcharge
-    { from: 3, to: 6, flat: 10 },
-    { from: 7, to: 14, ratePerKm: 1.5 },
+    { from: 0, to: 3, flat: 0 },    // Within base — no surcharge
+    { from: 3, to: 7, flat: 10 },   // grid "3///6KM" — extended to 7 to close the gap
+    { from: 7, to: 15, ratePerKm: 1.5 },
     { from: 15, to: 25, ratePerKm: 1.2 },
-    { from: 26, to: Infinity, ratePerKm: 0.9 },
+    { from: 25, to: Infinity, ratePerKm: 0.9 },
   ],
 };
 

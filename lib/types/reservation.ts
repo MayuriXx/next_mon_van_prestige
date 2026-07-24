@@ -51,6 +51,11 @@ export interface CheckoutPayload {
   durationHours?    : number;
   /** Distance in km — TRANSFER only */
   distanceKm?       : number;
+  /**
+   * Road distance base (Gare de Valenciennes) → pickup. The server recomputes
+   * the out-of-base surcharge from this value (applies to every service).
+   */
+  outOfBaseKm?      : number;
   /** Whether the client booked with a pet (server adds a flat surcharge) */
   pet?              : boolean;
   /** Transport au Féminin: apply the women surcharge server-side */
@@ -79,6 +84,8 @@ export interface ReservationDoc {
   passengers        : number;
   durationHours     : number | null;
   distanceKm        : number | null;
+  /** Road distance base (Gare de Valenciennes) → pickup — priced as the out-of-base surcharge */
+  outOfBaseKm?      : number | null;
   totalPrice        : number;
   depositRatio      : number; // 0.30 | 0.50 | 1.0
   depositAmount     : number;

@@ -22,6 +22,8 @@
  * What it checks:
  *   - tarifs/airports            (6 destinations × BUSINESS/VAN × {min,max})
  *   - tarifs/leisure             (5 destinations × BUSINESS/VAN × {min,max})
+ *     NB: min/max are DIRECTIONAL fares, not a range — min = departure from
+ *     Valenciennes, max = reverse trip back to Valenciennes.
  *   - tarifs/mad                 (BUSINESS/VAN hourly rate)
  *   - tarifs/minimum_fares       (BUSINESS/VAN guaranteed minimum)
  *   - tarifs/transfer_brackets   (BUSINESS/VAN km brackets, -1 = open bound)
@@ -107,20 +109,23 @@ const EXPECTED: Record<string, unknown> = {
       { from: 201, to: -1,  ratePerKm: 1.95 },
     ],
   },
+  // Base point = Gare de Valenciennes. Brackets measure the road distance
+  // base -> pickup. The lower bracket is extended to 7 km to close the 6-7 km
+  // gap left by the source grid ("3////6KM" then "7///13KM").
   out_of_base_brackets: {
     BUSINESS: [
-      { from: 0,  to: 2,  flat: 0 },
-      { from: 3,  to: 6,  flat: 10 },
+      { from: 0,  to: 3,  flat: 0 },
+      { from: 3,  to: 7,  flat: 10 },
       { from: 7,  to: 13, flat: 12 },
-      { from: 13, to: 25, ratePerKm: 0.90 },
+      { from: 13, to: 26, ratePerKm: 0.90 },
       { from: 26, to: -1, ratePerKm: 0.70 },
     ],
     VAN: [
-      { from: 0,  to: 2,  flat: 0 },
-      { from: 3,  to: 6,  flat: 10 },
-      { from: 7,  to: 14, ratePerKm: 1.50 },
+      { from: 0,  to: 3,  flat: 0 },
+      { from: 3,  to: 7,  flat: 10 },
+      { from: 7,  to: 15, ratePerKm: 1.50 },
       { from: 15, to: 25, ratePerKm: 1.20 },
-      { from: 26, to: -1, ratePerKm: 0.90 },
+      { from: 25, to: -1, ratePerKm: 0.90 },
     ],
   },
 }

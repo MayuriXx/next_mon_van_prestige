@@ -5,14 +5,19 @@
  * Can be used safely in both server components and client components.
  *
  * Business rules implemented:
- * 1. AIRPORT service → fixed package price (PriceRange) from airports tariff table
- * 2. LEISURE service → fixed package price (PriceRange) from leisure tariff table
+ * 1. AIRPORT service → fixed directional package fare. min = Valenciennes →
+ *    airport, max = airport → Valenciennes. Pass `direction` to get a single
+ *    fare; omit it to get the raw PriceRange (display use).
+ * 2. LEISURE service → same directional package logic as AIRPORT
  * 3. MAD service → hourly rate × durationHours
  * 4. TRANSFER service → per-km bracket pricing
  *    a. Find the matching KmBracket in the transfer_brackets table
  *    b. Apply flat fee or ratePerKm × distance
  *    c. Enforce minimum fare
- *    d. Add hors-base surcharge if outOfBaseKm is provided
+ * 5. Out-of-base surcharge — applies to EVERY service. Keyed on the road
+ *    distance between the base (Gare de Valenciennes) and the local pickup
+ *    point (`outOfBaseKm`). Added flat on top of the service price and never
+ *    reduced by discounts (round-trip / promotions).
  *
  * Dynamic tariffs:
  *   calculatePrice() accepts an optional second argument `tariffs` of type TariffData
@@ -30,7 +35,7 @@ import {
   TRANSFER_BRACKETS,
   type KmBracket,
 } from '@/lib/data/tariffs';
-import type { PriceRequest, PriceResult } from '@/lib/types/pricing';
+import type { PriceRequest, PriceResult, VehicleType } from '@/lib/types/pricing';
 
 // TariffData shape — mirrors the useTariffs hook output
 // Defined inline here to avoid a circular dependency with lib/hooks/useTariffs
@@ -90,6 +95,26 @@ function ceilEuro(value: number): number {
   return Math.ceil(value);
 }
 
+/**
+ * Out-of-base surcharge for a pickup located `km` (road distance) from the
+ * base (Gare de Valenciennes). Returns a whole-euro amount, 0 when the pickup
+ * is within the base area (< 3 km) or when no bracket matches.
+ *
+ * Exported so booking funnels can add the surcharge AFTER percentage
+ * adjustments (round-trip discount, Transport au Féminin) — the surcharge is a
+ * flat approach fee and must not be discounted.
+ */
+export function calculateOutOfBaseSurcharge(
+  km: number,
+  vehicleType: VehicleType,
+  tariffs: TariffData = STATIC_TARIFFS
+): number {
+  if (!km || km <= 0) return 0;
+  const bracket = findBracket(km, tariffs.outOfBaseBrackets[vehicleType]);
+  if (!bracket) return 0;
+  return ceilEuro(applyBracket(km, bracket));
+}
+
 // ---------------------------------------------------------------------------
 // Main calculator
 // ---------------------------------------------------------------------------
@@ -123,8 +148,28 @@ export function calculatePrice(
       throw new Error('[pricing] AIRPORT service requires airportDestination');
     }
     const range = tariffs.airports[request.airportDestination][vehicleType];
+
+    // Directional fare: min = Valenciennes → airport, max = airport → Valenciennes.
+    if (request.direction) {
+      const fare = request.direction === 'FROM_BASE' ? range.min : range.max;
+      breakdown.push(
+        `Forfait ${request.airportDestination} ${request.direction === 'FROM_BASE' ? 'aller (départ Valenciennes)' : 'retour (vers Valenciennes)'} (${vehicleType}) : ${fare} €`
+      );
+      const surcharge = calculateOutOfBaseSurcharge(request.outOfBaseKm ?? 0, vehicleType, tariffs);
+      if (surcharge > 0) {
+        breakdown.push(`Majoration hors-base (${request.outOfBaseKm} km de la Gare de Valenciennes) : +${surcharge} €`);
+      }
+      return {
+        serviceType, vehicleType,
+        price: fare + surcharge,
+        outOfBaseSurcharge: surcharge > 0 ? surcharge : undefined,
+        breakdown, isFixed: true,
+      };
+    }
+
+    // No direction → raw range, display use only ("from X €").
     breakdown.push(
-      `Forfait aéroport ${request.airportDestination} (${vehicleType}) : ${range.min} € – ${range.max} €`
+      `Forfait aéroport ${request.airportDestination} (${vehicleType}) : ${range.min} € (aller) / ${range.max} € (retour)`
     );
     return { serviceType, vehicleType, price: range, breakdown, isFixed: true };
   }
@@ -135,8 +180,27 @@ export function calculatePrice(
       throw new Error('[pricing] LEISURE service requires leisureDestination');
     }
     const range = tariffs.leisure[request.leisureDestination][vehicleType];
+
+    // Directional fare: min = Valenciennes → venue, max = venue → Valenciennes.
+    if (request.direction) {
+      const fare = request.direction === 'FROM_BASE' ? range.min : range.max;
+      breakdown.push(
+        `Forfait ${request.leisureDestination} ${request.direction === 'FROM_BASE' ? 'aller (départ Valenciennes)' : 'retour (vers Valenciennes)'} (${vehicleType}) : ${fare} €`
+      );
+      const surcharge = calculateOutOfBaseSurcharge(request.outOfBaseKm ?? 0, vehicleType, tariffs);
+      if (surcharge > 0) {
+        breakdown.push(`Majoration hors-base (${request.outOfBaseKm} km de la Gare de Valenciennes) : +${surcharge} €`);
+      }
+      return {
+        serviceType, vehicleType,
+        price: fare + surcharge,
+        outOfBaseSurcharge: surcharge > 0 ? surcharge : undefined,
+        breakdown, isFixed: true,
+      };
+    }
+
     breakdown.push(
-      `Forfait loisirs ${request.leisureDestination} (${vehicleType}) : ${range.min} € – ${range.max} €`
+      `Forfait loisirs ${request.leisureDestination} (${vehicleType}) : ${range.min} € (aller) / ${range.max} € (retour)`
     );
     return { serviceType, vehicleType, price: range, breakdown, isFixed: true };
   }
@@ -147,11 +211,20 @@ export function calculatePrice(
       throw new Error('[pricing] MAD service requires durationHours > 0');
     }
     const rate = tariffs.mad[vehicleType];
-    const price = ceilEuro(rate * request.durationHours);
+    let price = ceilEuro(rate * request.durationHours);
     breakdown.push(
       `Mise à disposition (${vehicleType}) : ${rate} €/h × ${request.durationHours} h = ${price} €`
     );
-    return { serviceType, vehicleType, price, breakdown, isFixed: true };
+    const madSurcharge = calculateOutOfBaseSurcharge(request.outOfBaseKm ?? 0, vehicleType, tariffs);
+    if (madSurcharge > 0) {
+      price += madSurcharge;
+      breakdown.push(`Majoration hors-base (${request.outOfBaseKm} km de la Gare de Valenciennes) : +${madSurcharge} €`);
+    }
+    return {
+      serviceType, vehicleType, price,
+      outOfBaseSurcharge: madSurcharge > 0 ? madSurcharge : undefined,
+      breakdown, isFixed: true,
+    };
   }
 
   // ── TRANSFER (per-km) ─────────────────────────────────────────────────────

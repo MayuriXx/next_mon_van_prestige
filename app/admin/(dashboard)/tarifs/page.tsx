@@ -5,8 +5,10 @@
  *
  * Business purpose:
  *   Mohammed can view and edit all pricing data from this single page:
- *   - Airport package prices (Business / Van, min/max range per destination)
- *   - Leisure package prices (Business / Van, min/max range per destination)
+ *   - Airport package prices (Business / Van) — the two values per vehicle are
+ *     DIRECTIONAL fares, not a range: min = departure from Valenciennes,
+ *     max = reverse trip back to Valenciennes (grid notation "300///390")
+ *   - Leisure package prices (Business / Van) — same directional semantics
  *   - MAD (Mise à Disposition) hourly rates
  *   - Per-km transfer brackets (Business and Van)
  *   - Out-of-base (hors-base) surcharge brackets
@@ -193,7 +195,7 @@ export default function TarifsPage() {
       {activeTab === 'airports' && (
         <Section
           title="Forfaits aéroports"
-          description="Prix aller-retour depuis Valenciennes. Saisissez un min et un max pour chaque véhicule."
+          description="Deux tarifs par véhicule : « Aller » = trajet au départ de Valenciennes, « Retour » = trajet en sens inverse (destination → Valenciennes). Ex. V-CDG Business : 300 € à l'aller, 390 € au retour. La majoration hors-base s'ajoute par-dessus."
           onSave={() => save('airports', airports)}
           saving={saving === 'airports'}
         >
@@ -216,7 +218,7 @@ export default function TarifsPage() {
       {activeTab === 'leisure' && (
         <Section
           title="Forfaits loisirs"
-          description="Prix aller-retour vers les destinations loisirs. Min/max par véhicule."
+          description="Deux tarifs par véhicule : « Aller » = départ de Valenciennes, « Retour » = destination → Valenciennes. La majoration hors-base s'ajoute par-dessus."
           onSave={() => save('leisure', leisure)}
           saving={saving === 'leisure'}
         >
@@ -316,8 +318,11 @@ export default function TarifsPage() {
         <Section
           title="Supplément hors-base"
           description={
-            'Supplément appliqué lorsque le point de prise en charge est en dehors ' +
-            'de Valenciennes. S\'ajoute au tarif de base du transfert.'
+            'Majoration appliquée lorsque le point de prise en charge est éloigné ' +
+            'de la base (Gare de Valenciennes). Les tranches portent sur la distance ' +
+            'routière base → prise en charge (ex. « 3 à 7 km »). Elle s\'applique à ' +
+            'TOUS les services (transfert, mise à disposition, forfaits aéroport et ' +
+            'loisirs) et s\'ajoute en supplément fixe, sans remise.'
           }
           onSave={() =>
             save('out_of_base_brackets', {
@@ -430,11 +435,13 @@ function PackageTable<T extends string>({
           </tr>
           <tr>
             <th style={t.thSub} />
-            <th style={t.thSub}>Min</th>
-            <th style={t.thSub}>Max</th>
+            {/* Stored as min/max in Firestore for backward compatibility, but the
+                two values are DIRECTIONAL fares, not a price range. */}
+            <th style={t.thSub} title="Trajet au départ de Valenciennes">Aller (départ V.)</th>
+            <th style={t.thSub} title="Trajet en sens inverse, vers Valenciennes">Retour (vers V.)</th>
             <th style={t.thSep} />
-            <th style={t.thSub}>Min</th>
-            <th style={t.thSub}>Max</th>
+            <th style={t.thSub} title="Trajet au départ de Valenciennes">Aller (départ V.)</th>
+            <th style={t.thSub} title="Trajet en sens inverse, vers Valenciennes">Retour (vers V.)</th>
           </tr>
         </thead>
         <tbody>
