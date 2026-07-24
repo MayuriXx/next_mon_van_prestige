@@ -12,11 +12,15 @@
  *
  * What this script does:
  *   - Deletes all existing documents in the `tarifs` collection
- *   - Re-creates them from the canonical data in lib/data/tariffs.ts
+ *   - Re-creates them from the grid duplicated below (kept in sync with the
+ *     canonical data in lib/data/tariffs.ts)
  *
  * Firestore document structure (collection: tarifs):
  *
  *   Document ID: "airports"
+ *   NB: min/max are DIRECTIONAL one-way fares, not a price range.
+ *       min = departure from Valenciennes -> destination
+ *       max = destination -> Valenciennes (grid notation "300///390")
  *   {
  *     CDG: { BUSINESS: { min: 300, max: 390 }, VAN: { min: 390, max: 550 } },
  *     ORLY: { ... },
@@ -42,9 +46,11 @@
  *   }
  *
  *   Document ID: "out_of_base_brackets"
+ *   Base point = Gare de Valenciennes. Brackets measure the ROAD distance
+ *   base -> pickup point. Applies to every service (transfer, MAD, packages).
  *   {
- *     BUSINESS: [ { from: 0, to: 2, flat: 0 }, ... ],
- *     VAN: [ { from: 0, to: 2, flat: 0 }, ... ]
+ *     BUSINESS: [ { from: 0, to: 3, flat: 0 }, ... ],
+ *     VAN: [ { from: 0, to: 3, flat: 0 }, ... ]
  *   }
  *
  *   Document ID: "minimum_fares"
@@ -148,20 +154,24 @@ const TRANSFER_BRACKETS = {
   ],
 }
 
+// Base point = Gare de Valenciennes. Brackets measure the ROAD distance between
+// the base and the pickup point. The lower bracket is extended to 7 km to close
+// the 6-7 km gap left by the source grid ("3////6KM" then "7///13KM").
+// Keep in sync with OUT_OF_BASE_BRACKETS in lib/data/tariffs.ts.
 const OUT_OF_BASE_BRACKETS = {
   BUSINESS: [
-    { from: 0,  to: 2,  flat: 0 },
-    { from: 3,  to: 6,  flat: 10 },
+    { from: 0,  to: 3,  flat: 0 },
+    { from: 3,  to: 7,  flat: 10 },
     { from: 7,  to: 13, flat: 12 },
-    { from: 13, to: 25, ratePerKm: 0.90 },
+    { from: 13, to: 26, ratePerKm: 0.90 },
     { from: 26, to: -1, ratePerKm: 0.70 }, // -1 = no upper limit
   ],
   VAN: [
-    { from: 0,  to: 2,  flat: 0 },
-    { from: 3,  to: 6,  flat: 10 },
-    { from: 7,  to: 14, ratePerKm: 1.50 },
+    { from: 0,  to: 3,  flat: 0 },
+    { from: 3,  to: 7,  flat: 10 },
+    { from: 7,  to: 15, ratePerKm: 1.50 },
     { from: 15, to: 25, ratePerKm: 1.20 },
-    { from: 26, to: -1, ratePerKm: 0.90 }, // -1 = no upper limit
+    { from: 25, to: -1, ratePerKm: 0.90 }, // -1 = no upper limit
   ],
 }
 

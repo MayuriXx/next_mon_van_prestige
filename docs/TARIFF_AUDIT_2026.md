@@ -166,3 +166,134 @@ Consider retiring this script once every collection has real data.
 - `lib/firebase/tarifs.ts` — **removed** (dead code, unused Firestore reader).
 
 No change to the contractual pricing grid, the calculator, or the admin panel.
+
+---
+
+# Amendment — 2026-07-24: grid semantics corrected
+
+The audit above verified that every representation of the grid held the **same
+numbers**. It did not question what those numbers *mean*. Two interpretation
+errors were found afterwards and corrected. The values are unchanged; the way
+they are read is not.
+
+## A.1 `A///B` is not a price range
+
+Package prices such as `V-CDG` Business = `300///390` were implemented as a
+min/max **price range** and displayed as "300 € – 390 €".
+
+Confirmed with the client: the two numbers are **two directional one-way
+fares**.
+
+| Value | Meaning |
+|---|---|
+| `300` (stored as `min`) | Trip **departing from Valenciennes** → CDG |
+| `390` (stored as `max`) | Trip in the **reverse direction**, CDG → Valenciennes |
+
+The Firestore field names `min` / `max` were **kept** for backward compatibility
+(`tarifs/airports`, `tarifs/leisure`): renaming them would have required a data
+migration for no functional gain. They are documented everywhere as directional
+fares, and the admin panel now labels the columns *Aller (départ V.)* /
+*Retour (vers V.)*.
+
+**Business impact:** the reverse direction was never billed at its own fare, and
+public pages advertised a range instead of a real price.
+
+## A.2 The out-of-base surcharge applies to every service
+
+The grid row `en dehors DE LA BASE` was implemented as a transfer-only
+surcharge, and — more seriously — **was never actually applied**: `outOfBaseKm`
+existed in the types, the data layer and the admin panel, but no form ever
+populated it. Every booking picked up outside Valenciennes was under-billed.
+
+Clarified with the client:
+
+- The **base is the Gare de Valenciennes**.
+- The brackets (`3////6KM`, `7///13KM`, …) measure the **road distance between
+  the base and the pickup point** — not the trip distance.
+- The surcharge **applies to every service**: per-km transfers, MAD, and the
+  fixed airport / leisure packages.
+
+It is a **flat approach fee**: added after the round-trip discount and the
+Transport au Féminin percentage, and never reduced by either. Client and server
+apply the identical ordering, which keeps the 2 % drift check in
+`createCheckoutSession` tight.
+
+```
+base fare
+  → round-trip discount (×0.9)
+  → Transport au Féminin surcharge (×1.20)
+  → + out-of-base surcharge   ← flat, added last
+  → + pet surcharge (flat)
+```
+
+## A.3 Gap closed in the source grid
+
+The source file lists `3////6KM` then `7///13KM`, leaving **6–7 km undefined**
+(same for the Van). A pickup 6.5 km from the base matched no bracket and was
+silently priced at 0 €. The lower bracket was extended to 7 km so every
+distance resolves.
+
+| Vehicle | Before | After |
+|---|---|---|
+| Business | `3–6` → 10 €, `7–13` → 12 € | `3–7` → 10 €, `7–13` → 12 € |
+| Van | `3–6` → 10 €, `7–14` → 1.50 €/km | `3–7` → 10 €, `7–15` → 1.50 €/km |
+
+Bounds are effectively half-open on the upper side: `findBracket()` returns the
+**first** matching bracket, so a shared boundary resolves to the lower tier.
+
+> ⚠️ **To confirm with Mohammed.** If he wants the higher tier to start at 6 km,
+> only the `to` values change — in `lib/data/tariffs.ts`,
+> `functions/src/pricing.ts`, both scripts, and the Firestore document (or
+> directly through the admin panel).
+
+## A.4 Grid copies to keep in sync
+
+The out-of-base grid now exists in **five** places. A change to one requires a
+change to all:
+
+| Location | Role |
+|---|---|
+| `lib/data/tariffs.ts` | Canonical client-side fallback |
+| `functions/src/pricing.ts` | Server-side fallback (Stripe validation) |
+| `scripts/seed-tariffs.ts` | Firestore seed |
+| `scripts/verify-tariffs.ts` | Expected values for the read-only diff |
+| Firestore `tarifs/out_of_base_brackets` | **Live source of truth** |
+
+Firestore wins at runtime — the static grids are fallbacks only. Editing the
+code without re-seeding or editing the admin panel changes nothing in production.
+
+## A.5 Deployment
+
+1. **Cloud Functions require a manual deploy** (CI/CD only ships hosting):
+   ```bash
+   cd functions && npm run build && cd .. && firebase deploy --only functions
+   ```
+   Client and server must ship together. If the client sends `outOfBaseKm` to an
+   old function, the surcharge is **silently dropped** — under-billing with no
+   error surfaced.
+2. Re-synchronise Firestore (destructive — deletes and recreates the documents):
+   ```bash
+   npx ts-node --project tsconfig.json scripts/seed-tariffs.ts
+   ```
+   Or edit the brackets through the admin panel. Verify with:
+   ```bash
+   npx ts-node --project tsconfig.json scripts/verify-tariffs.ts
+   ```
+
+> **Not yet run against production.** The live `tarifs/out_of_base_brackets`
+> document still holds the pre-amendment bounds, including the 6–7 km gap.
+
+## A.6 Files changed in this amendment
+
+- `lib/types/pricing.ts` — `PackageDirection` type, directional documentation.
+- `lib/utils/pricing.ts` — `calculateOutOfBaseSurcharge()`, directional packages, MAD surcharge.
+- `lib/data/tariffs.ts` — corrected documentation, gap closed.
+- `lib/reservation/places.ts` — `VALENCIENNES_BASE`, `getBaseApproachKm()`.
+- `lib/types/reservation.ts` — `outOfBaseKm` on payload and reservation document.
+- `components/reservation/ReservationForm.tsx` — approach distance measured and forwarded.
+- `components/pages/VehicleSelectionPage.tsx` — surcharge applied, shown as its own recap line.
+- `functions/src/pricing.ts` — out-of-base grid and `outOfBaseSurcharge()`.
+- `functions/src/index.ts` — server-side surcharge, persisted on the reservation.
+- `app/admin/(dashboard)/tarifs/page.tsx` — directional column labels, rewritten descriptions.
+- `scripts/seed-tariffs.ts`, `scripts/verify-tariffs.ts` — bounds and documentation aligned.
+- `messages/{fr,en,nl}.json` — `vehicleSelection.recap_out_of_base`.
